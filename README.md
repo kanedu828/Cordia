@@ -19,3 +19,7 @@
 ## Creating Migrations
 
 1. Run `alembic revision -m "Revision change message"` to create a db migration
+
+## Running the bot
+1. Ensure you are in a venv (`poetry shell`)
+2. Run `python3 main.py`
