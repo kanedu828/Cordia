@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: cordia_db
+    environment:
+      POSTGRES_USER: ${CORDIA_USER}
+      POSTGRES_PASSWORD: ${CORDIA_PASSWORD}
+      POSTGRES_DB: cordiadb
+    ports:
+      - "5432:5432"
+    volumes:
+      - cordia_db_data:/var/lib/postgresql/data
+    networks:
+      - cordia_network
+
+volumes:
+  cordia_db_data:
+
+networks:
+  cordia_network:
+    driver: bridge

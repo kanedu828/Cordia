@@ -1,0 +1,3 @@
+PRODUCTION=false # true/false
+CORDIA_TOKEN='Token here' # Discord Token
+CORDIA_DB_CONNECTION_STRING='' # DB Connection URL
