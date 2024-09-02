@@ -1,5 +1,7 @@
 from enum import Enum
 
+from cordia.data.spells import Spell, SpellType
+
 class GearType(Enum):
     WEAPON = "weapon"
     HAT = "hat"
@@ -11,24 +13,8 @@ class GearType(Enum):
     RING_1 = "ring_1"
     RING_2 = "ring_2"
 
-
-class SpellType(Enum):
-    DAMAGE = "damage"
-    BUFF = "buff"
-
-
-class Spell:
-    def __init__(self, spell_type, name, damage):
-        self.spell_type = spell_type
-        self.name = name
-        self.damage = damage
-
-    def __repr__(self):
-        return f"<Spell(type={self.spell_type}, name={self.name}, damage={self.damage})>"
-
-
 class Gear:
-    def __init__(self, name, gear_type, strength, persistence, intelligence, efficiency, luck, level, attack_cooldown, spell, gold_value):
+    def __init__(self, name, gear_type, level, attack_cooldown, gold_value, strength=0, persistence=0, intelligence=0, efficiency=0, luck=0, spell=None, gear_set=''):
         self.name = name
         self.type = gear_type
         self.strength = strength
@@ -40,6 +26,7 @@ class Gear:
         self.attack_cooldown = attack_cooldown
         self.spell = spell
         self.gold_value = gold_value
+        self.gear_set = gear_set
 
     def __repr__(self):
         return (f"<Gear(name={self.name}, type={self.type}, strength={self.strength}, "
@@ -53,55 +40,42 @@ gear_data = {
     "basic_sword": Gear(
         name="Basic Sword",
         gear_type=GearType.WEAPON,
+        level=1,
         strength=10,
         persistence=4,
-        intelligence=0,
-        efficiency=0,
-        luck=0,
-        level=0,
         attack_cooldown=20,
-        spell=None,
         gold_value=50
     ),
     "basic_dagger": Gear(
         name="Basic Dagger",
         gear_type=GearType.WEAPON,
+        level=1,
         strength=6,
         persistence=6,
-        intelligence=0,
-        efficiency=0,
-        luck=0,
-        level=0,
         attack_cooldown=10,
-        spell=None,
         gold_value=50
     ),
     "basic_bow": Gear(
         name="Basic Bow",
         gear_type=GearType.WEAPON,
+        level=1,
         strength=7,
         persistence=10,
-        intelligence=0,
-        efficiency=0,
-        luck=0,
-        level=0,
         attack_cooldown=30,
-        spell=None,
         gold_value=50
     ),
     "basic_wand": Gear(
         name="Basic Wand",
         gear_type=GearType.WEAPON,
+        level=1,
         strength=2,
         persistence=3,
         intelligence=10,
-        efficiency=0,
-        luck=0,
-        level=0,
         attack_cooldown=20,
         spell=Spell(
             spell_type=SpellType.DAMAGE,
             name="Fireball",
+            description="Blast enemies with a fireball.",
             damage=10
         ),
         gold_value=50
