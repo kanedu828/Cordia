@@ -1,5 +1,5 @@
 import math
-import time
+import datetime
 from cordia.dao.player_dao import PlayerDao
 from cordia.data.locations import location_data
 from cordia.dao.player_gear_dao import PlayerGearDao
@@ -147,33 +147,30 @@ class CordiaService:
 
 
     async def attack(self, discord_id: int):
-        
-            
         player = await self.get_or_insert_player(discord_id)
         location = location_data[player["location"]]
         monster_name = location.get_random_monster()
         monster = monster_data[monster_name]
         player_stats = await self.get_player_stats(discord_id)
 
-        current_time = time.time()
+        current_time = datetime.datetime.now()
 
         # Check if the player is on cooldown
         if discord_id in self.player_cooldowns:
             cooldown_end = self.player_cooldowns[discord_id]
             if current_time < cooldown_end:
                 # Player is still on cooldown
-                remaining_time = cooldown_end - current_time
                 return {
                     'kills': 0,
                     'exp': 0,
                     'gold': 0,
                     'loot': [],
                     'monster': '',
-                    'attack_cooldown': 0,
+                    'on_cooldown': True,
+                    'cooldown_expiration': cooldown_end,
                     'location': location.name,
                     'player_stats': player_stats,
                     'player_exp': player['exp'],
-                    'remaining_cooldown': remaining_time,
                     'leveled_up': False
                 }
         
@@ -193,23 +190,25 @@ class CordiaService:
 
         exp_gained = self.random_within_range(int(monster.exp * kills))
 
+        cooldown_expiration = current_time + datetime.timedelta(seconds=weapon_data.attack_cooldown)
+
         attack_results = {
             'kills': kills,
             'exp': exp_gained,
             'gold': self.random_within_range(int(monster.gold * kills)),
             'loot': [],
             'monster': monster.display_monster(),
-            'attack_cooldown': weapon_data.attack_cooldown,
             'location': location.name,
             'player_stats': player_stats,
             'player_exp': player['exp'] + exp_gained,
-            'remaining_cooldown': 0,
+            'on_cooldown': False,
+            'cooldown_expiration': cooldown_expiration,
             'leveled_up': self.exp_to_level(player['exp'] + exp_gained) > self.exp_to_level(player['exp'])
         }
 
         await self.increment_exp(discord_id, attack_results["exp"])
         await self.increment_gold(discord_id, attack_results["gold"])
 
-        self.player_cooldowns[discord_id] = current_time + weapon_data.attack_cooldown
+        self.player_cooldowns[discord_id] = cooldown_expiration
 
         return attack_results

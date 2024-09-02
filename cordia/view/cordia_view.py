@@ -1,3 +1,4 @@
+import datetime
 import discord
 from discord.ui import Button, View
 import asyncio
@@ -88,8 +89,8 @@ class CordiaView(View):
 
         embed.set_image(url="attachment://the_plains.png")
 
-        if attack_results['remaining_cooldown'] > 0:
-            cooldown_text = "You are on cooldown. Please wait {:.2f} seconds.".format(attack_results['remaining_cooldown'])
+        if attack_results['on_cooldown']:
+            cooldown_text = f"You are on cooldown. You can attack again {discord.utils.format_dt(attack_results['cooldown_expiration'], style='R')}"
             embed.add_field(name="🕒You're on cooldown!🕒", value=cooldown_text, inline=False)
             await interaction.response.edit_message(embed=embed, view=self)
             return
@@ -107,8 +108,8 @@ class CordiaView(View):
 
         
         # Set the cooldown for the attack button
-        cooldown_seconds = attack_results['attack_cooldown']
-        embed.set_footer(text=f"{cooldown_seconds} seconds until you can attack again")
+        cd_embed_index = 3
+        embed.insert_field_at(cd_embed_index, name='', value=f"You can attack again {discord.utils.format_dt(attack_results['cooldown_expiration'], style='R')}", inline=False)
         attack_button.disabled = True  # Disable the button
 
         # Update the message with initial embed and disabled button
@@ -123,12 +124,14 @@ class CordiaView(View):
 
 
         # Wait for the cooldown period to expire
+        cooldown_seconds = (attack_results['cooldown_expiration'] - datetime.datetime.now()).total_seconds()
         await asyncio.sleep(cooldown_seconds)
 
         # Re-enable the attack button and reset the label
         attack_button.disabled = False
         attack_button.label = "Attack!"
+        embed.remove_field(cd_embed_index)
 
         
-        await interaction.message.edit(view=self)
+        await interaction.message.edit(embed=embed, view=self)
 
