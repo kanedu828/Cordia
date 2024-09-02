@@ -3,10 +3,13 @@ from typing import List
 import asyncpg
 import logging
 
+from cordia.dao.player_dao import PlayerDao
+from cordia.service.cordia_service import CordiaService
+
 class CordiaClient(commands.Bot):
 
     # Extensions
-    extensions: List[str] = ['cordia.cogs.util']
+    extensions: List[str] = ['cordia.cogs.util', 'cordia.cogs.cordia']
 
     def __init__(self, db_connection_string: str, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -38,11 +41,17 @@ class CordiaClient(commands.Bot):
             except Exception as e:
                 self.logger.error(f'{extension} cannot be loaded. [{str(e)}]')
 
-            try:
-                self.pool = await asyncpg.create_pool(self.db_connection_string)
-                self.logger.info("Database pool created successfully")
-            except Exception as e:
-                self.logger.error(f"Failed to create database pool. [{str(e)}]")
+        try:
+            self.pool = await asyncpg.create_pool(self.db_connection_string)
+            self.logger.info("Database pool created successfully")
+        except Exception as e:
+            self.logger.error(f"Failed to create database pool. [{str(e)}]")
+        
+        # DAOS
+        self.player_dao = PlayerDao(self.pool)
+
+        # SERVICE
+        self.cordia_service = CordiaService(self.player_dao)
 
     async def on_ready(self):
         self.logger.info(f'Logged in as {self.user.name} (ID: {self.user.id})')

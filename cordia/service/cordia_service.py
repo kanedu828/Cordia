@@ -1,11 +1,21 @@
-from cordia.dao.player_dao import PlayerDAO
+from cordia.dao.player_dao import PlayerDao
+from cordia.data.locations import locations
 
-class BattleService:
-    def __init__(self, player_dao: PlayerDAO):
+class InvalidLocation(Exception):
+    pass
+
+class CordiaService:
+    def __init__(self, player_dao: PlayerDao):
         self.player_dao = player_dao
 
     async def get_by_discord_id(self, discord_id: int):
         return await self.player_dao.get_by_discord_id(discord_id)
+    
+    async def insert_player(self, discord_id: int):
+        await self.player_dao.insert_player(discord_id)
+
+    async def get_or_insert_player(self, discord_id: int):
+        return await self.player_dao.get_or_insert_player(discord_id)
 
     async def increment_strength(self, discord_id: int, increment_by: int):
         player = await self.player_dao.get_by_discord_id(discord_id)
@@ -31,3 +41,8 @@ class BattleService:
         player = await self.player_dao.get_by_discord_id(discord_id)
         new_gold = max(player['gold'] + increment_by, 0)  # Ensure gold doesn't go below 0
         await self.player_dao.update_gold(discord_id, new_gold)
+    
+    async def update_location(self, discord_id: int, location: str):
+        if not location in locations:
+            raise InvalidLocation(f'{location} is not a valid locatin')
+        await self.player_dao.update_location(discord_id, location)

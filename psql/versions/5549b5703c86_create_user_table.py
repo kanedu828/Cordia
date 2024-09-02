@@ -21,12 +21,13 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     op.create_table(
         "player",
-        sa.Column("discord_id", sa.Integer, primary_key=True),
-        sa.Column("strength", sa.Integer, nullable=False, default=1),
-        sa.Column("persistence", sa.Integer, nullable=False, default=1),
-        sa.Column("intelligence", sa.Integer, nullable=False, default=1),
-        sa.Column("exp", sa.Integer, nullable=False, default=0),
-        sa.Column("gold", sa.Integer, nullable=False, default=0),
+        sa.Column("discord_id", sa.BigInteger, primary_key=True),
+        sa.Column("strength", sa.Integer, nullable=False, server_default="1"),
+        sa.Column("persistence", sa.Integer, nullable=False, server_default="1"),
+        sa.Column("intelligence", sa.Integer, nullable=False, server_default="1"),
+        sa.Column("exp", sa.Integer, nullable=False, server_default="0"),
+        sa.Column("gold", sa.Integer, nullable=False, server_default="0"),
+        sa.Column("location", sa.String(256), server_default="The Plains")
     )
 
 

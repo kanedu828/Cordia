@@ -1,17 +1,33 @@
 import asyncpg
 
-class PlayerDAO:
+class PlayerDao:
     def __init__(self, pool: asyncpg.Pool):
         self.pool = pool
 
     async def get_by_discord_id(self, discord_id: int):
         query = """
-        SELECT discord_id, strength, persistence, intelligence, exp, gold
+        SELECT discord_id, strength, persistence, intelligence, exp, gold, location
         FROM player
         WHERE discord_id = $1
         """
         async with self.pool.acquire() as connection:
             return await connection.fetchrow(query, discord_id)
+
+    async def insert_player(self, discord_id: int):
+        query = """
+        INSERT INTO player (discord_id)
+        VALUES ($1)
+        RETURNING discord_id, strength, persistence, intelligence, exp, gold, location
+        """
+        async with self.pool.acquire() as connection:
+            return await connection.fetchrow(query, discord_id)
+
+    async def get_or_insert_player(self, discord_id: int):
+        player = await self.get_by_discord_id(discord_id)
+        if player:
+            return player
+        else:
+            return await self.insert_player(discord_id)
 
     async def update_strength(self, discord_id: int, strength: int):
         query = """
@@ -57,3 +73,12 @@ class PlayerDAO:
         """
         async with self.pool.acquire() as connection:
             await connection.execute(query, gold, discord_id)
+
+    async def update_location(self, discord_id: int, location: str):
+        query = """
+        UPDATE player
+        SET location = $1
+        WHERE discord_id = $2
+        """
+        async with self.pool.acquire() as connection:
+            await connection.execute(query, location, discord_id)

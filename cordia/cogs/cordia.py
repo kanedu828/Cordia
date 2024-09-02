@@ -3,14 +3,17 @@ from discord import app_commands
 from discord.ext import commands
 from typing import Literal, Optional
 
+from cordia.view.cordia_view import CordiaView
+
 class Cordia(commands.Cog):
   def __init__(self, bot: commands.Bot) -> None:
     self.bot = bot
 
   @app_commands.command(name="battle")
   async def battle(self, interaction: discord.Interaction) -> None:
-    message: str = 'Pong! {0}'.format(round(self.latency * 1000, 1))
-    await interaction.response.send_message(message, ephemeral=True)
+    view = CordiaView(self.bot.cordia_service, interaction.user.id)
+    embed, file = await view.get_embed()
+    await interaction.response.send_message(embed=embed, view=view, file=file)
 
 
 async def setup(bot: commands.Bot) -> None:
