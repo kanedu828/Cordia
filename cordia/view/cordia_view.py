@@ -80,9 +80,8 @@ class CordiaView(View):
         )
 
 
-        stats_text = f"{self.exp_bar(current_exp)}\n"
-        if attack_results['leveled_up']:
-            stats_text += "✨You leveled up!✨\n"
+        stats_text = f"{self.exp_bar(current_exp)}\n\n"
+
         stats_text += "\n".join(f"{key.capitalize()}: {value}" for key, value in attack_results['player_stats'].items())
 
         embed.add_field(name="💪Player Stats💪", value=stats_text, inline=False)
@@ -107,7 +106,6 @@ class CordiaView(View):
         embed.add_field(name="💰Rewards💰", value=rewards_text, inline=False)
 
         
-        
         # Set the cooldown for the attack button
         cooldown_seconds = attack_results['attack_cooldown']
         embed.set_footer(text=f"{cooldown_seconds} seconds until you can attack again")
@@ -115,6 +113,14 @@ class CordiaView(View):
 
         # Update the message with initial embed and disabled button
         await interaction.response.edit_message(embed=embed, view=self)
+
+        if attack_results['leveled_up']:
+            level_up_embed = discord.Embed(
+                title=f"✨You leveled up to level {current_level}!✨",
+                color=discord.Color.blue()
+            )  
+            await interaction.followup.send(embed=level_up_embed, ephemeral=True)
+
 
         # Wait for the cooldown period to expire
         await asyncio.sleep(cooldown_seconds)
