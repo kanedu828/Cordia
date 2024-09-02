@@ -5,6 +5,8 @@ import logging
 
 from cordia.dao.player_dao import PlayerDao
 from cordia.service.cordia_service import CordiaService
+from cordia.dao.gear_dao import GearDao
+from cordia.dao.player_gear_dao import PlayerGearDao
 
 class CordiaClient(commands.Bot):
 
@@ -49,9 +51,11 @@ class CordiaClient(commands.Bot):
         
         # DAOS
         self.player_dao = PlayerDao(self.pool)
+        self.gear_dao = GearDao(self.pool)
+        self.player_gear_dao = PlayerGearDao(self.pool)
 
         # SERVICE
-        self.cordia_service = CordiaService(self.player_dao)
+        self.cordia_service = CordiaService(self.player_dao, self.gear_dao, self.player_gear_dao)
 
     async def on_ready(self):
         self.logger.info(f'Logged in as {self.user.name} (ID: {self.user.id})')

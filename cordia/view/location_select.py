@@ -1,11 +1,11 @@
 from discord.ui import Select
 import discord
-from cordia.data.locations import locations
+from cordia.data.locations import location_data
 
 class LocationSelect(Select):
-    def __init__(self):
+    def __init__(self, level):
 
-        options = [discord.SelectOption(label=location, description=f'Unlocked at level {locations[location]["level_unlock"]}', value=location) for location in list(locations.keys())]
+        options = [discord.SelectOption(label=location_data[location].name, description=f'Unlocks at level {location_data[location].level_unlock}', value=location) for location in list(location_data.keys()) if level >= location_data[location].level_unlock]
 
         super().__init__(
             placeholder='Select a location',

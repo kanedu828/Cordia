@@ -6,7 +6,7 @@ class PlayerDao:
 
     async def get_by_discord_id(self, discord_id: int):
         query = """
-        SELECT discord_id, strength, persistence, intelligence, exp, gold, location
+        SELECT discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location
         FROM player
         WHERE discord_id = $1
         """
@@ -17,44 +17,23 @@ class PlayerDao:
         query = """
         INSERT INTO player (discord_id)
         VALUES ($1)
-        RETURNING discord_id, strength, persistence, intelligence, exp, gold, location
+        RETURNING discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location
         """
         async with self.pool.acquire() as connection:
             return await connection.fetchrow(query, discord_id)
 
-    async def get_or_insert_player(self, discord_id: int):
-        player = await self.get_by_discord_id(discord_id)
-        if player:
-            return player
-        else:
-            return await self.insert_player(discord_id)
+    async def update_stat(self, discord_id: int, stat_name: str, stat_value: int):
+        valid_stats = {'strength', 'persistence', 'intelligence', 'efficiency', 'luck'}
+        if stat_name not in valid_stats:
+            raise ValueError(f"Invalid stat name: {stat_name}. Must be one of {valid_stats}")
 
-    async def update_strength(self, discord_id: int, strength: int):
-        query = """
+        query = f"""
         UPDATE player
-        SET strength = $1
+        SET {stat_name} = $1
         WHERE discord_id = $2
         """
         async with self.pool.acquire() as connection:
-            await connection.execute(query, strength, discord_id)
-
-    async def update_persistence(self, discord_id: int, persistence: int):
-        query = """
-        UPDATE player
-        SET persistence = $1
-        WHERE discord_id = $2
-        """
-        async with self.pool.acquire() as connection:
-            await connection.execute(query, persistence, discord_id)
-
-    async def update_intelligence(self, discord_id: int, intelligence: int):
-        query = """
-        UPDATE player
-        SET intelligence = $1
-        WHERE discord_id = $2
-        """
-        async with self.pool.acquire() as connection:
-            await connection.execute(query, intelligence, discord_id)
+            await connection.execute(query, stat_value, discord_id)
 
     async def update_exp(self, discord_id: int, exp: int):
         query = """
