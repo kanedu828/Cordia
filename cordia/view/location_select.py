@@ -5,8 +5,9 @@ from cordia.data.locations import location_data
 class LocationSelect(Select):
     def __init__(self, level):
 
-        options = [discord.SelectOption(label=location_data[location].name, description=f'Unlocks at level {location_data[location].level_unlock}', value=location) for location in list(location_data.keys()) if level >= location_data[location].level_unlock]
-
+        # Reversed locations and filtered based on level
+        locations = [location for location in list(location_data.keys()) if level >= location_data[location].level_unlock][::-1]
+        options = [discord.SelectOption(label=location_data[location].name, description=f'Unlocks at level {location_data[location].level_unlock}', value=location) for location in locations]
         super().__init__(
             placeholder='Select a location',
             min_values=1,
