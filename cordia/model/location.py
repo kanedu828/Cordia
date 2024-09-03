@@ -17,7 +17,8 @@ class Location:
         formatted_string = re.sub(r'[\s\W]+', '_', formatted_string)
         # Add the .png extension
         formatted_string += '.png'
-        return formatted_string
+        image_path = f'assets/locations/{formatted_string}'
+        return image_path
 
     def get_random_monster(self) -> str:
         total = sum(weight for _, weight in self.monsters)

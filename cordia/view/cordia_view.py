@@ -55,7 +55,7 @@ class CordiaView(View):
 
     async def get_embed(self):
         # Place holder image. Replace per location later
-        file = discord.File("assets/locations/the_plains.png", filename="the_plains.png")
+        file = discord.File("assets/locations/the_plains_i.png", filename="the_plains_i.png")
         player = await self.cordia_service.get_or_insert_player(self.discord_id)
         embed = discord.Embed(
             title=f"Fighting Monsters in {player.location}!",
