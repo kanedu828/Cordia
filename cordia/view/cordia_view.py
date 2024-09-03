@@ -80,12 +80,8 @@ class CordiaView(View):
             title=f"Fighting Monsters in {attack_results['location']}",
         )
 
-
-        stats_text = f"{self.exp_bar(current_exp)}\n\n"
-
-        stats_text += "\n".join(f"{key.capitalize()}: {value}" for key, value in attack_results['player_stats'].items())
-
-        embed.add_field(name="💪Player Stats💪", value=stats_text, inline=False)
+        exp_bar_text = f"{self.exp_bar(current_exp)}\n\n"
+        embed.add_field(name="", value=exp_bar_text, inline=False)
 
         embed.set_image(url="attachment://the_plains.png")
 

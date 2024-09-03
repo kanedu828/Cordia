@@ -4,10 +4,10 @@ from cordia.dao.player_dao import PlayerDao
 from cordia.data.locations import location_data
 from cordia.dao.player_gear_dao import PlayerGearDao
 from cordia.dao.gear_dao import GearDao
-from cordia.data.gear import GearType, gear_data
+from cordia.data.gear import Gear, GearType, gear_data
 import random
 
-from cordia.data.monsters import monster_data
+from cordia.data.monsters import Monster, MonsterType, monster_data
 
 
 
@@ -70,11 +70,10 @@ class CordiaService:
     async def remove_gear(self, discord_id: int, slot: str):
         await self.player_gear_dao.remove_gear(discord_id, slot)
 
-    async def get_weapon(self, discord_id):
-        player_gear = await self.get_player_gear(discord_id)
+    async def get_weapon(self, player_gear):
         return next((x for x in player_gear if x["slot"] == GearType.WEAPON.value), None)
 
-    # Battling
+    # Util
     def exp_to_level(self, exp):
         """Convert experience points to level."""
         base_exp = 5  # Base experience required for level 1
@@ -87,23 +86,27 @@ class CordiaService:
         exp = 5 * (level ** 2) - base_exp
         return exp
     
-    async def get_player_stats(self, discord_id):
-        player = await self.get_or_insert_player(discord_id)
-        gear_instance = await self.get_player_gear(discord_id)
+    async def get_player_stats(self, player, player_gear):
         stats = {
             "strength": player["strength"],
             "persistence": player["persistence"],
             "intelligence": player["intelligence"],
             "efficiency": player["efficiency"],
-            "luck": player["luck"]
+            "luck": player["luck"],
+            "boss_damage": 0,
+            "crit_chance": 0,
+            "penetration": 0,
         }
-        for g in gear_instance:
-            g_data = gear_data[g["name"]]
-            stats["strength"] += g_data.strength
-            stats["persistence"] += g_data.persistence
-            stats["intelligence"] += g_data.intelligence
-            stats["efficiency"] += g_data.efficiency
-            stats["luck"] += g_data.luck
+        for pg in player_gear:
+            gd: Gear = gear_data(pg["name"])
+            stats["strength"] += gd.strength
+            stats["persistence"] += gd.persistence
+            stats["intelligence"] += gd.intelligence
+            stats["efficiency"] += gd.efficiency
+            stats["luck"] += gd.luck
+            stats["crit_chance"] += gd.crit_chance
+            stats["boss_damage"] += gd.boss_damage
+            stats["penetration"] += gd.penetration
 
         return stats
 
@@ -144,14 +147,34 @@ class CordiaService:
         return round(multiplier, 2)
 
 
+    # Battle
+    async def calculate_attack_damage(self, monster: Monster, player, player_gear) -> int:
+        player_stats = await self.get_player_stats(player, player_gear)
 
+        # Multiplier depending on player's level compared to monster's
+        level_damage_multiplier = self.level_difference_multiplier(self.exp_to_level(player['exp']), monster.level)
+        damage = self.random_within_range(player_stats["strength"]) * level_damage_multiplier
+
+        # Calculate crit
+        crit_multiplier = 1.5
+        if random.random() < player_stats["crit_chance"] / 100:
+            damage *= crit_multiplier
+
+        # Boss damage multiplier
+        if monster.type == MonsterType.BOSS:
+            damage += damage * (player_stats["boss_damage"] / 100)
+
+        # Penetration multiplier. Cant be over 100%
+        damage *= min(player_stats["penetration"] / 100, 1)
+
+        return int(damage)
 
     async def attack(self, discord_id: int):
         player = await self.get_or_insert_player(discord_id)
+        player_gear = await self.get_player_gear(discord_id)
         location = location_data[player["location"]]
         monster_name = location.get_random_monster()
         monster = monster_data[monster_name]
-        player_stats = await self.get_player_stats(discord_id)
 
         current_time = datetime.datetime.now()
 
@@ -169,23 +192,21 @@ class CordiaService:
                     'on_cooldown': True,
                     'cooldown_expiration': cooldown_end,
                     'location': location.name,
-                    'player_stats': player_stats,
                     'player_exp': player['exp'],
                     'leveled_up': False
                 }
         
-        # Multiplier depending on player's level compared to monster's
-        level_damage_multiplier = self.level_difference_multiplier(self.exp_to_level(player['exp']), monster.level)
-        damage = self.random_within_range(player_stats["strength"]) * level_damage_multiplier
 
+        damage = await self.calculate_attack_damage(monster, player, player_gear)
         kill_rate = damage / monster.hp
 
+        # If kill rate < 1, then that is the chance of successfully killing an enemy.
+        # If kill rate >= 1, then that is the number of monsters slain
         if kill_rate < 1:
             kills = 1 if random.random() < kill_rate else 0
         kills = int(kill_rate)
 
-        weapon = await self.get_weapon(discord_id)
-
+        weapon = await self.get_weapon(player_gear)
         weapon_data = gear_data[weapon["name"]]
 
         exp_gained = self.random_within_range(int(monster.exp * kills))
@@ -199,7 +220,6 @@ class CordiaService:
             'loot': [],
             'monster': monster.display_monster(),
             'location': location.name,
-            'player_stats': player_stats,
             'player_exp': player['exp'] + exp_gained,
             'on_cooldown': False,
             'cooldown_expiration': cooldown_expiration,
