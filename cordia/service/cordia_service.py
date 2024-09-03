@@ -1,15 +1,17 @@
 import math
 import datetime
+from typing import List
 from cordia.dao.player_dao import PlayerDao
 from cordia.data.locations import location_data
 from cordia.dao.player_gear_dao import PlayerGearDao
 from cordia.dao.gear_dao import GearDao
-from cordia.data.gear import Gear, GearType, gear_data
+from cordia.data.gear import gear_data
 import random
 
-from cordia.data.monsters import Monster, MonsterType, monster_data
-
-
+from cordia.data.monsters import monster_data
+from cordia.model.player import Player
+from cordia.model.gear import Gear, GearType, PlayerGear
+from cordia.model.monster import Monster, MonsterType
 
 class CordiaService:
     def __init__(self, player_dao: PlayerDao, gear_dao: GearDao, player_gear_dao: PlayerGearDao):
@@ -20,14 +22,14 @@ class CordiaService:
         self.player_cooldowns = {}
 
     # Player
-    async def get_by_discord_id(self, discord_id: int):
+    async def get_player_by_discord_id(self, discord_id: int) -> Player:
         return await self.player_dao.get_by_discord_id(discord_id)
     
-    async def insert_player(self, discord_id: int):
+    async def insert_player(self, discord_id: int) -> Player:
         return await self.player_dao.insert_player(discord_id)
 
-    async def get_or_insert_player(self, discord_id: int):
-        player = await self.get_by_discord_id(discord_id)
+    async def get_or_insert_player(self, discord_id: int) -> Player:
+        player = await self.get_player_by_discord_id(discord_id)
         if player:
             return player
         else:
@@ -38,17 +40,17 @@ class CordiaService:
 
     async def increment_stat(self, discord_id: int, stat_name: str, increment_by: int):
         player = await self.player_dao.get_by_discord_id(discord_id)
-        new_stat_value = player[stat_name] + increment_by
+        new_stat_value = player.__dict__[stat_name] + increment_by
         await self.player_dao.update_stat(discord_id, stat_name, new_stat_value)
 
     async def increment_exp(self, discord_id: int, increment_by: int):
         player = await self.player_dao.get_by_discord_id(discord_id)
-        new_exp = player['exp'] + increment_by
+        new_exp = player.exp + increment_by
         await self.player_dao.update_exp(discord_id, new_exp)
 
     async def increment_gold(self, discord_id: int, increment_by: int):
         player = await self.player_dao.get_by_discord_id(discord_id)
-        new_gold = max(player['gold'] + increment_by, 0)  # Ensure gold doesn't go below 0
+        new_gold = max(player.gold + increment_by, 0)  # Ensure gold doesn't go below 0
         await self.player_dao.update_gold(discord_id, new_gold)
     
     async def update_location(self, discord_id: int, location: str):
@@ -70,8 +72,8 @@ class CordiaService:
     async def remove_gear(self, discord_id: int, slot: str):
         await self.player_gear_dao.remove_gear(discord_id, slot)
 
-    async def get_weapon(self, player_gear):
-        return next((x for x in player_gear if x["slot"] == GearType.WEAPON.value), None)
+    async def get_weapon(self, player_gear: List[PlayerGear]):
+        return next((x for x in player_gear if x.slot == GearType.WEAPON.value), None)
 
     # Util
     def exp_to_level(self, exp):
@@ -86,19 +88,19 @@ class CordiaService:
         exp = 5 * (level ** 2) - base_exp
         return exp
     
-    async def get_player_stats(self, player, player_gear):
+    async def get_player_stats(self, player: Player, player_gear: List[PlayerGear]):
         stats = {
-            "strength": player["strength"],
-            "persistence": player["persistence"],
-            "intelligence": player["intelligence"],
-            "efficiency": player["efficiency"],
-            "luck": player["luck"],
+            "strength": player.strength,
+            "persistence": player.persistence,
+            "intelligence": player.intelligence,
+            "efficiency": player.efficiency,
+            "luck": player.luck,
             "boss_damage": 0,
             "crit_chance": 0,
             "penetration": 0,
         }
         for pg in player_gear:
-            gd: Gear = gear_data(pg["name"])
+            gd: Gear = gear_data[pg.name]
             stats["strength"] += gd.strength
             stats["persistence"] += gd.persistence
             stats["intelligence"] += gd.intelligence
@@ -148,11 +150,11 @@ class CordiaService:
 
 
     # Battle
-    async def calculate_attack_damage(self, monster: Monster, player, player_gear) -> int:
+    async def calculate_attack_damage(self, monster: Monster, player: Player, player_gear: List[PlayerGear]) -> int:
         player_stats = await self.get_player_stats(player, player_gear)
 
         # Multiplier depending on player's level compared to monster's
-        level_damage_multiplier = self.level_difference_multiplier(self.exp_to_level(player['exp']), monster.level)
+        level_damage_multiplier = self.level_difference_multiplier(self.exp_to_level(player.exp), monster.level)
         damage = self.random_within_range(player_stats["strength"]) * level_damage_multiplier
 
         # Calculate crit
@@ -172,7 +174,7 @@ class CordiaService:
     async def attack(self, discord_id: int):
         player = await self.get_or_insert_player(discord_id)
         player_gear = await self.get_player_gear(discord_id)
-        location = location_data[player["location"]]
+        location = location_data[player.location]
         monster_name = location.get_random_monster()
         monster = monster_data[monster_name]
 
@@ -192,7 +194,7 @@ class CordiaService:
                     'on_cooldown': True,
                     'cooldown_expiration': cooldown_end,
                     'location': location.name,
-                    'player_exp': player['exp'],
+                    'player_exp': player.exp,
                     'leveled_up': False
                 }
         
@@ -207,7 +209,7 @@ class CordiaService:
         kills = int(kill_rate)
 
         weapon = await self.get_weapon(player_gear)
-        weapon_data = gear_data[weapon["name"]]
+        weapon_data = gear_data[weapon.name]
 
         exp_gained = self.random_within_range(int(monster.exp * kills))
 
@@ -220,10 +222,10 @@ class CordiaService:
             'loot': [],
             'monster': monster.display_monster(),
             'location': location.name,
-            'player_exp': player['exp'] + exp_gained,
+            'player_exp': player.exp + exp_gained,
             'on_cooldown': False,
             'cooldown_expiration': cooldown_expiration,
-            'leveled_up': self.exp_to_level(player['exp'] + exp_gained) > self.exp_to_level(player['exp'])
+            'leveled_up': self.exp_to_level(player.exp + exp_gained) > self.exp_to_level(player.exp)
         }
 
         await self.increment_exp(discord_id, attack_results["exp"])

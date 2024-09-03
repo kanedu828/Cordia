@@ -1,10 +1,12 @@
 import asyncpg
 
+from cordia.model.gear import GearInstance
+
 class GearDao:
     def __init__(self, pool: asyncpg.Pool):
         self.pool = pool
 
-    async def get_gear_by_id(self, id: int):
+    async def get_gear_by_id(self, id: int) -> GearInstance:
         query = """
         SELECT id, discord_id, name, stars, strength_bonus, persistence_bonus, intelligence_bonus, 
                efficiency_bonus, luck_bonus, created_at, updated_at
@@ -12,9 +14,10 @@ class GearDao:
         WHERE id = $1
         """
         async with self.pool.acquire() as connection:
-            return await connection.fetchrow(query, id)
+            row = await connection.fetchrow(query, id)
+            return GearInstance(**row)
 
-    async def insert_gear(self, discord_id: int, name: str):
+    async def insert_gear(self, discord_id: int, name: str) -> GearInstance:
         query = """
         INSERT INTO gear (discord_id, name)
         VALUES ($1, $2)
@@ -22,7 +25,8 @@ class GearDao:
                   intelligence_bonus, efficiency_bonus, luck_bonus, created_at, updated_at
         """
         async with self.pool.acquire() as connection:
-            return await connection.fetchrow(query, discord_id, name)
+            row = await connection.fetchrow(query, discord_id, name)
+            return Gear(**row)
 
     async def update_gear_stars(self, id: int, stars: int):
         query = """

@@ -1,26 +1,29 @@
 import asyncpg
+from cordia.model.player import Player
 
 class PlayerDao:
     def __init__(self, pool: asyncpg.Pool):
         self.pool = pool
 
-    async def get_by_discord_id(self, discord_id: int):
+    async def get_by_discord_id(self, discord_id: int) -> Player:
         query = """
         SELECT discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location
         FROM player
         WHERE discord_id = $1
         """
         async with self.pool.acquire() as connection:
-            return await connection.fetchrow(query, discord_id)
+            record = await connection.fetchrow(query, discord_id)
+            return Player(**record)
 
-    async def insert_player(self, discord_id: int):
+    async def insert_player(self, discord_id: int) -> Player:
         query = """
         INSERT INTO player (discord_id)
         VALUES ($1)
         RETURNING discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location
         """
         async with self.pool.acquire() as connection:
-            return await connection.fetchrow(query, discord_id)
+            record = await connection.fetchrow(query, discord_id)
+            return Player(**record)
 
     async def update_stat(self, discord_id: int, stat_name: str, stat_value: int):
         valid_stats = {'strength', 'persistence', 'intelligence', 'efficiency', 'luck'}

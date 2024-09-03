@@ -58,7 +58,7 @@ class CordiaView(View):
         file = discord.File("assets/locations/the_plains.png", filename="the_plains.png")
         player = await self.cordia_service.get_or_insert_player(self.discord_id)
         embed = discord.Embed(
-            title=f"Fighting Monsters in {player['location']}!",
+            title=f"Fighting Monsters in {player.location}!",
         )
         embed.add_field(name="⚔️Battle⚔️", value="You defeat one goblin")
         embed.set_image(url="attachment://the_plains.png")
