@@ -45,7 +45,7 @@ class CordiaView(View):
         # Create the bar string
         bar = filled_char * filled_length + empty_char * (bar_length - filled_length)
         
-        return f"**LV {current_level}** ({exp} exp)\n{bar}"
+        return f"**lv. {current_level}** ({exp} exp)\n{bar}"
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         # Check which button or select triggered the interaction

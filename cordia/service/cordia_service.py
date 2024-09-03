@@ -167,7 +167,11 @@ class CordiaService:
             damage += damage * (player_stats["boss_damage"] / 100)
 
         # Penetration multiplier. Cant be over 100%
-        damage *= min(player_stats["penetration"] / 100, 1)
+        monster_defense_percentage = (monster.defense / 100)
+        monster_defense_percentage -= monster_defense_percentage * (min(player_stats["penetration"], 100) / 100)
+        damage -= damage * monster_defense_percentage
+
+        print(f'DAMAGE HERE--------------------{damage}')
 
         return int(damage)
 
