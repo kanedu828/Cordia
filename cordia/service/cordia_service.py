@@ -1,4 +1,3 @@
-import math
 import datetime
 from typing import List
 from cordia.dao.player_dao import PlayerDao
@@ -12,6 +11,8 @@ from cordia.data.monsters import monster_data
 from cordia.model.player import Player
 from cordia.model.gear import Gear, GearType, PlayerGear
 from cordia.model.monster import Monster, MonsterType
+from cordia.util.exp_util import exp_to_level
+from cordia.util.stats_util import get_player_stats, get_upgrade_points, level_difference_multiplier, random_within_range
 
 class CordiaService:
     def __init__(self, player_dao: PlayerDao, gear_dao: GearDao, player_gear_dao: PlayerGearDao):
@@ -40,6 +41,9 @@ class CordiaService:
 
     async def increment_stat(self, discord_id: int, stat_name: str, increment_by: int):
         player = await self.player_dao.get_by_discord_id(discord_id)
+        upgrade_points = get_upgrade_points(player)
+        if increment_by > upgrade_points or increment_by < 0:
+            raise ValueError('Invalid increment amount')
         new_stat_value = player.__dict__[stat_name] + increment_by
         await self.player_dao.update_stat(discord_id, stat_name, new_stat_value)
 
@@ -75,87 +79,13 @@ class CordiaService:
     async def get_weapon(self, player_gear: List[PlayerGear]):
         return next((x for x in player_gear if x.slot == GearType.WEAPON.value), None)
 
-    # Util
-    def exp_to_level(self, exp):
-        """Convert experience points to level."""
-        base_exp = 5  # Base experience required for level 1
-        level = math.floor(math.sqrt((exp + base_exp) / 5))
-        return max(1, level)  # Ensure that the minimum level is 1
-
-    def level_to_exp(self, level):
-        """Convert level to the total experience required to reach that level."""
-        base_exp = 5  # Base experience for level 1
-        exp = 5 * (level ** 2) - base_exp
-        return exp
-    
-    async def get_player_stats(self, player: Player, player_gear: List[PlayerGear]):
-        stats = {
-            "strength": player.strength,
-            "persistence": player.persistence,
-            "intelligence": player.intelligence,
-            "efficiency": player.efficiency,
-            "luck": player.luck,
-            "boss_damage": 0,
-            "crit_chance": 0,
-            "penetration": 0,
-        }
-        for pg in player_gear:
-            gd: Gear = gear_data[pg.name]
-            stats["strength"] += gd.strength
-            stats["persistence"] += gd.persistence
-            stats["intelligence"] += gd.intelligence
-            stats["efficiency"] += gd.efficiency
-            stats["luck"] += gd.luck
-            stats["crit_chance"] += gd.crit_chance
-            stats["boss_damage"] += gd.boss_damage
-            stats["penetration"] += gd.penetration
-
-        return stats
-
-    def percent_to_next_level(self, exp):
-        """Calculate the percentage of experience left to the next level."""
-        current_level = self.exp_to_level(exp)
-        current_level_exp = self.level_to_exp(current_level)
-        next_level_exp = self.level_to_exp(current_level + 1)
-        
-        exp_in_current_level = exp - current_level_exp
-        exp_needed_for_next_level = next_level_exp - current_level_exp
-        
-        percent_complete = (exp_in_current_level / exp_needed_for_next_level) * 100
-        
-        return percent_complete
-    
-    def random_within_range(self, base_value):
-        # Calculate the 25% range
-        range_value = base_value * 0.25
-        
-        # Determine the minimum and maximum values within 25% of the base value
-        min_value = int(base_value - range_value)
-        max_value = int(base_value + range_value)
-        
-        # Return a random integer within the range
-        return random.randint(min_value, max_value)
-    
-    def level_difference_multiplier(self, player_level: int, monster_level: int) -> float:
-        # Calculate the difference between player and monster levels
-        level_difference = player_level - monster_level
-        
-        # Cap the level difference to a maximum of 5
-        capped_difference = max(min(level_difference, 5), -5)
-        
-        # Calculate the multiplier
-        multiplier = 1 + (capped_difference * 0.05)
-        
-        return round(multiplier, 2)
-
-
     # Battle
     async def calculate_attack_damage(self, monster: Monster, player: Player, player_gear: List[PlayerGear]) -> int:
-        player_stats = await self.get_player_stats(player, player_gear)
+        player_stats = get_player_stats(player, player_gear)
 
         # Multiplier depending on player's level compared to monster's
-        level_damage_multiplier = self.level_difference_multiplier(self.exp_to_level(player.exp), monster.level)
-        damage = self.random_within_range(player_stats["strength"]) * level_damage_multiplier
+        level_damage_multiplier = level_difference_multiplier(exp_to_level(player.exp), monster.level)
+        damage = random_within_range(player_stats["strength"]) * level_damage_multiplier
 
         # Calculate crit
         crit_multiplier = 1.5
@@ -171,7 +101,7 @@ class CordiaService:
         monster_defense_percentage -= monster_defense_percentage * (min(player_stats["penetration"], 100) / 100)
         damage -= damage * monster_defense_percentage
 
-        print(f'DAMAGE HERE--------------------{damage}')
+        damage = random_within_range(damage)
 
         return int(damage)
 
@@ -197,7 +127,7 @@ class CordiaService:
                     'monster': '',
                     'on_cooldown': True,
                     'cooldown_expiration': cooldown_end,
-                    'location': location.name,
+                    'location': location,
                     'player_exp': player.exp,
                     'leveled_up': False
                 }
@@ -215,21 +145,21 @@ class CordiaService:
         weapon = await self.get_weapon(player_gear)
         weapon_data = gear_data[weapon.name]
 
-        exp_gained = self.random_within_range(int(monster.exp * kills))
+        exp_gained = random_within_range(int(monster.exp * kills))
 
         cooldown_expiration = current_time + datetime.timedelta(seconds=weapon_data.attack_cooldown)
 
         attack_results = {
             'kills': kills,
             'exp': exp_gained,
-            'gold': self.random_within_range(int(monster.gold * kills)),
+            'gold': random_within_range(int(monster.gold * kills)),
             'loot': [],
             'monster': monster.display_monster(),
-            'location': location.name,
+            'location': location,
             'player_exp': player.exp + exp_gained,
             'on_cooldown': False,
             'cooldown_expiration': cooldown_expiration,
-            'leveled_up': self.exp_to_level(player.exp + exp_gained) > self.exp_to_level(player.exp)
+            'leveled_up': exp_to_level(player.exp + exp_gained) > exp_to_level(player.exp)
         }
 
         await self.increment_exp(discord_id, attack_results["exp"])

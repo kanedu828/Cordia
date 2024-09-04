@@ -11,4 +11,6 @@ class Spell:
     name: str
     description: str
     damage: int
+    spell_cooldown: int
     buff: str = ''
+    

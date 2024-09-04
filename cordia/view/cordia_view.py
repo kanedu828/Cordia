@@ -1,9 +1,15 @@
 import datetime
+from typing import List
+from cordia.util.stats_util import get_stats_embed, get_upgrade_points
+from cordia.view.upgrade_stats_modal import UpgradeStatsModal
 import discord
 from discord.ui import Button, View
 import asyncio
 from cordia.view.location_select import LocationSelect
 from cordia.service.cordia_service import CordiaService
+from cordia.model.location import Location
+from cordia.util.exp_util import exp_to_level
+from cordia.util.text_format_util import exp_bar, get_player_stats_string, get_stat_emoji_mapping
 
 class CordiaView(View):
     def __init__(self, cordia_service: CordiaService, discord_id: int):
@@ -15,75 +21,88 @@ class CordiaView(View):
         self.discord_id = discord_id
 
         # Home page buttons
-        attack_button = Button(label="Attack!", style=discord.ButtonStyle.green, custom_id="attack_button")
+        attack_button = Button(label="Attack!", style=discord.ButtonStyle.blurple, custom_id="attack_button")
         self.add_item(attack_button)
-            
-    def exp_bar(self, exp, bar_length=10, filled_char="🟩", empty_char="⬜"):
-        """
-        Generate an experience bar using emojis or characters.
 
-        :param exp: Current experience points of the user.
-        :param bar_length: The total length of the bar (in characters or emojis).
-        :param filled_char: Character or emoji to represent filled portions.
-        :param empty_char: Character or emoji to represent empty portions.
-        :return: A string representing the experience bar.
-        """
-        # Calculate the current level
-        current_level = self.cordia_service.exp_to_level(exp)
-        
-        # Get the total experience for the current and next levels
-        current_level_exp = self.cordia_service.level_to_exp(current_level)
-        next_level_exp = self.cordia_service.level_to_exp(current_level + 1)
-        
-        # Calculate progress towards the next level
-        exp_in_current_level = exp - current_level_exp
-        exp_needed_for_next_level = next_level_exp - current_level_exp
-        
-        # Calculate the number of filled segments in the bar
-        filled_length = int((exp_in_current_level / exp_needed_for_next_level) * bar_length)
-        
-        # Create the bar string
-        bar = filled_char * filled_length + empty_char * (bar_length - filled_length)
-        
-        return f"**lv. {current_level}** ({exp} exp)\n{bar}"
+        self.page_items = {
+            "home": [
+                Button(label="Fight", style=discord.ButtonStyle.blurple, custom_id="attack_button")
+            ],
+            "fight": [
+                Button(label="Attack", style=discord.ButtonStyle.blurple, custom_id="attack_button"),
+                Button(label="Stats",  style=discord.ButtonStyle.blurple, custom_id="stats_button"),
+            ],
+            "stats": [
+                Button(label="Attack", style=discord.ButtonStyle.blurple, custom_id="attack_button"),
+                Button(label="Stats",  style=discord.ButtonStyle.blurple, custom_id="stats_button"),
+            ]
+        }
+    
+    async def add_page_items(self, page: str, additional_items: List = []):
+        self.clear_items()
+        for i in additional_items:
+            self.add_item(i)
+        for i in self.page_items[page]:
+            self.add_item(i)
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         # Check which button or select triggered the interaction
         if interaction.data.get("custom_id") == "attack_button":
             await self.attack(interaction)
+        if interaction.data.get("custom_id") == "stats_button":
+            await self.stats(interaction)
         return True
 
     async def get_embed(self):
         # Place holder image. Replace per location later
-        file = discord.File("assets/locations/the_plains_i.png", filename="the_plains_i.png")
         player = await self.cordia_service.get_or_insert_player(self.discord_id)
         embed = discord.Embed(
-            title=f"Fighting Monsters in {player.location}!",
+            title=f"Home",
         )
-        embed.add_field(name="⚔️Battle⚔️", value="You defeat one goblin")
-        embed.set_image(url="attachment://the_plains.png")
-        return embed, file
+        return embed
+    
+    async def home(self):
+        pass
+
+    async def stats(self, interaction: discord.Interaction):
+        await self.add_page_items("stats")
+        player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
+        player_gear = await self.cordia_service.get_player_gear(self.discord_id)
+
+        stat_emoji_mapping = get_stat_emoji_mapping()
+        for s in stat_emoji_mapping.keys():
+            upgrade_stat_button = Button(label=f"⬆️{stat_emoji_mapping[s]}", style=discord.ButtonStyle.blurple)
+            self.add_item(upgrade_stat_button)
+
+            def create_callback(stat):
+                async def upgrade_stats_button_callback(interaction: discord.Interaction):
+                    modal = UpgradeStatsModal(self.cordia_service, self.discord_id, stat)
+                    await interaction.response.send_modal(modal)
+                return upgrade_stats_button_callback
+
+            upgrade_stat_button.callback = create_callback(s)
+
+        stats_embed = get_stats_embed(player, player_gear)
+        await interaction.response.edit_message(embed=stats_embed, view=self)
     
     async def attack(self, interaction: discord.Interaction):
         attack_results = await self.cordia_service.attack(self.discord_id)
 
         current_exp = attack_results['player_exp']
-        current_level = self.cordia_service.exp_to_level(current_exp)
+        current_level = exp_to_level(current_exp)
 
         # Buttons for attack
-        self.clear_items()
-        attack_button = Button(label="Attack!", style=discord.ButtonStyle.green, custom_id="attack_button")
-        self.add_item(LocationSelect(current_level))
-        self.add_item(attack_button)
+        await self.add_page_items("fight", [LocationSelect(current_level)])
         
+        location: Location = attack_results['location']
         embed = discord.Embed(
-            title=f"Fighting Monsters in {attack_results['location']}",
+            title=f"Fighting Monsters in {location.name}",
         )
 
-        exp_bar_text = f"{self.exp_bar(current_exp)}\n\n"
+        exp_bar_text = f"{exp_bar(current_exp)}\n\n"
         embed.add_field(name="", value=exp_bar_text, inline=False)
 
-        embed.set_image(url="attachment://the_plains.png")
+        embed.set_image(url=location.get_image_path())
 
         if attack_results['on_cooldown']:
             cooldown_text = f"You are on cooldown. You can attack again {discord.utils.format_dt(attack_results['cooldown_expiration'], style='R')}"
@@ -99,14 +118,13 @@ class CordiaView(View):
             battle_text = f"In a show of grandeur, you defeat **{attack_results['kills']} {attack_results['monster']}s**"
         embed.add_field(name="⚔️Battle⚔️", value=battle_text, inline=False)
 
-        rewards_text = f"{attack_results['exp']} Exp\n{attack_results['gold']} Gold"
+        rewards_text = f"**{attack_results['exp']}** Exp\n**{attack_results['gold']}** Gold"
         embed.add_field(name="💰Rewards💰", value=rewards_text, inline=False)
 
         
         # Set the cooldown for the attack button
         cd_embed_index = 3
         embed.insert_field_at(cd_embed_index, name='', value=f"You can attack again {discord.utils.format_dt(attack_results['cooldown_expiration'], style='R')}", inline=False)
-        attack_button.disabled = True  # Disable the button
 
         # Update the message with initial embed and disabled button
         await interaction.response.edit_message(embed=embed, view=self)
@@ -117,17 +135,4 @@ class CordiaView(View):
                 color=discord.Color.blue()
             )  
             await interaction.followup.send(embed=level_up_embed, ephemeral=True)
-
-
-        # Wait for the cooldown period to expire
-        cooldown_seconds = (attack_results['cooldown_expiration'] - datetime.datetime.now()).total_seconds()
-        await asyncio.sleep(cooldown_seconds)
-
-        # Re-enable the attack button and reset the label
-        attack_button.disabled = False
-        attack_button.label = "Attack!"
-        embed.remove_field(cd_embed_index)
-
         
-        await interaction.message.edit(embed=embed, view=self)
-

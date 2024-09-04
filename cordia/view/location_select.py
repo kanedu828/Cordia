@@ -18,5 +18,6 @@ class LocationSelect(Select):
     async def callback(self, interaction: discord.Interaction):
         if self.view is not None:
             await self.view.cordia_service.update_location(interaction.user.id, self.values[0])
-            embed, _ = await self.view.get_embed()
+            # Change this to fight page without attacking
+            embed = await self.view.attack(interaction)
             await interaction.response.edit_message(embed=embed, view=self.view)

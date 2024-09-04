@@ -11,14 +11,18 @@ class Location:
     monsters: List[Tuple[str, float]]
 
     def get_image_path(self):
-        # Convert to lowercase
-        formatted_string = self.name.lower()
-        # Replace spaces and any non-alphanumeric characters with underscores
-        formatted_string = re.sub(r'[\s\W]+', '_', formatted_string)
-        # Add the .png extension
-        formatted_string += '.png'
-        image_path = f'assets/locations/{formatted_string}'
+        image_file_name = self.get_image_file_name()
+        image_path = f'https://kanedu828.github.io/cordia-assets/assets/locations/{image_file_name}'
         return image_path
+    
+    def get_image_file_name(self):
+        # Convert to lowercase
+        image_file_name = self.name.lower()
+        # Replace spaces and any non-alphanumeric characters with underscores
+        image_file_name = re.sub(r'[\s\W]+', '_', image_file_name)
+        # Add the .png extension
+        image_file_name += '.png'
+        return image_file_name
 
     def get_random_monster(self) -> str:
         total = sum(weight for _, weight in self.monsters)
