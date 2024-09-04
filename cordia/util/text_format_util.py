@@ -33,6 +33,17 @@ def exp_bar(exp, bar_length=10, filled_char="🟩", empty_char="⬜"):
     
     return f"**lv. {current_level}** ({exp} exp)\n{bar}"
 
+def get_stat_type_mapping():
+    stat_type_mapping = {
+        "boss_damage": "%",
+        "crit_chance": "%",
+        "penetration": "%",
+        "combo_chance": "%",
+        "strike_radius": "",
+        "attack_cooldown": "s",
+    }
+    return stat_type_mapping
+
 def get_player_stats_string(player: Player, player_gear: List[PlayerGear]) -> tuple:
     # Initialize the stats with base and gear_bonus for the first group of stats
     main_stats = {
@@ -50,6 +61,7 @@ def get_player_stats_string(player: Player, player_gear: List[PlayerGear]) -> tu
         "penetration": 0,
         "combo_chance": 0,
         "strike_radius": 0,
+        "attack_cooldown": 0,
     }
 
     # Loop through player gear to accumulate bonuses
@@ -65,6 +77,7 @@ def get_player_stats_string(player: Player, player_gear: List[PlayerGear]) -> tu
         extra_stats["penetration"] += gd.penetration
         extra_stats["combo_chance"] += gd.combo_chance
         extra_stats["strike_radius"] += gd.strike_radius
+        extra_stats["attack_cooldown"] += gd.attack_cooldown
 
     # Get the longest stat name for main stats to calculate uniform spacing
     max_stat_length_main = max(len(stat) for stat in main_stats)
@@ -82,7 +95,7 @@ def get_player_stats_string(player: Player, player_gear: List[PlayerGear]) -> tu
 
     # Build the extra stats string
     extra_stats_string = "\n".join(
-        f"{special_stat_emoji_mapping[stat]}{stat.replace('_', ' ').capitalize().ljust(max_stat_length_extra)} {value}{'%' if not stat == 'strike_radius' else ''}"
+        f"{special_stat_emoji_mapping[stat]}{stat.replace('_', ' ').capitalize().ljust(max_stat_length_extra)} {value}{get_stat_type_mapping()[stat]}"
         for stat, value in extra_stats.items()
     )
 
@@ -106,5 +119,6 @@ def get_special_stat_emoji_mapping():
         'penetration': '🗡️',
         'combo_chance': '🥊',
         'strike_radius': '🎆',
+        'attack_cooldown': '🕒',
     }
     return emoji_mapping
