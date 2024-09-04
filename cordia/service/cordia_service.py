@@ -145,8 +145,8 @@ class CordiaService:
         # If kill rate >= 1, then that is the number of monsters slain
         if kill_rate < 1:
             kills = 1 if random.random() < kill_rate else 0
-            
-        kills = max(int(kill_rate), player_stats['strike_radius'])
+
+        kills = min(int(kill_rate), player_stats['strike_radius'])
 
         weapon = await self.get_weapon(player_gear)
         weapon_data = gear_data[weapon.name]
