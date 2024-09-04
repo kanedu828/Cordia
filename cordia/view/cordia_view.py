@@ -102,7 +102,6 @@ class CordiaView(View):
 
     async def stats_page(self, interaction: discord.Interaction):
         self.push_to_history("stats")
-        self.add_page_items("stats")
         player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
         player_gear = await self.cordia_service.get_player_gear(self.discord_id)
 
@@ -119,6 +118,9 @@ class CordiaView(View):
                     return upgrade_stats_button_callback
 
                 upgrade_stat_button.callback = create_callback(s)
+        
+        # Add page items after upgrade buttons
+        self.add_page_items("stats")
 
         stats_embed = get_stats_embed(player, player_gear)
         await interaction.response.edit_message(embed=stats_embed, view=self)
