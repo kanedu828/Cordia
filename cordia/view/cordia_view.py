@@ -20,38 +20,66 @@ class CordiaView(View):
 
         self.discord_id = discord_id
 
-        # Home page buttons
-        attack_button = Button(label="Attack!", style=discord.ButtonStyle.blurple, custom_id="attack_button")
-        self.add_item(attack_button)
+        self.history_stack = []
 
-        self.page_items = {
-            "home": [
-                Button(label="Fight", style=discord.ButtonStyle.blurple, custom_id="attack_button")
-            ],
-            "fight": [
-                Button(label="Attack", style=discord.ButtonStyle.blurple, custom_id="attack_button"),
-                Button(label="Stats",  style=discord.ButtonStyle.blurple, custom_id="stats_button"),
-            ],
-            "stats": [
-                Button(label="Attack", style=discord.ButtonStyle.blurple, custom_id="attack_button"),
-                Button(label="Stats",  style=discord.ButtonStyle.blurple, custom_id="stats_button"),
-            ]
+        self.pages = {
+            "home": {
+                "function": self.home_page,
+                "items": [
+                    Button(label="Fight", style=discord.ButtonStyle.blurple, custom_id="attack_button"),
+                    Button(label="Stats", style=discord.ButtonStyle.blurple, custom_id="stats_button")
+                ]
+            },
+            "fight": {
+                "function": self.attack,
+                "items": [
+                    Button(label="Attack", style=discord.ButtonStyle.blurple, custom_id="attack_button"),
+                    Button(label="Spell", style=discord.ButtonStyle.blurple, custom_id="spell_button"),
+                ]
+            },
+            "stats": {
+                "function": self.stats_page,
+                "items": []
+            }
         }
     
-    async def add_page_items(self, page: str, additional_items: List = []):
+    def add_page_items(self, page: str, additional_items: List = []):
         self.clear_items()
         for i in additional_items:
             self.add_item(i)
-        for i in self.page_items[page]:
+        for i in self.pages[page]["items"]:
             self.add_item(i)
+        if page != "home":
+            self.add_item(Button(label="Back",  style=discord.ButtonStyle.blurple, custom_id="back_button"))
+            self.add_item(Button(label="Home",  style=discord.ButtonStyle.blurple, custom_id="home_button"))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         # Check which button or select triggered the interaction
         if interaction.data.get("custom_id") == "attack_button":
             await self.attack(interaction)
         if interaction.data.get("custom_id") == "stats_button":
-            await self.stats(interaction)
+            await self.stats_page(interaction)
+        if interaction.data.get("custom_id") == "back_button":
+            await self.back(interaction)
+        if interaction.data.get("custom_id") == "home_button":
+            await self.home(interaction)
         return True
+    
+    async def back(self, interaction):
+        self.history_stack.pop()
+        page = self.history_stack[-1]
+        page_function = self.pages[page]["function"]
+        await page_function(interaction)
+    
+    async def home(self, interaction):
+        self.history_stack = ["home"]
+        await self.home_page(interaction)
+
+    def push_to_history(self, page_name: str):
+        if len(self.history_stack) > 0 and self.history_stack[-1] == page_name:
+            return
+        else:
+            self.history_stack.append(page_name)
 
     async def get_embed(self):
         # Place holder image. Replace per location later
@@ -61,11 +89,20 @@ class CordiaView(View):
         )
         return embed
     
-    async def home(self):
-        pass
+    async def home_page(self, interaction: discord.Interaction):
+        self.add_page_items("home")
+        embed = discord.Embed(
+            title=f"Welcome to Cordia",
+        )
+        if len(self.history_stack) == 0:
+            await interaction.response.send_message(embed=embed, view=self)
+        else:
+            await interaction.response.edit_message(embed=embed, view=self)
+        self.push_to_history("home")
 
-    async def stats(self, interaction: discord.Interaction):
-        await self.add_page_items("stats")
+    async def stats_page(self, interaction: discord.Interaction):
+        self.push_to_history("stats")
+        self.add_page_items("stats")
         player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
         player_gear = await self.cordia_service.get_player_gear(self.discord_id)
 
@@ -87,13 +124,14 @@ class CordiaView(View):
         await interaction.response.edit_message(embed=stats_embed, view=self)
     
     async def attack(self, interaction: discord.Interaction):
+        self.push_to_history("fight")
         attack_results = await self.cordia_service.attack(self.discord_id)
 
         current_exp = attack_results['player_exp']
         current_level = exp_to_level(current_exp)
 
         # Buttons for attack
-        await self.add_page_items("fight", [LocationSelect(current_level)])
+        self.add_page_items("fight", [LocationSelect(current_level)])
         
         location: Location = attack_results['location']
         embed = discord.Embed(

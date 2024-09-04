@@ -12,8 +12,7 @@ class Cordia(commands.Cog):
   @app_commands.command(name="battle")
   async def battle(self, interaction: discord.Interaction) -> None:
     view = CordiaView(self.bot.cordia_service, interaction.user.id)
-    embed = await view.get_embed()
-    await interaction.response.send_message(embed=embed, view=view)
+    await view.home_page(interaction)
 
 
 async def setup(bot: commands.Bot) -> None:
