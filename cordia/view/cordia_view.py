@@ -116,6 +116,9 @@ class CordiaView(View):
             battle_text = f"Using all your might, you defeat a **{attack_results['monster']}**"
         else:
             battle_text = f"In a show of grandeur, you defeat **{attack_results['kills']} {attack_results['monster']}s**"
+        if attack_results['is_crit']:
+            battle_text = '🎯Critical strike! ' + battle_text
+        
         embed.add_field(name="⚔️Battle⚔️", value=battle_text, inline=False)
 
         rewards_text = f"**{attack_results['exp']}** Exp\n**{attack_results['gold']}** Gold"

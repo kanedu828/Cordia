@@ -1,5 +1,5 @@
 import datetime
-from typing import List
+from typing import List, Tuple
 from cordia.dao.player_dao import PlayerDao
 from cordia.data.locations import location_data
 from cordia.dao.player_gear_dao import PlayerGearDao
@@ -80,7 +80,7 @@ class CordiaService:
         return next((x for x in player_gear if x.slot == GearType.WEAPON.value), None)
 
     # Battle
-    async def calculate_attack_damage(self, monster: Monster, player: Player, player_gear: List[PlayerGear]) -> int:
+    async def calculate_attack_damage(self, monster: Monster, player: Player, player_gear: List[PlayerGear]) -> Tuple[int, bool]:
         player_stats = get_player_stats(player, player_gear)
 
         # Multiplier depending on player's level compared to monster's
@@ -89,7 +89,8 @@ class CordiaService:
 
         # Calculate crit
         crit_multiplier = 1.5
-        if random.random() < player_stats["crit_chance"] / 100:
+        is_crit = random.random() < player_stats["crit_chance"] / 100
+        if is_crit:
             damage *= crit_multiplier
 
         # Boss damage multiplier
@@ -103,7 +104,7 @@ class CordiaService:
 
         damage = random_within_range(damage)
 
-        return int(damage)
+        return int(damage), is_crit
 
     async def attack(self, discord_id: int):
         player = await self.get_or_insert_player(discord_id)
@@ -129,11 +130,12 @@ class CordiaService:
                     'cooldown_expiration': cooldown_end,
                     'location': location,
                     'player_exp': player.exp,
-                    'leveled_up': False
+                    'leveled_up': False,
+                    'is_crit': False
                 }
         
 
-        damage = await self.calculate_attack_damage(monster, player, player_gear)
+        damage, is_crit = await self.calculate_attack_damage(monster, player, player_gear)
         kill_rate = damage / monster.hp
 
         # If kill rate < 1, then that is the chance of successfully killing an enemy.
@@ -159,7 +161,8 @@ class CordiaService:
             'player_exp': player.exp + exp_gained,
             'on_cooldown': False,
             'cooldown_expiration': cooldown_expiration,
-            'leveled_up': exp_to_level(player.exp + exp_gained) > exp_to_level(player.exp)
+            'leveled_up': exp_to_level(player.exp + exp_gained) > exp_to_level(player.exp),
+            'is_crit': is_crit
         }
 
         await self.increment_exp(discord_id, attack_results["exp"])

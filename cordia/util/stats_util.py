@@ -50,13 +50,13 @@ def get_stats_embed(player, player_gear):
     embed.add_field(name="", value=special_stats_text)
     return embed
 
-def get_upgrade_points(player: Player):
+def get_upgrade_points(player: Player) -> int:
     init_base_stat_sum = 5
     base_stat_sum = player.intelligence + player.strength + player.efficiency + player.persistence + player.luck
     level = exp_to_level(player.exp)
     return max(level - base_stat_sum + init_base_stat_sum, 0)
     
-def random_within_range(base_value):
+def random_within_range(base_value) -> int:
     # Calculate the 25% range
     range_value = base_value * 0.25
     
