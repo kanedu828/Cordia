@@ -69,18 +69,19 @@ class CordiaView(View):
         player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
         player_gear = await self.cordia_service.get_player_gear(self.discord_id)
 
-        stat_emoji_mapping = get_stat_emoji_mapping()
-        for s in stat_emoji_mapping.keys():
-            upgrade_stat_button = Button(label=f"⬆️{stat_emoji_mapping[s]}", style=discord.ButtonStyle.blurple)
-            self.add_item(upgrade_stat_button)
+        if get_upgrade_points(player):
+            stat_emoji_mapping = get_stat_emoji_mapping()
+            for s in stat_emoji_mapping.keys():
+                upgrade_stat_button = Button(label=f"⬆️{stat_emoji_mapping[s]}", style=discord.ButtonStyle.blurple)
+                self.add_item(upgrade_stat_button)
 
-            def create_callback(stat):
-                async def upgrade_stats_button_callback(interaction: discord.Interaction):
-                    modal = UpgradeStatsModal(self.cordia_service, self.discord_id, stat)
-                    await interaction.response.send_modal(modal)
-                return upgrade_stats_button_callback
+                def create_callback(stat):
+                    async def upgrade_stats_button_callback(interaction: discord.Interaction):
+                        modal = UpgradeStatsModal(self.cordia_service, self.discord_id, stat)
+                        await interaction.response.send_modal(modal)
+                    return upgrade_stats_button_callback
 
-            upgrade_stat_button.callback = create_callback(s)
+                upgrade_stat_button.callback = create_callback(s)
 
         stats_embed = get_stats_embed(player, player_gear)
         await interaction.response.edit_message(embed=stats_embed, view=self)
