@@ -1,9 +1,7 @@
+from cordia.view.pages.home_page import HomePage
 import discord
 from discord import app_commands
 from discord.ext import commands
-from typing import Literal, Optional
-
-from cordia.view.cordia_view import CordiaView
 
 class Cordia(commands.Cog):
   def __init__(self, bot: commands.Bot) -> None:
@@ -11,8 +9,8 @@ class Cordia(commands.Cog):
 
   @app_commands.command(name="battle")
   async def battle(self, interaction: discord.Interaction) -> None:
-    view = CordiaView(self.bot.cordia_service, interaction.user.id)
-    await view.home_page(interaction)
+    page = HomePage(self.bot.cordia_service, interaction.user.id)
+    await page.init_render(interaction)
 
 
 async def setup(bot: commands.Bot) -> None:
