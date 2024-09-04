@@ -23,7 +23,7 @@ class CordiaService:
         self.player_cooldowns = {}
 
     # Player
-    async def get_player_by_discord_id(self, discord_id: int) -> Player:
+    async def get_player_by_discord_id(self, discord_id: int) -> Player | None:
         return await self.player_dao.get_by_discord_id(discord_id)
     
     async def insert_player(self, discord_id: int) -> Player:
@@ -35,8 +35,6 @@ class CordiaService:
             return player
         else:
             player = await self.insert_player(discord_id)
-            gear_instance = await self.insert_gear(discord_id, "basic_sword")
-            await self.equip_gear(discord_id, gear_instance["id"], GearType.WEAPON.value)
             return player
 
     async def increment_stat(self, discord_id: int, stat_name: str, increment_by: int):
@@ -76,7 +74,7 @@ class CordiaService:
     async def remove_gear(self, discord_id: int, slot: str):
         await self.player_gear_dao.remove_gear(discord_id, slot)
 
-    async def get_weapon(self, player_gear: List[PlayerGear]):
+    async def get_weapon(self, player_gear: List[PlayerGear]) -> PlayerGear:
         return next((x for x in player_gear if x.slot == GearType.WEAPON.value), None)
 
     # Battle
@@ -139,19 +137,21 @@ class CordiaService:
         
 
         damage, is_crit = await self.calculate_attack_damage(monster, player, player_gear)
-        kill_rate = damage / monster.hp
+        kill_rate = float(damage) / monster.hp
 
         # If kill rate < 1, then that is the chance of successfully killing an enemy.
         # If kill rate >= 1, then that is the number of monsters slain
         if kill_rate < 1:
-            kills = 1 if random.random() < kill_rate else 0
-
-        kills = min(int(kill_rate), player_stats['strike_radius'])
-
+            r = random.random()
+            kills = 1 if r < kill_rate else 0
+        else:
+            kills = min(int(kill_rate), player_stats['strike_radius'])
         weapon = await self.get_weapon(player_gear)
         weapon_data = gear_data[weapon.name]
 
-        exp_gained = random_within_range(int(monster.exp * kills))
+        exp_gained = random_within_range(int((monster.exp + player_stats["efficiency"]) * kills))
+
+        gold_gained = random_within_range(int((monster.gold + player_stats["luck"]) * kills))
 
         cooldown_expiration = current_time + datetime.timedelta(seconds=weapon_data.attack_cooldown)
 
@@ -162,7 +162,7 @@ class CordiaService:
         attack_results = {
             'kills': kills,
             'exp': exp_gained,
-            'gold': random_within_range(int(monster.gold * kills)),
+            'gold': gold_gained,
             'loot': [],
             'monster': monster.display_monster(),
             'location': location,

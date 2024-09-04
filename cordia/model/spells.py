@@ -12,7 +12,11 @@ class Spell:
     description: str
     damage: int
     spell_cooldown: int
-    strike_radius = 1
+    cast_text: str
+    scaling_stat: str = 'int'
+    strike_radius: int = 1
+    magic_penetration: int = 0
     buff: str = ''
+    
     
     

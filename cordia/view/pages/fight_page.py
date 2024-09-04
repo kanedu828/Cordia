@@ -3,6 +3,7 @@ from cordia.util.exp_util import exp_to_level
 from cordia.util.text_format_util import exp_bar
 from cordia.view.pages.page import Page
 from cordia.data.locations import location_data
+from cordia.data.gear import gear_data
 from discord.ui import View, Button, Select
 import discord
 
@@ -67,20 +68,32 @@ class FightPage(Page):
 
         await interaction.response.edit_message(embed=embed, view=await self._create_view())
 
+        unlocked_locations = {key: location for key, location in location_data.items() if (lambda loc: loc.level_unlock == current_level)(location)}
+        if unlocked_locations:
+            level_up_text = "\n".join(f"**{location.name}**" for location in unlocked_locations.values())
+        else:
+            level_up_text = "No new locations unlocked."
         if attack_results['leveled_up']:
             level_up_embed = discord.Embed(
                 title=f"✨You leveled up to level {current_level}!✨",
                 color=discord.Color.blue()
-            )  
+            )
+            level_up_embed.add_field(name="Go to your stats page to use your upgrade points!", value="", inline=False)
+            level_up_embed.add_field(name="You unlocked the following new locations:", value=level_up_text, inline=False)
             await interaction.followup.send(embed=level_up_embed, ephemeral=True)
 
     async def _create_view(self):
-        view = View()
+        view = View(timeout=None)
 
         attack_button = Button(label="Attack", style=discord.ButtonStyle.blurple, custom_id="attack_button")
         attack_button.callback = self.attack
 
         cast_spell_button = Button(label="Cast Spell", style=discord.ButtonStyle.blurple, custom_id="cast_spell_button")
+        player_gear = await self.cordia_service.get_player_gear(self.discord_id)
+        weapon = await self.cordia_service.get_weapon(player_gear)
+        spell = gear_data[weapon.name].spell
+        if not spell:
+            cast_spell_button.disabled = True
 
         back_button = Button(label="Back", style=discord.ButtonStyle.blurple, custom_id="back_button")
         back_button.callback = self.back_button_callback
@@ -97,11 +110,12 @@ class FightPage(Page):
             options=options
         )
         location_select.callback = self.location_select_callback
+        view.add_item(location_select)
         
         view.add_item(attack_button)
         view.add_item(cast_spell_button)
         view.add_item(back_button)
-        view.add_item(location_select)
+        
 
         return view
     

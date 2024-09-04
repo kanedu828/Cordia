@@ -26,7 +26,7 @@ class GearDao:
         """
         async with self.pool.acquire() as connection:
             row = await connection.fetchrow(query, discord_id, name)
-            return Gear(**row)
+            return GearInstance(**row)
 
     async def update_gear_stars(self, id: int, stars: int):
         query = """

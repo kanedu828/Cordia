@@ -30,12 +30,12 @@ class StatsPage(Page):
         await interaction.response.edit_message(embed=stats_embed, view=view)
 
     def _create_view(self):
-        view = View()
+        view = View(timeout=None)
 
         back_button = Button(label="Back", style=discord.ButtonStyle.blurple, custom_id="back_button")
         back_button.callback = self.back_button_callback
         view.add_item(back_button)
-        
+
         return view
     
     async def back_button_callback(self, interaction: discord.Interaction):

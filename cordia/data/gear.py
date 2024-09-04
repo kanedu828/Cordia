@@ -48,8 +48,10 @@ gear_data = {
             spell_type=SpellType.DAMAGE,
             name="Fireball",
             description="Blast enemies with a fireball.",
-            damage=10,
-            spell_cooldown=20
+            damage=5,
+            spell_cooldown=30,
+            cast_text="You summon a small fireball and throw at the enemy.",
+            strike_radius=5
         ),
         gold_value=50
     ),

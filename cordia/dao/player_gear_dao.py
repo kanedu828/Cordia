@@ -25,11 +25,9 @@ class PlayerGearDao:
         VALUES ($1, $2, $3)
         ON CONFLICT (discord_id, slot)
         DO UPDATE SET gear_id = EXCLUDED.gear_id
-        RETURNING id, discord_id, gear_id, slot
         """
         async with self.pool.acquire() as connection:
-            row = await connection.fetchrow(query, discord_id, gear_id, slot)
-            return PlayerGear(**row)
+            await connection.fetchrow(query, discord_id, gear_id, slot)
 
     async def remove_gear(self, discord_id: int, slot: str):
         query = """

@@ -1,3 +1,4 @@
+from cordia.model.gear import GearInstance, GearType
 from cordia.view.pages.page import Page
 import discord
 from discord.ui import Button, View
@@ -13,10 +14,51 @@ class HomePage(Page):
         embed = discord.Embed(
             title=f"Welcome to Cordia",
         )
-        await interaction.response.send_message(embed=embed, view=self._create_view())
-    
+
+        await self.cordia_service.get_or_insert_player(self.discord_id)
+        player_gear = await self.cordia_service.get_player_gear(self.discord_id)
+        weapon = await self.cordia_service.get_weapon(player_gear)
+        if not weapon:
+            welcome_text = "**Sword**: A slow, but hard hitting weapon"
+            welcome_text += "\n**Dagger**: A quick weapon that allows you to hit fast"
+            welcome_text += "\n**Bow**: A weapon that is more efficient when fighting idle"
+            welcome_text += "\n**Wand**: A weapon with access to powerful spells to deal damage"
+            embed.add_field(name="Welcome adventurer. Select a weapon to begin your journey...", value=welcome_text, inline=False)
+            await interaction.response.send_message(embed=embed, view=self._create_new_player_view(interaction))
+        else:
+            await interaction.response.send_message(embed=embed, view=self._create_view())
+
+    def _create_new_player_view(self, interaction: discord.Interaction):
+        view = View(timeout=None)
+
+        def gen_weapon_callback(weapon):
+            async def equip_weapon(interaction: discord.Interaction):
+                gear_instance: GearInstance = await self.cordia_service.insert_gear(self.discord_id, weapon)
+                await self.cordia_service.equip_gear(self.discord_id, gear_instance.id, GearType.WEAPON.value)
+                await self.render(interaction)
+            return equip_weapon
+        
+        sword = Button(label="Sword", style=discord.ButtonStyle.blurple)
+        sword.callback = gen_weapon_callback('basic_sword')
+
+        dagger = Button(label="Dagger", style=discord.ButtonStyle.blurple, custom_id="basic_dagger")
+        dagger.callback = gen_weapon_callback('basic_dagger')
+
+        bow = Button(label="Bow", style=discord.ButtonStyle.blurple, custom_id="basic_bow")
+        bow.callback = gen_weapon_callback('basic_bow')
+
+        wand = Button(label="Wand", style=discord.ButtonStyle.blurple, custom_id="basic_wand")
+        wand.callback = gen_weapon_callback('basic_wand')
+
+        view.add_item(sword)
+        view.add_item(dagger)
+        view.add_item(bow)
+        view.add_item(wand)
+        
+        return view
+
     def _create_view(self):
-        view = View()
+        view = View(timeout=None)
 
         # Fight button with callback attached
         fight_button = Button(label="Fight", style=discord.ButtonStyle.blurple, custom_id="fight_button")

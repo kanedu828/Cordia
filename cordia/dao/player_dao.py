@@ -5,7 +5,7 @@ class PlayerDao:
     def __init__(self, pool: asyncpg.Pool):
         self.pool = pool
 
-    async def get_by_discord_id(self, discord_id: int) -> Player:
+    async def get_by_discord_id(self, discord_id: int) -> Player | None:
         query = """
         SELECT discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location
         FROM player
@@ -13,6 +13,8 @@ class PlayerDao:
         """
         async with self.pool.acquire() as connection:
             record = await connection.fetchrow(query, discord_id)
+            if not record:
+                return None
             return Player(**record)
 
     async def insert_player(self, discord_id: int) -> Player:
