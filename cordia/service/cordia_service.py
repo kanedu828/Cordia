@@ -85,7 +85,9 @@ class CordiaService:
 
         # Multiplier depending on player's level compared to monster's
         level_damage_multiplier = level_difference_multiplier(exp_to_level(player.exp), monster.level)
-        damage = random_within_range(player_stats["strength"]) * level_damage_multiplier
+        damage = player_stats["strength"] * level_damage_multiplier
+
+        damage = random_within_range(damage)
 
         # Calculate crit
         crit_multiplier = 1.5
@@ -101,8 +103,6 @@ class CordiaService:
         monster_defense_percentage = (monster.defense / 100)
         monster_defense_percentage -= monster_defense_percentage * (min(player_stats["penetration"], 100) / 100)
         damage -= damage * monster_defense_percentage
-
-        damage = random_within_range(damage)
 
         return int(damage), is_crit
 
@@ -131,7 +131,8 @@ class CordiaService:
                     'location': location,
                     'player_exp': player.exp,
                     'leveled_up': False,
-                    'is_crit': False
+                    'is_crit': False,
+                    'damage': 0
                 }
         
 
@@ -162,7 +163,8 @@ class CordiaService:
             'on_cooldown': False,
             'cooldown_expiration': cooldown_expiration,
             'leveled_up': exp_to_level(player.exp + exp_gained) > exp_to_level(player.exp),
-            'is_crit': is_crit
+            'is_crit': is_crit,
+            'damage': damage
         }
 
         await self.increment_exp(discord_id, attack_results["exp"])

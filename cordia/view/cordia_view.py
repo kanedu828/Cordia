@@ -110,14 +110,16 @@ class CordiaView(View):
             await interaction.response.edit_message(embed=embed, view=self)
             return
         
-        if attack_results["kills"] == 0:
-            battle_text = f"You tried to fight a **{attack_results['monster']}**, but you could not defeat it. Try again!"
-        elif attack_results["kills"] == 1:
-            battle_text = f"Using all your might, you defeat a **{attack_results['monster']}**"
-        else:
-            battle_text = f"In a show of grandeur, you defeat **{attack_results['kills']} {attack_results['monster']}s**"
+        battle_text = f"You deal **{attack_results['damage']}** damage.\n"
         if attack_results['is_crit']:
-            battle_text = '🎯Critical strike! ' + battle_text
+            battle_text += '🎯Critical strike! ' + battle_text
+        
+        if attack_results["kills"] == 0:
+            battle_text += f"You tried to fight a **{attack_results['monster']}**, but you could not defeat it. Try again!"
+        elif attack_results["kills"] == 1:
+            battle_text += f"Using all your might, you defeat a **{attack_results['monster']}**"
+        else:
+            battle_text += f"In a show of grandeur, you defeat **{attack_results['kills']} {attack_results['monster']}s**"
         
         embed.add_field(name="⚔️Battle⚔️", value=battle_text, inline=False)
 
