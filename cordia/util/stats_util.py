@@ -19,6 +19,8 @@ def get_player_stats(player: Player, player_gear: List[PlayerGear]):
         "boss_damage": 0,
         "crit_chance": 0,
         "penetration": 0,
+        "combo_chance": 0,
+        "strike_radius": 0,
     }
     for pg in player_gear:
         gd: Gear = gear_data[pg.name]
@@ -30,6 +32,8 @@ def get_player_stats(player: Player, player_gear: List[PlayerGear]):
         stats["crit_chance"] += gd.crit_chance
         stats["boss_damage"] += gd.boss_damage
         stats["penetration"] += gd.penetration
+        stats["combo_chance"] += gd.combo_chance
+        stats["strike_radius"] += gd.strike_radius
 
     return stats
 

@@ -12,5 +12,7 @@ class Spell:
     description: str
     damage: int
     spell_cooldown: int
+    strike_radius = 1
     buff: str = ''
+    
     

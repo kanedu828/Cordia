@@ -48,6 +48,8 @@ def get_player_stats_string(player: Player, player_gear: List[PlayerGear]) -> tu
         "boss_damage": 0,
         "crit_chance": 0,
         "penetration": 0,
+        "combo_chance": 0,
+        "strike_radius": 0,
     }
 
     # Loop through player gear to accumulate bonuses
@@ -61,6 +63,8 @@ def get_player_stats_string(player: Player, player_gear: List[PlayerGear]) -> tu
         extra_stats["crit_chance"] += gd.crit_chance
         extra_stats["boss_damage"] += gd.boss_damage
         extra_stats["penetration"] += gd.penetration
+        extra_stats["combo_chance"] += gd.combo_chance
+        extra_stats["strike_radius"] += gd.strike_radius
 
     # Get the longest stat name for main stats to calculate uniform spacing
     max_stat_length_main = max(len(stat) for stat in main_stats)
@@ -78,7 +82,7 @@ def get_player_stats_string(player: Player, player_gear: List[PlayerGear]) -> tu
 
     # Build the extra stats string
     extra_stats_string = "\n".join(
-        f"{special_stat_emoji_mapping[stat]}{stat.replace('_', ' ').capitalize().ljust(max_stat_length_extra)} {value}%"
+        f"{special_stat_emoji_mapping[stat]}{stat.replace('_', ' ').capitalize().ljust(max_stat_length_extra)} {value}{'%' if not stat == 'strike_radius' else ''}"
         for stat, value in extra_stats.items()
     )
 
@@ -100,5 +104,7 @@ def get_special_stat_emoji_mapping():
         'crit_chance': '🎯',
         'boss_damage': '💥',
         'penetration': '🗡️',
+        'combo_chance': '🥊',
+        'strike_radius': '🎆',
     }
     return emoji_mapping

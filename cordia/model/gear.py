@@ -58,5 +58,7 @@ class Gear:
     crit_chance: int = 0
     boss_damage: int = 0
     penetration: int = 0
+    combo_chance: int = 0
+    strike_radius: int = 1
     spell: Spell = None
     gear_set: str = ''

@@ -10,6 +10,7 @@ gear_data = {
         persistence=4,
         attack_cooldown=20,
         crit_chance=5,
+        strike_radius=5,
         gold_value=50
     ),
     "basic_dagger": Gear(
@@ -20,7 +21,9 @@ gear_data = {
         persistence=6,
         attack_cooldown=10,
         crit_chance=10,
-        gold_value=50
+        gold_value=50,
+        strike_radius=2,
+        combo_chance=1,
     ),
     "basic_bow": Gear(
         name="Basic Bow",

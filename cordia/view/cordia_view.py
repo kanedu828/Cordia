@@ -112,7 +112,10 @@ class CordiaView(View):
         
         battle_text = f"You deal **{attack_results['damage']}** damage.\n"
         if attack_results['is_crit']:
-            battle_text += '🎯Critical strike! ' + battle_text
+            battle_text = '🎯Critical strike! ' + battle_text
+
+        if attack_results['is_combo']:
+            battle_text = '🥊Combo! ' + battle_text
         
         if attack_results["kills"] == 0:
             battle_text += f"You tried to fight a **{attack_results['monster']}**, but you could not defeat it. Try again!"

@@ -109,6 +109,7 @@ class CordiaService:
     async def attack(self, discord_id: int):
         player = await self.get_or_insert_player(discord_id)
         player_gear = await self.get_player_gear(discord_id)
+        player_stats = get_player_stats(player, player_gear)
         location = location_data[player.location]
         monster_name = location.get_random_monster()
         monster = monster_data[monster_name]
@@ -132,7 +133,8 @@ class CordiaService:
                     'player_exp': player.exp,
                     'leveled_up': False,
                     'is_crit': False,
-                    'damage': 0
+                    'damage': 0,
+                    'is_combo': False
                 }
         
 
@@ -143,7 +145,8 @@ class CordiaService:
         # If kill rate >= 1, then that is the number of monsters slain
         if kill_rate < 1:
             kills = 1 if random.random() < kill_rate else 0
-        kills = int(kill_rate)
+            
+        kills = max(int(kill_rate), player_stats['strike_radius'])
 
         weapon = await self.get_weapon(player_gear)
         weapon_data = gear_data[weapon.name]
@@ -151,6 +154,10 @@ class CordiaService:
         exp_gained = random_within_range(int(monster.exp * kills))
 
         cooldown_expiration = current_time + datetime.timedelta(seconds=weapon_data.attack_cooldown)
+
+        is_combo = random.random() < player_stats['combo_chance'] / 100
+        if is_combo:
+            cooldown_expiration = 1
 
         attack_results = {
             'kills': kills,
@@ -164,7 +171,8 @@ class CordiaService:
             'cooldown_expiration': cooldown_expiration,
             'leveled_up': exp_to_level(player.exp + exp_gained) > exp_to_level(player.exp),
             'is_crit': is_crit,
-            'damage': damage
+            'damage': damage,
+            'is_combo': is_combo
         }
 
         await self.increment_exp(discord_id, attack_results["exp"])
