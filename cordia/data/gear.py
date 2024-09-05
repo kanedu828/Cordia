@@ -50,7 +50,7 @@ gear_data = {
             description="Blast enemies with a fireball.",
             damage=5,
             spell_cooldown=30,
-            cast_text="You summon a small fireball and throw at the enemy.",
+            cast_text="You summon a small fireball and throw at it the enemy.",
             strike_radius=5
         ),
         gold_value=50

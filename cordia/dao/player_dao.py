@@ -1,3 +1,4 @@
+from datetime import datetime
 import asyncpg
 from cordia.model.player import Player
 
@@ -7,7 +8,7 @@ class PlayerDao:
 
     async def get_by_discord_id(self, discord_id: int) -> Player | None:
         query = """
-        SELECT discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location
+        SELECT discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location, last_idle_claim
         FROM player
         WHERE discord_id = $1
         """
@@ -21,7 +22,7 @@ class PlayerDao:
         query = """
         INSERT INTO player (discord_id)
         VALUES ($1)
-        RETURNING discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location
+        RETURNING discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location, last_idle_claim
         """
         async with self.pool.acquire() as connection:
             record = await connection.fetchrow(query, discord_id)
@@ -66,3 +67,12 @@ class PlayerDao:
         """
         async with self.pool.acquire() as connection:
             await connection.execute(query, location, discord_id)
+            
+    async def update_last_idle_claim(self, discord_id: int, last_idle_claim: datetime):
+            query = """
+            UPDATE player
+            SET last_idle_claim = $1
+            WHERE discord_id = $2
+            """
+            async with self.pool.acquire() as connection:
+                await connection.execute(query, last_idle_claim, discord_id)

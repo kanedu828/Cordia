@@ -1,12 +1,14 @@
 import random
-from typing import List
+from typing import List, Tuple
 
+from cordia.model.monster import Monster
+from cordia.util.gear_util import get_weapon_from_player_gear
 import discord
 from cordia.model.gear import Gear, PlayerGear
 from cordia.model.player import Player
 from cordia.data.gear import gear_data
 from cordia.util.exp_util import exp_to_level
-from cordia.util.text_format_util import exp_bar, get_player_stats_string
+from cordia.util.text_format_util import exp_bar, get_player_stats_string, get_spell_stats_string
 
 
 def get_player_stats(player: Player, player_gear: List[PlayerGear]):
@@ -39,7 +41,7 @@ def get_player_stats(player: Player, player_gear: List[PlayerGear]):
 
     return stats
 
-def get_stats_embed(player, player_gear):
+def get_stats_embed(player: Player, player_gear: List[PlayerGear]):
     embed = discord.Embed(
         title=f"Your Stats"
     )
@@ -54,6 +56,12 @@ def get_stats_embed(player, player_gear):
         embed.add_field(name="", value=f"You have {upgrade_points} upgrade points.", inline=False)
     embed.add_field(name="", value=stats_text)
     embed.add_field(name="", value=special_stats_text)
+    weapon = get_weapon_from_player_gear(player_gear)
+    spell = gear_data[weapon.name].spell
+    if spell:
+        embed.add_field(name="", value=get_spell_stats_string(spell), inline=False)
+    
+    embed.add_field(name="Gold", value=f"🪙**{player.gold}**", inline=False)
     return embed
 
 def get_upgrade_points(player: Player) -> int:
@@ -84,3 +92,57 @@ def level_difference_multiplier(player_level: int, monster_level: int) -> float:
     multiplier = 1 + (capped_difference * 0.05)
     
     return round(multiplier, 2)
+
+def calculate_weighted_monster_mean(monster_tuples):
+    total_weight = 0
+    weighted_level_sum = 0
+    weighted_hp_sum = 0
+    weighted_gold_sum = 0
+    weighted_exp_sum = 0
+    weighted_defense_sum = 0  # Add penetration calculation
+    
+    for monster, weight in monster_tuples:
+        weighted_level_sum += monster.level * weight
+        weighted_hp_sum += monster.hp * weight
+        weighted_gold_sum += monster.gold * weight
+        weighted_exp_sum += monster.exp * weight
+        weighted_defense_sum += monster.defense * weight  # Apply weight to penetration
+        total_weight += weight
+    
+    # Calculate the weighted means
+    if total_weight:
+        weighted_means = {
+            'level': weighted_level_sum / total_weight,
+            'hp': weighted_hp_sum / total_weight,
+            'gold': weighted_gold_sum / total_weight,
+            'exp': weighted_exp_sum / total_weight,
+            'defense': weighted_defense_sum / total_weight  # Add penetration to the result
+        }
+    else:
+        weighted_means = {
+            'level': 0,
+            'hp': 0,
+            'gold': 0,
+            'exp': 0,
+            'defense': 0  # Set default penetration to 0
+        }
+    
+    return weighted_means
+
+
+def simulate_idle_results(stat_value, monster_mean, player_stats, player_level):
+    stat_value = random_within_range(stat_value)
+    stat_value *= level_difference_multiplier(player_level, monster_mean['level'])
+
+    # Calculate crit
+    stat_value += (stat_value * 1.5 - stat_value) * (player_stats["crit_chance"] / 100)
+
+    # HP scaling
+    stat_value *= (stat_value / monster_mean['hp'])
+
+    # Penetration
+    monster_defense_percentage = (monster_mean['defense'] / 100)
+    monster_defense_percentage -= monster_defense_percentage * (min(player_stats["penetration"], 100) / 100)
+    stat_value -= stat_value * monster_defense_percentage
+
+    return int(stat_value)

@@ -13,7 +13,7 @@ class Spell:
     damage: int
     spell_cooldown: int
     cast_text: str
-    scaling_stat: str = 'int'
+    scaling_stat: str = 'intelligence'
     strike_radius: int = 1
     magic_penetration: int = 0
     buff: str = ''

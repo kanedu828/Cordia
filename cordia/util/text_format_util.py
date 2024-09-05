@@ -1,4 +1,5 @@
 from typing import List
+from cordia.model.spells import Spell
 from cordia.util.exp_util import exp_to_level, level_to_exp
 from cordia.model.gear import Gear, PlayerGear
 from cordia.model.player import Player
@@ -41,6 +42,10 @@ def get_stat_type_mapping():
         "combo_chance": "%",
         "strike_radius": "",
         "attack_cooldown": "s",
+        'spell_damage': '',
+        'spell_cooldown': 's',
+        'spell_strike_radius': '',
+        'magic_penetration': '%'
     }
     return stat_type_mapping
 
@@ -102,6 +107,23 @@ def get_player_stats_string(player: Player, player_gear: List[PlayerGear]) -> tu
     # Wrap both strings in code blocks for Discord and return as a tuple
     return f"```{main_stats_string}```", f"```{extra_stats_string}```"
 
+def get_spell_stats_string(spell: Spell):
+    spell_stats = {
+        'spell_damage': spell.damage,
+        'spell_cooldown': spell.spell_cooldown,
+        'spell_strike_radius': spell.strike_radius,
+        'magic_penetration': spell.magic_penetration
+    }
+
+    max_stat_length_extra = max(len(stat) for stat in spell_stats)
+
+    spell_stats_string = "\n".join(
+        f"{get_special_stat_emoji_mapping()[stat]}{stat.replace('_', ' ').capitalize().ljust(max_stat_length_extra)} {value}{get_stat_type_mapping()[stat]}"
+        for stat, value in spell_stats.items()
+    )
+
+    return f"```{spell_stats_string}```"
+
 def get_stat_emoji_mapping():
     emoji_mapping = {
         'strength': '💪',
@@ -120,5 +142,10 @@ def get_special_stat_emoji_mapping():
         'combo_chance': '🥊',
         'strike_radius': '🎆',
         'attack_cooldown': '🕒',
+        # Spells
+        'spell_damage': '🎇',
+        'spell_cooldown': '🕒',
+        'spell_strike_radius': '🎆',
+        'magic_penetration': '🌠'
     }
     return emoji_mapping

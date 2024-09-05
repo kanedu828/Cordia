@@ -18,7 +18,7 @@ class HomePage(Page):
 
         await self.cordia_service.get_or_insert_player(self.discord_id)
         player_gear = await self.cordia_service.get_player_gear(self.discord_id)
-        weapon = await self.cordia_service.get_weapon(player_gear)
+        weapon = self.cordia_service.get_weapon(player_gear)
         if not weapon:
             welcome_text = "**Sword**: A slow, but hard hitting weapon"
             welcome_text += "\n**Dagger**: A quick weapon that allows you to hit fast"

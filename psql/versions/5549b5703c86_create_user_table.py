@@ -32,6 +32,7 @@ def upgrade() -> None:
         sa.Column("location", sa.String(256), server_default="the_plains_i"),
         sa.Column("created_at", sa.TIMESTAMP(timezone=True), server_default=func.now(), nullable=False),
         sa.Column("updated_at", sa.TIMESTAMP(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False),
+        sa.Column("last_idle_claim", sa.TIMESTAMP(timezone=True), server_default=func.now(), nullable=False)
     )
 
     op.create_table(

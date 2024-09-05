@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 
 @dataclass(frozen=True)
 class Player:
@@ -11,3 +12,4 @@ class Player:
     exp: int
     gold: int
     location: str
+    last_idle_claim: datetime
