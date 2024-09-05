@@ -1,4 +1,5 @@
 from cordia.model.gear import GearInstance, GearType
+from cordia.util.decorators import only_command_invoker
 from cordia.view.pages.page import Page
 import discord
 from discord.ui import Button, View
@@ -74,10 +75,12 @@ class HomePage(Page):
         
         return view
     
+    @only_command_invoker()
     async def fight_button_callback(self, interaction: discord.Interaction):
         from cordia.view.pages.fight_page import FightPage
         await FightPage(self.cordia_service, self.discord_id).render(interaction)
 
+    @only_command_invoker()
     async def stats_button_callback(self, interaction: discord.Interaction):
         from cordia.view.pages.stats_page import StatsPage
         await StatsPage(self.cordia_service, self.discord_id).render(interaction)

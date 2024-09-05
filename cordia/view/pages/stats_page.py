@@ -1,3 +1,4 @@
+from cordia.util.decorators import only_command_invoker
 from cordia.util.stats_util import get_stats_embed, get_upgrade_points
 from cordia.util.text_format_util import get_stat_emoji_mapping
 from cordia.view.pages.page import Page
@@ -38,6 +39,7 @@ class StatsPage(Page):
 
         return view
     
+    @only_command_invoker()
     async def back_button_callback(self, interaction: discord.Interaction):
         from cordia.view.pages.home_page import HomePage
         await HomePage(self. cordia_service, self.discord_id).render(interaction)

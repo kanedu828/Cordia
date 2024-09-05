@@ -1,4 +1,5 @@
 from cordia.model.location import Location
+from cordia.util.decorators import only_command_invoker
 from cordia.util.exp_util import exp_to_level
 from cordia.util.text_format_util import exp_bar
 from cordia.view.pages.page import Page
@@ -119,13 +120,16 @@ class FightPage(Page):
 
         return view
     
+    @only_command_invoker()
     async def attack_button_callback(self, interaction: discord.Interaction):
         await self.attack(interaction)
 
+    @only_command_invoker()
     async def back_button_callback(self, interaction: discord.Interaction):
         from cordia.view.pages.home_page import HomePage
         await HomePage(self. cordia_service, self.discord_id).render(interaction)
     
+    @only_command_invoker()
     async def location_select_callback(self, interaction: discord.Interaction):
         await self.cordia_service.update_location(interaction.user.id, interaction.data["values"][0])
         from cordia.view.pages.fight_page import FightPage # Lazy import, avoid circular dep
