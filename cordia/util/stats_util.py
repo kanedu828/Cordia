@@ -130,15 +130,12 @@ def calculate_weighted_monster_mean(monster_tuples):
     return weighted_means
 
 
-def simulate_idle_results(stat_value: float, monster_mean, player_stats, player_level):
+def simulate_idle_damage(stat_value: float, monster_mean, player_stats, player_level) -> float:
     stat_value = random_within_range(stat_value)
     stat_value *= level_difference_multiplier(player_level, monster_mean['level'])
 
     # Calculate crit
     stat_value += (stat_value * 1.5 - stat_value) * (player_stats["crit_chance"] / 100)
-
-    # HP scaling
-    stat_value *= (stat_value / monster_mean['hp'])
 
     # Penetration
     monster_defense_percentage = (monster_mean['defense'] / 100)

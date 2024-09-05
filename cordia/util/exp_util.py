@@ -1,15 +1,15 @@
 import math
 
+EXP_SCALING = 25
+
 def exp_to_level(exp):
         """Convert experience points to level."""
-        base_exp = 5  # Base experience required for level 1
-        level = math.floor(math.sqrt((exp + base_exp) / 5))
+        level = math.floor(math.sqrt((exp + EXP_SCALING) / EXP_SCALING))
         return max(1, level)  # Ensure that the minimum level is 1
 
 def level_to_exp(level):
     """Convert level to the total experience required to reach that level."""
-    base_exp = 5  # Base experience for level 1
-    exp = 5 * (level ** 2) - base_exp
+    exp = EXP_SCALING * (level ** 2) - EXP_SCALING
     return exp
 
 def percent_to_next_level(exp):

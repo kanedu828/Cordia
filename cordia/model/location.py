@@ -33,3 +33,5 @@ class Location:
                 return choice
             upto += weight
     
+    def get_key_name(self) -> str:
+        return re.sub(r'[\W_]+', '_', self.name.lower())

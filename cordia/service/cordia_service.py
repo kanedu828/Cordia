@@ -14,7 +14,7 @@ from cordia.model.gear import Gear, GearType, PlayerGear
 from cordia.model.monster import Monster, MonsterType
 from cordia.util.exp_util import exp_to_level
 from cordia.util.gear_util import get_weapon_from_player_gear
-from cordia.util.stats_util import calculate_weighted_monster_mean, get_player_stats, get_upgrade_points, level_difference_multiplier, random_within_range, simulate_idle_results
+from cordia.util.stats_util import calculate_weighted_monster_mean, get_player_stats, get_upgrade_points, level_difference_multiplier, random_within_range, simulate_idle_damage
 
 class CordiaService:
     def __init__(self, player_dao: PlayerDao, gear_dao: GearDao, player_gear_dao: PlayerGearDao):
@@ -65,6 +65,9 @@ class CordiaService:
 
     async def update_last_idle_claim(self, discord_id: int, last_idle_claim: datetime):
         return await self.player_dao.update_last_idle_claim(discord_id, last_idle_claim)
+    
+    async def count_players_in_location(self, location: str) -> int:
+        return await self.player_dao.count_players_in_location(location)
 
     # Gear
     async def insert_gear(self, discord_id, name):
@@ -91,7 +94,7 @@ class CordiaService:
         last_idle_claim = player.last_idle_claim
         time_passed = min(datetime.datetime.now(datetime.timezone.utc) - last_idle_claim, datetime.timedelta(hours=8))
         
-        IDLE_FREQUENCY_MULTIPLIER = 15
+        IDLE_FREQUENCY_MULTIPLIER = 20
         idle_frequency = gear_data[get_weapon_from_player_gear(player_gear).name].attack_cooldown * IDLE_FREQUENCY_MULTIPLIER
 
         location = location_data[player.location]
@@ -107,9 +110,16 @@ class CordiaService:
         damage = player_stats['persistence']
 
         player_level = exp_to_level(player.exp)
-        gold_gained = int(simulate_idle_results(gold_gained, monster_mean, player_stats, player_level) * times_attacked)
-        exp_gained = int(simulate_idle_results(exp_gained, monster_mean, player_stats, player_level) * times_attacked)
-        damage = int(simulate_idle_results(damage, monster_mean, player_stats, player_level) * times_attacked)
+        damage = simulate_idle_damage(damage, monster_mean, player_stats, player_level)
+
+        # HP scaling
+        kill_rate = (damage / monster_mean['hp'])
+        gold_gained *= kill_rate * times_attacked
+        exp_gained *= kill_rate * times_attacked
+        gold_gained = int(gold_gained)
+        exp_gained = int(exp_gained)
+
+        dpm = round(damage * 60 / idle_frequency, 2)
 
         if time_passed > datetime.timedelta(minutes=10):
             await self.update_last_idle_claim(discord_id, datetime.datetime.now())
@@ -127,7 +137,7 @@ class CordiaService:
             }
 
         return {
-            'dpm': damage / 2,
+            'dpm': dpm,
             'gold_gained': gold_gained,
             'exp_gained': exp_gained,
             'location': location_data[player.location],

@@ -76,3 +76,13 @@ class PlayerDao:
             """
             async with self.pool.acquire() as connection:
                 await connection.execute(query, last_idle_claim, discord_id)
+
+    async def count_players_in_location(self, location: str) -> int:
+        query = """
+        SELECT COUNT(*)
+        FROM player
+        WHERE location = $1
+        """
+        async with self.pool.acquire() as connection:
+            count = await connection.fetchval(query, location)
+            return count

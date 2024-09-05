@@ -22,6 +22,8 @@ class FightPage(Page):
         exp_bar_text = f"{exp_bar(player.exp)}\n\n"
         embed.add_field(name="", value=exp_bar_text, inline=False)
         embed.set_image(url=location.get_image_path())
+        location_player_count = await self.cordia_service.count_players_in_location(location.get_key_name())
+        embed.set_footer(text=f"{location_player_count} players are slaying monsters in this location.")
         await interaction.response.edit_message(embed=embed, view=await self._create_view())
 
     @only_command_invoker()
@@ -55,6 +57,8 @@ class FightPage(Page):
 
         rewards_text = f"**{idle_results['exp_gained']}** Exp\n**{idle_results['gold_gained']}** Gold"
         embed.add_field(name="💰Rewards💰", value=rewards_text, inline=False)
+        location_player_count = await self.cordia_service.count_players_in_location(location.get_key_name())
+        embed.set_footer(text=f"{location_player_count} players are slaying monsters in this location.")
 
         await interaction.response.edit_message(embed=embed, view=await self._create_view())
 
@@ -71,8 +75,6 @@ class FightPage(Page):
             level_up_embed.add_field(name="Go to your stats page to use your upgrade points!", value="", inline=False)
             level_up_embed.add_field(name="You unlocked the following new locations:", value=level_up_text, inline=False)
             await interaction.followup.send(embed=level_up_embed, ephemeral=True)
-        
-        
 
     @only_command_invoker()
     async def cast_spell(self, interaction: discord.Interaction):
@@ -97,6 +99,9 @@ class FightPage(Page):
         embed.add_field(name="", value=exp_bar_text, inline=False)
 
         embed.set_image(url=location.get_image_path())
+
+        location_player_count = await self.cordia_service.count_players_in_location(location.get_key_name())
+        embed.set_footer(text=f"{location_player_count} players are slaying monsters in this location.")
 
         if attack_results.on_cooldown:
             cd_type_text = 'attack'
@@ -127,7 +132,6 @@ class FightPage(Page):
 
         rewards_text = f"**{attack_results.exp}** Exp\n**{attack_results.gold}** Gold"
         embed.add_field(name="💰Rewards💰", value=rewards_text, inline=False)
-
         
         # Set the cooldown for the attack button
         cd_embed_index = 3
