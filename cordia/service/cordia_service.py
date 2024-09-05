@@ -198,6 +198,8 @@ class CordiaService:
         damage, is_crit = await self.calculate_attack_damage(monster, player, player_gear, action)
         kill_rate = float(damage) / monster.hp
 
+        weapon = self.get_weapon(player_gear)
+        weapon_data = gear_data[weapon.name]
         # If kill rate < 1, then that is the chance of successfully killing an enemy.
         # If kill rate >= 1, then that is the number of monsters slain
         if kill_rate < 1:
@@ -205,8 +207,9 @@ class CordiaService:
             kills = 1 if r < kill_rate else 0
         else:
             kills = min(int(kill_rate), player_stats['strike_radius'])
-        weapon = self.get_weapon(player_gear)
-        weapon_data = gear_data[weapon.name]
+            if action == 'cast_spell' and weapon_data.spell:
+                kills = min(int(kill_rate), weapon_data.spell.strike_radius)
+        
 
         exp_gained = random_within_range(int((monster.exp + min(player_stats["efficiency"], monster.exp)) * kills))
 
