@@ -130,7 +130,7 @@ def calculate_weighted_monster_mean(monster_tuples):
     return weighted_means
 
 
-def simulate_idle_results(stat_value, monster_mean, player_stats, player_level):
+def simulate_idle_results(stat_value: float, monster_mean, player_stats, player_level):
     stat_value = random_within_range(stat_value)
     stat_value *= level_difference_multiplier(player_level, monster_mean['level'])
 
@@ -145,4 +145,4 @@ def simulate_idle_results(stat_value, monster_mean, player_stats, player_level):
     monster_defense_percentage -= monster_defense_percentage * (min(player_stats["penetration"], 100) / 100)
     stat_value -= stat_value * monster_defense_percentage
 
-    return int(stat_value)
+    return stat_value

@@ -104,9 +104,9 @@ class CordiaService:
         damage = player_stats['persistence']
 
         player_level = exp_to_level(player.exp)
-        gold_gained = simulate_idle_results(gold_gained, monster_mean, player_stats, player_level) * times_attacked
-        exp_gained = simulate_idle_results(exp_gained, monster_mean, player_stats, player_level) * times_attacked
-        damage = simulate_idle_results(damage, monster_mean, player_stats, player_level) * times_attacked
+        gold_gained = int(simulate_idle_results(gold_gained, monster_mean, player_stats, player_level) * times_attacked)
+        exp_gained = int(simulate_idle_results(exp_gained, monster_mean, player_stats, player_level) * times_attacked)
+        damage = int(simulate_idle_results(damage, monster_mean, player_stats, player_level) * times_attacked)
 
         if time_passed > datetime.timedelta(minutes=10):
             await self.update_last_idle_claim(discord_id, datetime.datetime.now())
