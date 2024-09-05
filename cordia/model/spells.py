@@ -17,6 +17,7 @@ class Spell:
     strike_radius: int = 1
     magic_penetration: int = 0
     buff: str = ''
+    scaling_multiplier: int = 1
     
     
     

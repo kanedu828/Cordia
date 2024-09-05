@@ -13,6 +13,7 @@ from cordia.model.player import Player
 from cordia.model.gear import Gear, GearType, PlayerGear
 from cordia.model.monster import Monster, MonsterType
 from cordia.util.exp_util import exp_to_level
+from cordia.util.gear_util import get_weapon_from_player_gear
 from cordia.util.stats_util import calculate_weighted_monster_mean, get_player_stats, get_upgrade_points, level_difference_multiplier, random_within_range, simulate_idle_results
 
 class CordiaService:
@@ -89,7 +90,9 @@ class CordiaService:
         player_stats = get_player_stats(player, player_gear)
         last_idle_claim = player.last_idle_claim
         time_passed = min(datetime.datetime.now(datetime.timezone.utc) - last_idle_claim, datetime.timedelta(hours=8))
-        idle_frequency = 120 # Two minutes
+        
+        IDLE_FREQUENCY_MULTIPLIER = 15
+        idle_frequency = gear_data[get_weapon_from_player_gear(player_gear).name].attack_cooldown * IDLE_FREQUENCY_MULTIPLIER
 
         location = location_data[player.location]
         monsters = location.monsters
@@ -142,8 +145,7 @@ class CordiaService:
         spell = gear_data[weapon.name].spell
 
         if action == 'cast_spell' and spell:
-            weapon = self.get_weapon(player_gear)
-            damage = spell.damage + player_stats[spell.scaling_stat]
+            damage = spell.damage + (player_stats[spell.scaling_stat] * spell.scaling_multiplier)
         else:
             damage = player_stats["strength"]
 
@@ -152,10 +154,10 @@ class CordiaService:
         
 
         # Calculate crit
-        crit_multiplier = 1.5
+        CRIT_MULTIPLIER = 1.5
         is_crit = random.random() < player_stats["crit_chance"] / 100
         if is_crit:
-            damage *= crit_multiplier
+            damage *= CRIT_MULTIPLIER
 
         # Boss damage multiplier
         if monster.type == MonsterType.BOSS:
