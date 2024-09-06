@@ -9,9 +9,11 @@ import random
 
 from cordia.data.monsters import monster_data
 from cordia.model.attack_result import AttackResult
+from cordia.model.gear_instance import GearInstance
 from cordia.model.player import Player
-from cordia.model.gear import Gear, GearInstance, GearType, PlayerGear
+from cordia.model.gear import GearType
 from cordia.model.monster import Monster, MonsterType
+from cordia.model.player_gear import PlayerGear
 from cordia.util.exp_util import exp_to_level
 from cordia.util.gear_util import get_weapon_from_player_gear
 from cordia.util.stats_util import calculate_weighted_monster_mean, get_player_stats, get_upgrade_points, level_difference_multiplier, random_within_range, simulate_idle_damage
@@ -73,6 +75,9 @@ class CordiaService:
     async def insert_gear(self, discord_id: int, name: str):
         return await self.gear_dao.insert_gear(discord_id, name)
     
+    async def get_gear_by_id(self, id: int) -> GearInstance:
+        return await self.gear_dao.get_gear_by_id(id)
+
     async def get_armory(self, discord_id: int) -> List[GearInstance]:
         return await self.gear_dao.get_gear_by_discord_id(discord_id)
 
@@ -88,11 +93,16 @@ class CordiaService:
 
     def get_weapon(self, player_gear: List[PlayerGear]) -> PlayerGear:
         return next((x for x in player_gear if x.slot == GearType.WEAPON.value), None)
+    
+    async def get_player_gear_by_gear_id(self, gear_id: int) -> PlayerGear:
+        return await self.player_gear_dao.get_by_gear_id(gear_id)
 
     # Battle
     async def idle_fight(self, discord_id: int):
         player: Player = await self.get_player_by_discord_id(discord_id)
         player_gear = await self.get_player_gear(discord_id)
+        weapon = get_weapon_from_player_gear(player_gear)
+
         player_stats = get_player_stats(player, player_gear)
         last_idle_claim = player.last_idle_claim
         time_passed = min(datetime.datetime.now(datetime.timezone.utc) - last_idle_claim, datetime.timedelta(hours=8))
@@ -110,13 +120,13 @@ class CordiaService:
 
         gold_gained = monster_mean['gold']
         exp_gained = monster_mean['exp']
-        damage = player_stats['persistence']
+        damage = player_stats['damage'] + player_stats['persistence']
 
         player_level = exp_to_level(player.exp)
         damage = simulate_idle_damage(damage, monster_mean, player_stats, player_level)
 
-        # HP scaling
-        kill_rate = (damage / monster_mean['hp'])
+        # Kill rate, cannot exceed strike radius
+        kill_rate = min((damage / monster_mean['hp']), gear_data[weapon.name].strike_radius)
         gold_gained *= kill_rate * times_attacked
         exp_gained *= kill_rate * times_attacked
         gold_gained = int(gold_gained)
@@ -160,7 +170,7 @@ class CordiaService:
         if action == 'cast_spell' and spell:
             damage = spell.damage + (player_stats[spell.scaling_stat] * spell.scaling_multiplier)
         else:
-            damage = player_stats["strength"]
+            damage = player_stats["damage"] + player_stats["strength"]
 
         damage = random_within_range(damage)
         damage *= level_damage_multiplier

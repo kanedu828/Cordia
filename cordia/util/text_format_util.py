@@ -1,9 +1,10 @@
 from typing import List
+from cordia.model.player_gear import PlayerGear
 from cordia.model.spells import Spell
 from cordia.util.exp_util import exp_to_level, level_to_exp
-from cordia.model.gear import Gear, PlayerGear
+from cordia.model.gear import Gear
 from cordia.model.player import Player
-from cordia.data.gear import gear_data
+from cordia.util.stat_mapping import get_stat_emoji, get_stat_modifier
 
 def exp_bar(exp, bar_length=10, filled_char="🟩", empty_char="⬜"):
     """
@@ -34,21 +35,6 @@ def exp_bar(exp, bar_length=10, filled_char="🟩", empty_char="⬜"):
     
     return f"**lv. {current_level}** ({exp} exp)\n{bar}"
 
-def get_stat_type_mapping():
-    stat_type_mapping = {
-        "boss_damage": "%",
-        "crit_chance": "%",
-        "penetration": "%",
-        "combo_chance": "%",
-        "strike_radius": "",
-        "attack_cooldown": "s",
-        'spell_damage': '',
-        'spell_cooldown': 's',
-        'spell_strike_radius': '',
-        'magic_penetration': '%'
-    }
-    return stat_type_mapping
-
 def get_player_stats_string(player: Player, player_gear: List[PlayerGear]) -> tuple:
     # Initialize the stats with base and gear_bonus for the first group of stats
     main_stats = {
@@ -61,6 +47,7 @@ def get_player_stats_string(player: Player, player_gear: List[PlayerGear]) -> tu
 
     # Initialize separate stats for the second group (boss_damage, crit_chance, penetration)
     extra_stats = {
+        "damage": 0,
         "boss_damage": 0,
         "crit_chance": 0,
         "penetration": 0,
@@ -71,12 +58,13 @@ def get_player_stats_string(player: Player, player_gear: List[PlayerGear]) -> tu
 
     # Loop through player gear to accumulate bonuses
     for pg in player_gear:
-        gd: Gear = gear_data[pg.name]
+        gd: Gear = pg.get_gear_data()
         main_stats["strength"]["gear_bonus"] += gd.strength
         main_stats["persistence"]["gear_bonus"] += gd.persistence
         main_stats["intelligence"]["gear_bonus"] += gd.intelligence
         main_stats["efficiency"]["gear_bonus"] += gd.efficiency
         main_stats["luck"]["gear_bonus"] += gd.luck
+        extra_stats["damage"] += gd.damage
         extra_stats["crit_chance"] += gd.crit_chance
         extra_stats["boss_damage"] += gd.boss_damage
         extra_stats["penetration"] += gd.penetration
@@ -87,11 +75,9 @@ def get_player_stats_string(player: Player, player_gear: List[PlayerGear]) -> tu
     # Get the longest stat name for main stats to calculate uniform spacing
     max_stat_length_main = max(len(stat) for stat in main_stats)
 
-    stat_emoji_mapping = get_stat_emoji_mapping()
-    special_stat_emoji_mapping = get_special_stat_emoji_mapping()
     # Build the main stats string
     main_stats_string = "\n".join(
-        f"{stat_emoji_mapping[stat]}{stat.capitalize().ljust(max_stat_length_main)} {values['base'] + values['gear_bonus']} ({values['base']} + {values['gear_bonus']})"
+        f"{get_stat_emoji(stat)}{stat.capitalize().ljust(max_stat_length_main)} {values['base'] + values['gear_bonus']} ({values['base']} + {values['gear_bonus']})"
         for stat, values in main_stats.items()
     )
 
@@ -100,7 +86,7 @@ def get_player_stats_string(player: Player, player_gear: List[PlayerGear]) -> tu
 
     # Build the extra stats string
     extra_stats_string = "\n".join(
-        f"{special_stat_emoji_mapping[stat]}{stat.replace('_', ' ').capitalize().ljust(max_stat_length_extra)} {value}{get_stat_type_mapping()[stat]}"
+        f"{get_stat_emoji(stat)}{stat.replace('_', ' ').capitalize().ljust(max_stat_length_extra)} {value}{get_stat_modifier(stat)}"
         for stat, value in extra_stats.items()
     )
 
@@ -118,37 +104,11 @@ def get_spell_stats_string(spell: Spell):
     max_stat_length_extra = max(len(stat) for stat in spell_stats)
 
     spell_stats_string = "\n".join(
-        f"{get_special_stat_emoji_mapping()[stat]}{stat.replace('_', ' ').capitalize().ljust(max_stat_length_extra)} {value}{get_stat_type_mapping()[stat]}"
+        f"{get_stat_emoji(stat)}{stat.replace('_', ' ').capitalize().ljust(max_stat_length_extra)} {value}{get_stat_modifier(stat)}"
         for stat, value in spell_stats.items()
     )
 
     return f"```{spell_stats_string}```"
-
-def get_stat_emoji_mapping():
-    emoji_mapping = {
-        'strength': '💪',
-        'persistence': '🔋',
-        'intelligence': '🧠',
-        'efficiency': '⚡️',
-        'luck': '🍀',
-    }
-    return emoji_mapping
-
-def get_special_stat_emoji_mapping():
-    emoji_mapping = {
-        'crit_chance': '🎯',
-        'boss_damage': '💥',
-        'penetration': '🗡️',
-        'combo_chance': '🥊',
-        'strike_radius': '🎆',
-        'attack_cooldown': '🕒',
-        # Spells
-        'spell_damage': '🎇',
-        'spell_cooldown': '🕒',
-        'spell_strike_radius': '🎆',
-        'magic_penetration': '🌠'
-    }
-    return emoji_mapping
 
 # snake_case -> Snake Case
 def snake_case_to_capital(snake_str):

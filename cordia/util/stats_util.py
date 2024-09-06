@@ -1,10 +1,10 @@
 import random
-from typing import List, Tuple
+from typing import List
 
-from cordia.model.monster import Monster
+from cordia.model.player_gear import PlayerGear
 from cordia.util.gear_util import get_weapon_from_player_gear
 import discord
-from cordia.model.gear import Gear, PlayerGear
+from cordia.model.gear import Gear
 from cordia.model.player import Player
 from cordia.data.gear import gear_data
 from cordia.util.exp_util import exp_to_level
@@ -18,6 +18,7 @@ def get_player_stats(player: Player, player_gear: List[PlayerGear]):
         "intelligence": player.intelligence,
         "efficiency": player.efficiency,
         "luck": player.luck,
+        "damage": 0,
         "boss_damage": 0,
         "crit_chance": 0,
         "penetration": 0,
@@ -32,6 +33,7 @@ def get_player_stats(player: Player, player_gear: List[PlayerGear]):
         stats["intelligence"] += gd.intelligence
         stats["efficiency"] += gd.efficiency
         stats["luck"] += gd.luck
+        stats["damage"] += gd.damage
         stats["crit_chance"] += gd.crit_chance
         stats["boss_damage"] += gd.boss_damage
         stats["penetration"] += gd.penetration

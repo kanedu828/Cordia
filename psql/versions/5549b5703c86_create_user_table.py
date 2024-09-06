@@ -41,11 +41,7 @@ def upgrade() -> None:
         sa.Column("discord_id", sa.BigInteger, nullable=False),
         sa.Column("name", sa.String(256), nullable=False),
         sa.Column("stars", sa.Integer, server_default="0", nullable=False),
-        sa.Column("strength_bonus", sa.String(50), nullable=False, server_default="0"),
-        sa.Column("persistence_bonus", sa.String(50), nullable=False, server_default="0"),
-        sa.Column("intelligence_bonus", sa.String(50), nullable=False, server_default="0"),
-        sa.Column("efficiency_bonus", sa.String(50), nullable=False, server_default="0"),
-        sa.Column("luck_bonus", sa.String(50), nullable=False, server_default="0"),
+        sa.Column("bonus", sa.String(50), nullable=False, server_default="''"),
         sa.Column("created_at", sa.TIMESTAMP(timezone=True), server_default=func.now(), nullable=False),
         sa.Column("updated_at", sa.TIMESTAMP(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False),
         sa.ForeignKeyConstraint(

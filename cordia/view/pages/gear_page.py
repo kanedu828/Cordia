@@ -1,5 +1,7 @@
 from typing import List
-from cordia.model.gear import GearInstance, GearType, PlayerGear
+from cordia.model.gear import GearType
+from cordia.model.gear_instance import GearInstance
+from cordia.model.player_gear import PlayerGear
 from cordia.service.cordia_service import CordiaService
 from cordia.util.decorators import only_command_invoker
 from cordia.util.text_format_util import snake_case_to_capital
@@ -13,14 +15,17 @@ class GearPage(Page):
     def __init__(self, cordia_service: CordiaService, discord_id: int):
         super().__init__(cordia_service, discord_id)
         self.armory_pages: List[discord.Embed] = []
-        self.armory_page: int = 0
+        self.armory_page: int = -1 # -1 means we are on equipped gear page
         self.gear_type = GearType.WEAPON.value.title()
 
     @classmethod
-    async def create(cls, cordia_service: CordiaService, discord_id: int):
-        # Simulate an asynchronous operation
+    async def create(cls, cordia_service: CordiaService, discord_id: int, type: GearType=GearType.WEAPON):
+        """
+            So we can initialize the armory_pages on page creation instead of
+            having to constantly requery
+        """
         gear_page = GearPage(cordia_service, discord_id)
-        gear_page.armory_pages = await gear_page.paginate_gear(GearType.WEAPON)
+        gear_page.armory_pages = await gear_page.paginate_gear(type)
         return gear_page
     
     async def render(self, interaction: discord.Interaction):
@@ -100,13 +105,13 @@ class GearPage(Page):
         embed.set_footer(text=f"Page {self.armory_page + 1}/{len(self.armory_pages)}")
 
         select_options = []
-        for i, gear_item in enumerate(gear_list):
+        for gear_item in gear_list:
             gd = gear_data[gear_item.name]
             # Format each gear item
             embed.add_field(
                 name='',
                 value=(
-                    f"**{i}. {gd.name}**"
+                    f"**lv. {gd.level} {gd.name}**"
                 ),
                 inline=False
             )
@@ -125,6 +130,7 @@ class GearPage(Page):
                 options=select_options,
                 row=1
             )
+            gear_select.callback = self.gear_select_callback
             view.add_item(gear_select)
         await interaction.response.edit_message(embed=embed, view=view)
 
@@ -188,7 +194,8 @@ class GearPage(Page):
     
     @only_command_invoker()
     async def gear_select_callback(self, interaction: discord.Interaction):
-        pass
+        from cordia.view.pages.view_gear_page import ViewGearPage
+        await ViewGearPage(self.cordia_service, self.discord_id, int(interaction.data["values"][0]), self.armory_page).render(interaction)
 
     @only_command_invoker()
     async def gear_type_select_callback(self, interaction: discord.Interaction):
@@ -209,10 +216,12 @@ class GearPage(Page):
 
     @only_command_invoker()
     async def equipped_gear_button_callback(self, interaction: discord.Interaction):
+        self.armory_page = -1
         await self.render(interaction)
 
     @only_command_invoker()
     async def armory_button_callback(self, interaction: discord.Interaction):
+        self.armory_page = 0
         await self.render_armory(interaction)
 
     @only_command_invoker()

@@ -1,6 +1,6 @@
 from typing import List
 import asyncpg
-from cordia.model.gear import PlayerGear
+from cordia.model.player_gear import PlayerGear
 
 class PlayerGearDao:
     def __init__(self, pool: asyncpg.Pool):
@@ -8,9 +8,7 @@ class PlayerGearDao:
 
     async def get_player_gear(self, discord_id: int) -> List[PlayerGear]:
         query = """
-        SELECT pg.id, pg.discord_id, pg.gear_id, pg.slot, g.name, g.stars, 
-               g.strength_bonus, g.persistence_bonus, g.intelligence_bonus, 
-               g.efficiency_bonus, g.luck_bonus
+        SELECT pg.id, pg.discord_id, pg.gear_id, pg.slot, g.name, g.stars, g.bonus
         FROM player_gear pg
         JOIN gear g ON pg.gear_id = g.id
         WHERE pg.discord_id = $1
@@ -36,3 +34,14 @@ class PlayerGearDao:
         """
         async with self.pool.acquire() as connection:
             await connection.execute(query, discord_id, slot)
+
+    async def get_by_gear_id(self, gear_id: int) -> PlayerGear:
+        query = """
+        SELECT pg.id, pg.discord_id, pg.gear_id, pg.slot, g.name, g.stars, g.bonus
+        FROM player_gear pg
+        JOIN gear g ON pg.gear_id = g.id
+        WHERE pg.gear_id = $1
+        """
+        async with self.pool.acquire() as connection:
+            row = await connection.fetchrow(query, gear_id)
+            return PlayerGear(**row) if row else None

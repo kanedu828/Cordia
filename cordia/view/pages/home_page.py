@@ -1,6 +1,6 @@
-from cordia.model.gear import GearInstance, GearType
+from cordia.model.gear import GearType
+from cordia.model.gear_instance import GearInstance
 from cordia.util.decorators import only_command_invoker
-from cordia.view.pages.gear_page import GearPage
 from cordia.view.pages.page import Page
 import discord
 from discord.ui import Button, View

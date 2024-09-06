@@ -1,6 +1,6 @@
 from cordia.service.cordia_service import CordiaService
 from cordia.util.stats_util import get_stats_embed, get_upgrade_points
-from cordia.util.text_format_util import get_stat_emoji_mapping
+from cordia.util.text_format_util import get_stat_emoji
 from discord.ui import Modal, TextInput
 import discord
 
@@ -23,7 +23,7 @@ class UpgradeStatsModal(Modal):
             stat_value_int = int(stat_value)
             await self.cordia_service.increment_stat(self.discord_id, self.stat, stat_value_int)
             succeed_embed = discord.Embed(
-                title=f"Allocated {stat_value} points into {get_stat_emoji_mapping()[self.stat]}{self.stat}",
+                title=f"Allocated {stat_value} points into {get_stat_emoji(self.stat)}{self.stat}",
                 color=discord.Color.green()
             )  
             player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
