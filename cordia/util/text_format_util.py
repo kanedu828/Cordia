@@ -149,3 +149,9 @@ def get_special_stat_emoji_mapping():
         'magic_penetration': '🌠'
     }
     return emoji_mapping
+
+# snake_case -> Snake Case
+def snake_case_to_capital(snake_str):
+    # Split by underscore and capitalize each word
+    words = snake_str.split('_')
+    return ' '.join([word.capitalize() for word in words])

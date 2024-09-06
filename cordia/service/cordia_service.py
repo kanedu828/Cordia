@@ -10,7 +10,7 @@ import random
 from cordia.data.monsters import monster_data
 from cordia.model.attack_result import AttackResult
 from cordia.model.player import Player
-from cordia.model.gear import Gear, GearType, PlayerGear
+from cordia.model.gear import Gear, GearInstance, GearType, PlayerGear
 from cordia.model.monster import Monster, MonsterType
 from cordia.util.exp_util import exp_to_level
 from cordia.util.gear_util import get_weapon_from_player_gear
@@ -70,8 +70,11 @@ class CordiaService:
         return await self.player_dao.count_players_in_location(location)
 
     # Gear
-    async def insert_gear(self, discord_id, name):
+    async def insert_gear(self, discord_id: int, name: str):
         return await self.gear_dao.insert_gear(discord_id, name)
+    
+    async def get_armory(self, discord_id: int) -> List[GearInstance]:
+        return await self.gear_dao.get_gear_by_discord_id(discord_id)
 
     # Player Gear
     async def get_player_gear(self, discord_id: int):

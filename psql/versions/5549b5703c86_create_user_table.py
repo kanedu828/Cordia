@@ -51,6 +51,7 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(
             ['discord_id'], ['player.discord_id'], ondelete='CASCADE'
         ),
+        sa.UniqueConstraint('discord_id', 'name', name='uq_discord_id_name')
     )
 
     op.create_table(

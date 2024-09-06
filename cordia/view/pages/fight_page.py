@@ -160,10 +160,10 @@ class FightPage(Page):
     async def _create_view(self):
         view = View(timeout=None)
 
-        attack_button = Button(label="Attack", style=discord.ButtonStyle.blurple, custom_id="attack_button")
+        attack_button = Button(label="Attack", style=discord.ButtonStyle.blurple, row=1)
         attack_button.callback = self.attack
 
-        cast_spell_button = Button(label="Cast Spell", style=discord.ButtonStyle.blurple, custom_id="cast_spell_button")
+        cast_spell_button = Button(label="Cast Spell", style=discord.ButtonStyle.blurple, row=1)
         cast_spell_button.callback = self.cast_spell
         player_gear = await self.cordia_service.get_player_gear(self.discord_id)
         weapon = self.cordia_service.get_weapon(player_gear)
@@ -171,10 +171,10 @@ class FightPage(Page):
         if not spell:
             cast_spell_button.disabled = True
 
-        idle_fight_button = Button(label="Idle Fight", style=discord.ButtonStyle.blurple)
+        idle_fight_button = Button(label="Idle Fight", style=discord.ButtonStyle.blurple, row=1)
         idle_fight_button.callback = self.idle_fight
 
-        back_button = Button(label="Back", style=discord.ButtonStyle.blurple, custom_id="back_button")
+        back_button = Button(label="Back", style=discord.ButtonStyle.grey, row=2)
         back_button.callback = self.back_button_callback
 
         player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
@@ -198,10 +198,6 @@ class FightPage(Page):
         
 
         return view
-    
-    @only_command_invoker()
-    async def attack_button_callback(self, interaction: discord.Interaction):
-        await self.attack(interaction)
 
     @only_command_invoker()
     async def back_button_callback(self, interaction: discord.Interaction):

@@ -49,3 +49,14 @@ class GearDao:
         """
         async with self.pool.acquire() as connection:
             await connection.execute(query, bonus_value, id)
+
+    async def get_gear_by_discord_id(self, discord_id: int) -> list[GearInstance]:
+        query = """
+        SELECT id, discord_id, name, stars, strength_bonus, persistence_bonus, intelligence_bonus, 
+               efficiency_bonus, luck_bonus, created_at, updated_at
+        FROM gear
+        WHERE discord_id = $1
+        """
+        async with self.pool.acquire() as connection:
+            rows = await connection.fetch(query, discord_id)
+            return [GearInstance(**row) for row in rows]

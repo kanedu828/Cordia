@@ -11,8 +11,7 @@ class GearType(Enum):
     SHOES = "shoes"
     PENDANT = "pendant"
     CAPE = "cape"
-    RING_1 = "ring_1"
-    RING_2 = "ring_2"
+    RING = "ring"
     
 @dataclass(frozen=True)
 class GearInstance:

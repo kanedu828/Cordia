@@ -17,7 +17,7 @@ class StatsPage(Page):
         if get_upgrade_points(player):
             stat_emoji_mapping = get_stat_emoji_mapping()
             for s in stat_emoji_mapping.keys():
-                upgrade_stat_button = Button(label=f"⬆️{stat_emoji_mapping[s]}", style=discord.ButtonStyle.blurple)
+                upgrade_stat_button = Button(label=f"⬆️{stat_emoji_mapping[s]}", style=discord.ButtonStyle.blurple, row=1)
                 view.add_item(upgrade_stat_button)
 
                 def create_callback(stat):
@@ -35,7 +35,7 @@ class StatsPage(Page):
     def _create_view(self):
         view = View(timeout=None)
 
-        back_button = Button(label="Back", style=discord.ButtonStyle.blurple, custom_id="back_button")
+        back_button = Button(label="Back", style=discord.ButtonStyle.grey, row=2)
         back_button.callback = self.back_button_callback
         view.add_item(back_button)
 
