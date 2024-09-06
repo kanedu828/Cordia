@@ -36,3 +36,15 @@ class Gear:
     spell: Spell = None
     # Gear Set
     gear_set: str = ''
+
+    def get_max_stars(self):
+        if self.level < 10:
+            return 5
+        elif self.level < 25:
+            return 10
+        elif self.level < 50:
+            return 15
+        elif self.level < 60:
+            return 20
+        elif self.level < 100:
+            return 25

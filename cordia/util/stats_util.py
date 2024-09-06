@@ -26,8 +26,10 @@ def get_player_stats(player: Player, player_gear: List[PlayerGear]):
         "strike_radius": 0,
         "attack_cooldown": 0
     }
+
     for pg in player_gear:
         gd: Gear = gear_data[pg.name]
+        # ADD UPGRADE STATS HERE
         stats["strength"] += gd.strength
         stats["persistence"] += gd.persistence
         stats["intelligence"] += gd.intelligence
