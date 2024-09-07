@@ -21,7 +21,7 @@ class Spell:
     strike_radius: int = 1
     magic_penetration: int = 0
     buff: str = ""
-    scaling_multiplier: int = 1
+    scaling_multiplier: float = 1
 
     def get_spell_stats_string(self):
         spell_stats = [
