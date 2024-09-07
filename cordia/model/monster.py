@@ -39,7 +39,7 @@ class Monster:
                 dropped_items.append(item)
         return dropped_items
 
-    def get_dropped_gear(self, kills: int = 0) -> List[str]:
+    def get_dropped_gear(self, kills: int = 1) -> List[str]:
         dropped_gear = []
         for g, drop_rate in self.gear_loot:
             for _ in range(kills):

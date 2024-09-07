@@ -289,7 +289,7 @@ class CordiaService:
             cooldown_expiration = current_time + datetime.timedelta(seconds=1)
 
         # Handle gear drops
-        gear_loot = monster.get_dropped_gear()
+        gear_loot = monster.get_dropped_gear(kills)
         sold_gear_amount = 0
         new_gear_loot = []
         for g in gear_loot:
