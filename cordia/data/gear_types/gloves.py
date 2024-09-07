@@ -7,6 +7,6 @@ glove_data = {
         type=GearType.GLOVES,
         level=5,
         gold_value=25,
-        crit_chance=3
+        crit_chance=3,
     )
 }

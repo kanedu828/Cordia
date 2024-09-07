@@ -16,5 +16,5 @@ top_data = {
         level=10,
         gold_value=25,
         strength=6,
-    )
+    ),
 }

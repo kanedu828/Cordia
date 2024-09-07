@@ -31,7 +31,12 @@ monster_data = {
         gear_loot=[("wolf_fang_sword", 0.02), ("wolf_cap", 0.02), ("hunter_bow", 0.02)],
     ),
     "bear": Monster(
-        name="Bear", level=18, hp=33, gold=10, exp=25, gear_loot=[("hunter_bow", 0.02), ("thick_fat_vest", 0.02)]
+        name="Bear",
+        level=18,
+        hp=33,
+        gold=10,
+        exp=25,
+        gear_loot=[("hunter_bow", 0.02), ("thick_fat_vest", 0.02)],
     ),
     "giant_spider": Monster(
         name="Giant Spider",
