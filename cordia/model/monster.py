@@ -39,11 +39,13 @@ class Monster:
                 dropped_items.append(item)
         return dropped_items
 
-    def get_dropped_gear(self) -> List[str]:
+    def get_dropped_gear(self, kills: int = 0) -> List[str]:
         dropped_gear = []
         for g, drop_rate in self.gear_loot:
-            if (
-                random.random() <= drop_rate
-            ):  # Check if the item drops based on probability
-                dropped_gear.append(g)
+            for _ in range(kills):
+                if (
+                    random.random() <= drop_rate
+                ):  # Check if the item drops based on probability
+                    dropped_gear.append(g)
+                    break
         return dropped_gear
