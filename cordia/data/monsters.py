@@ -16,7 +16,7 @@ monster_data = {
             ("leather_shoes", 0.02),
             ("leather_gloves", 0.02),
             ("leather_hat", 0.02),
-            ("basic_sword", 1),
+            ("basic_sword", 0.05),
             ("basic_wand", 0.05),
             ("basic_dagger", 0.05),
             ("basic_bow", 0.05),
