@@ -23,7 +23,7 @@ monster_data = {
         ],
     ),
     "wolf": Monster(
-        name="Bolf",
+        name="Wolf",
         level=13,
         hp=20,
         gold=9,
