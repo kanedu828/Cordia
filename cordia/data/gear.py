@@ -1,62 +1,21 @@
-from cordia.model.gear import Gear, GearType
-from cordia.model.spells import Spell, SpellType
+from cordia.data.gear_types.weapons import weapon_data
+from cordia.data.gear_types.cape import cape_data
+from cordia.data.gear_types.hats import hat_data
+from cordia.data.gear_types.pants import pants_data
+from cordia.data.gear_types.pendant import pendant_data
+from cordia.data.gear_types.rings import ring_data
+from cordia.data.gear_types.shoes import shoes_data
+from cordia.data.gear_types.tops import top_data
+from cordia.data.gear_types.gloves import glove_data
 
 gear_data = {
-    "basic_sword": Gear(
-        name="Basic Sword",
-        type=GearType.WEAPON,
-        level=1,
-        damage=10,
-        strength=10,
-        persistence=4,
-        attack_cooldown=20,
-        crit_chance=5,
-        strike_radius=5,
-        gold_value=50
-    ),
-    "basic_dagger": Gear(
-        name="Basic Dagger",
-        type=GearType.WEAPON,
-        level=1,
-        damage=6,
-        strength=2,
-        persistence=2,
-        attack_cooldown=10,
-        crit_chance=10,
-        gold_value=50,
-        strike_radius=2,
-        combo_chance=1,
-    ),
-    "basic_bow": Gear(
-        name="Basic Bow",
-        type=GearType.WEAPON,
-        level=1,
-        damage=7,
-        strength=2,
-        persistence=10,
-        attack_cooldown=30,
-        crit_chance=15,
-        gold_value=50,
-        strike_radius=1
-    ),
-    "basic_wand": Gear(
-        name="Basic Wand",
-        type=GearType.WEAPON,
-        level=1,
-        damage=2,
-        persistence=3,
-        intelligence=10,
-        crit_chance=5,
-        attack_cooldown=20,
-        spell=Spell(
-            spell_type=SpellType.DAMAGE,
-            name="Fireball",
-            description="Blast enemies with a fireball.",
-            damage=12,
-            spell_cooldown=30,
-            cast_text="You summon a small fireball and throw at it the enemy.",
-            strike_radius=5
-        ),
-        gold_value=50
-    ),
+    **weapon_data,
+    **cape_data,
+    **hat_data,
+    **pants_data,
+    **pendant_data,
+    **ring_data,
+    **shoes_data,
+    **top_data,
+    **glove_data,
 }

@@ -1,13 +1,14 @@
 import asyncpg
 from cordia.model.gear_instance import GearInstance
 
+
 class GearDao:
     def __init__(self, pool: asyncpg.Pool):
         self.pool = pool
 
     async def get_gear_by_id(self, id: int) -> GearInstance:
         query = """
-        SELECT id, discord_id, name, stars, bonus, created_at, updated_at
+        SELECT id, discord_id, name, stars, bonus
         FROM gear
         WHERE id = $1
         """
@@ -19,7 +20,7 @@ class GearDao:
         query = """
         INSERT INTO gear (discord_id, name)
         VALUES ($1, $2)
-        RETURNING id, discord_id, name, stars, bonus, created_at, updated_at
+        RETURNING id, discord_id, name, stars, bonus
         """
         async with self.pool.acquire() as connection:
             row = await connection.fetchrow(query, discord_id, name)
@@ -45,7 +46,7 @@ class GearDao:
 
     async def get_gear_by_discord_id(self, discord_id: int) -> list[GearInstance]:
         query = """
-        SELECT id, discord_id, name, stars, bonus, created_at, updated_at
+        SELECT id, discord_id, name, stars, bonus
         FROM gear
         WHERE discord_id = $1
         """

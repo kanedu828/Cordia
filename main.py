@@ -14,12 +14,14 @@ intents.message_content = True
 intents.members = True
 
 # Env variables
-token = os.getenv('CORDIA_TOKEN')
-psql_connection_string = os.getenv('CORDIA_DB_CONNECTION_STRING')
+token = os.getenv("CORDIA_TOKEN")
+psql_connection_string = os.getenv("CORDIA_DB_CONNECTION_STRING")
+
 
 async def start():
-    client = CordiaClient(psql_connection_string, intents=intents, command_prefix=';')
+    client = CordiaClient(psql_connection_string, intents=intents, command_prefix=";")
     await client.start(token)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     asyncio.run(start())

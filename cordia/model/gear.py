@@ -3,6 +3,7 @@ from enum import Enum
 
 from cordia.model.spells import Spell
 
+
 class GearType(Enum):
     WEAPON = "weapon"
     HAT = "hat"
@@ -12,6 +13,8 @@ class GearType(Enum):
     PENDANT = "pendant"
     CAPE = "cape"
     RING = "ring"
+    GLOVES = "gloves"
+
 
 @dataclass(frozen=True, kw_only=True)
 class Gear:
@@ -35,7 +38,7 @@ class Gear:
     strike_radius: int = 0
     spell: Spell = None
     # Gear Set
-    gear_set: str = ''
+    gear_set: str = ""
 
     def get_max_stars(self):
         if self.level < 10:

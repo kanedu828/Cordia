@@ -6,29 +6,30 @@ def get_stat_modifier(stat: str):
         "combo_chance": "%",
         "strike_radius": "",
         "attack_cooldown": "s",
-        'spell_cooldown': 's',
-        'magic_penetration': '%'
+        "spell_cooldown": "s",
+        "magic_penetration": "%",
     }
-    return stat_type_mapping.get(stat, '')
+    return stat_type_mapping.get(stat, "")
+
 
 def get_stat_emoji(stat: str):
     emoji_mapping = {
         # Main stats
-        'strength': '💪',
-        'persistence': '🔋',
-        'intelligence': '🧠',
-        'efficiency': '⚡️',
-        'luck': '🍀',
+        "strength": "💪",
+        "persistence": "🔋",
+        "intelligence": "🧠",
+        "efficiency": "⚡️",
+        "luck": "🍀",
         # Special Stats
-        'damage': '💥',
-        'crit_chance': '🎯',
-        'boss_damage': '👹',
-        'penetration': '🗡️',
-        'combo_chance': '🥊',
-        'strike_radius': '🎆',
-        'attack_cooldown': '🕒',
+        "damage": "💥",
+        "crit_chance": "🎯",
+        "boss_damage": "👹",
+        "penetration": "🗡️",
+        "combo_chance": "🥊",
+        "strike_radius": "🎆",
+        "attack_cooldown": "🕒",
         # Spells
-        'spell_cooldown': '🕒',
-        'magic_penetration': '🌠'
+        "spell_cooldown": "🕒",
+        "magic_penetration": "🌠",
     }
-    return emoji_mapping.get(stat, '')
+    return emoji_mapping.get(stat, "")

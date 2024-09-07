@@ -3,6 +3,7 @@ import random
 import re
 from typing import List, Tuple
 
+
 @dataclass(frozen=True, kw_only=True)
 class Location:
     name: str
@@ -12,16 +13,16 @@ class Location:
 
     def get_image_path(self):
         image_file_name = self.get_image_file_name()
-        image_path = f'https://kanedu828.github.io/cordia-assets/assets/locations/{image_file_name}'
+        image_path = f"https://kanedu828.github.io/cordia-assets/assets/locations/{image_file_name}"
         return image_path
-    
+
     def get_image_file_name(self):
         # Convert to lowercase
         image_file_name = self.name.lower()
         # Replace spaces and any non-alphanumeric characters with underscores
-        image_file_name = re.sub(r'[\s\W]+', '_', image_file_name)
+        image_file_name = re.sub(r"[\s\W]+", "_", image_file_name)
         # Add the .png extension
-        image_file_name += '.png'
+        image_file_name += ".png"
         return image_file_name
 
     def get_random_monster(self) -> str:
@@ -32,6 +33,6 @@ class Location:
             if upto + weight >= r:
                 return choice
             upto += weight
-    
+
     def get_key_name(self) -> str:
-        return re.sub(r'[\W_]+', '_', self.name.lower())
+        return re.sub(r"[\W_]+", "_", self.name.lower())

@@ -7,6 +7,7 @@ from cordia.view.upgrade_stats_modal import UpgradeStatsModal
 from discord.ui import View, Button
 import discord
 
+
 class StatsPage(Page):
     async def render(self, interaction: discord.Interaction):
         player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
@@ -15,19 +16,34 @@ class StatsPage(Page):
         view = self._create_view()
 
         if get_upgrade_points(player):
-            main_stats = ["strength", "persistence", "intelligence", "efficiency", "luck"]
+            main_stats = [
+                "strength",
+                "persistence",
+                "intelligence",
+                "efficiency",
+                "luck",
+            ]
             for s in main_stats:
-                upgrade_stat_button = Button(label=f"⬆️{get_stat_emoji(s)}", style=discord.ButtonStyle.blurple, row=1)
+                upgrade_stat_button = Button(
+                    label=f"⬆️{get_stat_emoji(s)}",
+                    style=discord.ButtonStyle.blurple,
+                    row=1,
+                )
                 view.add_item(upgrade_stat_button)
 
                 def create_callback(stat):
-                    async def upgrade_stats_button_callback(interaction: discord.Interaction):
-                        modal = UpgradeStatsModal(self.cordia_service, self.discord_id, stat)
+                    async def upgrade_stats_button_callback(
+                        interaction: discord.Interaction,
+                    ):
+                        modal = UpgradeStatsModal(
+                            self.cordia_service, self.discord_id, stat
+                        )
                         await interaction.response.send_modal(modal)
+
                     return upgrade_stats_button_callback
 
                 upgrade_stat_button.callback = create_callback(s)
-        
+
         stats_embed = get_stats_embed(player, player_gear)
 
         await interaction.response.edit_message(embed=stats_embed, view=view)
@@ -40,9 +56,9 @@ class StatsPage(Page):
         view.add_item(back_button)
 
         return view
-    
+
     @only_command_invoker()
     async def back_button_callback(self, interaction: discord.Interaction):
         from cordia.view.pages.home_page import HomePage
-        await HomePage(self. cordia_service, self.discord_id).render(interaction)
-        
+
+        await HomePage(self.cordia_service, self.discord_id).render(interaction)

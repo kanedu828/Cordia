@@ -1,10 +1,11 @@
 from typing import List
-from cordia.model.player_gear import PlayerGear
+from cordia.model.gear_instance import GearInstance
 from cordia.model.spells import Spell
 from cordia.util.exp_util import exp_to_level, level_to_exp
 from cordia.model.gear import Gear
 from cordia.model.player import Player
 from cordia.util.stat_mapping import get_stat_emoji, get_stat_modifier
+
 
 def exp_bar(exp, bar_length=10, filled_char="🟩", empty_char="⬜"):
     """
@@ -18,24 +19,25 @@ def exp_bar(exp, bar_length=10, filled_char="🟩", empty_char="⬜"):
     """
     # Calculate the current level
     current_level = exp_to_level(exp)
-    
+
     # Get the total experience for the current and next levels
     current_level_exp = level_to_exp(current_level)
     next_level_exp = level_to_exp(current_level + 1)
-    
+
     # Calculate progress towards the next level
     exp_in_current_level = exp - current_level_exp
     exp_needed_for_next_level = next_level_exp - current_level_exp
-    
+
     # Calculate the number of filled segments in the bar
     filled_length = int((exp_in_current_level / exp_needed_for_next_level) * bar_length)
-    
+
     # Create the bar string
     bar = filled_char * filled_length + empty_char * (bar_length - filled_length)
-    
+
     return f"**lv. {current_level}** ({exp} exp)\n{bar}"
 
-def get_player_stats_string(player: Player, player_gear: List[PlayerGear]) -> tuple:
+
+def get_player_stats_string(player: Player, player_gear: List[GearInstance]) -> tuple:
     # Initialize the stats with base and gear_bonus for the first group of stats
     main_stats = {
         "strength": {"base": player.strength, "gear_bonus": 0},
@@ -59,14 +61,15 @@ def get_player_stats_string(player: Player, player_gear: List[PlayerGear]) -> tu
     # Loop through player gear to accumulate bonuses
     for pg in player_gear:
         gd: Gear = pg.get_gear_data()
-        main_stats["strength"]["gear_bonus"] += gd.strength
-        main_stats["persistence"]["gear_bonus"] += gd.persistence
-        main_stats["intelligence"]["gear_bonus"] += gd.intelligence
-        main_stats["efficiency"]["gear_bonus"] += gd.efficiency
-        main_stats["luck"]["gear_bonus"] += gd.luck
-        extra_stats["damage"] += gd.damage
+        upgrade_stats = pg.get_upgraded_stats()
+        main_stats["strength"]["gear_bonus"] += upgrade_stats["strength"]
+        main_stats["persistence"]["gear_bonus"] += upgrade_stats["persistence"]
+        main_stats["intelligence"]["gear_bonus"] += upgrade_stats["intelligence"]
+        main_stats["efficiency"]["gear_bonus"] += upgrade_stats["efficiency"]
+        main_stats["luck"]["gear_bonus"] += upgrade_stats["luck"]
+        extra_stats["damage"] += upgrade_stats["damage"]
         extra_stats["crit_chance"] += gd.crit_chance
-        extra_stats["boss_damage"] += gd.boss_damage
+        extra_stats["boss_damage"] += upgrade_stats["boss_damage"]
         extra_stats["penetration"] += gd.penetration
         extra_stats["combo_chance"] += gd.combo_chance
         extra_stats["strike_radius"] += gd.strike_radius
@@ -93,12 +96,13 @@ def get_player_stats_string(player: Player, player_gear: List[PlayerGear]) -> tu
     # Wrap both strings in code blocks for Discord and return as a tuple
     return f"```{main_stats_string}```", f"```{extra_stats_string}```"
 
+
 def get_spell_stats_string(spell: Spell):
     spell_stats = {
-        'spell_damage': spell.damage,
-        'spell_cooldown': spell.spell_cooldown,
-        'spell_strike_radius': spell.strike_radius,
-        'magic_penetration': spell.magic_penetration
+        "spell_damage": spell.damage,
+        "spell_cooldown": spell.spell_cooldown,
+        "spell_strike_radius": spell.strike_radius,
+        "magic_penetration": spell.magic_penetration,
     }
 
     max_stat_length_extra = max(len(stat) for stat in spell_stats)
@@ -110,8 +114,29 @@ def get_spell_stats_string(spell: Spell):
 
     return f"```{spell_stats_string}```"
 
+
 # snake_case -> Snake Case
 def snake_case_to_capital(snake_str):
     # Split by underscore and capitalize each word
-    words = snake_str.split('_')
-    return ' '.join([word.capitalize() for word in words])
+    words = snake_str.split("_")
+    return " ".join([word.capitalize() for word in words])
+
+
+def get_stars_string(stars, max_stars):
+    # Create the filled stars
+    filled_stars = ["<:cordia_star:1281789019826557029>" for _ in range(stars)]
+    # Create the empty stars
+    empty_stars = [
+        "<:cordia_empty_star:1281789033386741824>" for _ in range(max_stars - stars)
+    ]
+
+    # Combine both parts
+    star_output = filled_stars + empty_stars
+
+    # Split into chunks of 5 emojis for readability
+    star_chunks = [
+        "".join(star_output[i : i + 5]) for i in range(0, len(star_output), 5)
+    ]
+
+    # Join the chunks with a space
+    return " ".join(star_chunks)

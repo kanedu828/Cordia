@@ -2,6 +2,7 @@ from datetime import datetime
 import asyncpg
 from cordia.model.player import Player
 
+
 class PlayerDao:
     def __init__(self, pool: asyncpg.Pool):
         self.pool = pool
@@ -29,9 +30,11 @@ class PlayerDao:
             return Player(**record)
 
     async def update_stat(self, discord_id: int, stat_name: str, stat_value: int):
-        valid_stats = {'strength', 'persistence', 'intelligence', 'efficiency', 'luck'}
+        valid_stats = {"strength", "persistence", "intelligence", "efficiency", "luck"}
         if stat_name not in valid_stats:
-            raise ValueError(f"Invalid stat name: {stat_name}. Must be one of {valid_stats}")
+            raise ValueError(
+                f"Invalid stat name: {stat_name}. Must be one of {valid_stats}"
+            )
 
         query = f"""
         UPDATE player
@@ -67,15 +70,15 @@ class PlayerDao:
         """
         async with self.pool.acquire() as connection:
             await connection.execute(query, location, discord_id)
-            
+
     async def update_last_idle_claim(self, discord_id: int, last_idle_claim: datetime):
-            query = """
+        query = """
             UPDATE player
             SET last_idle_claim = $1
             WHERE discord_id = $2
             """
-            async with self.pool.acquire() as connection:
-                await connection.execute(query, last_idle_claim, discord_id)
+        async with self.pool.acquire() as connection:
+            await connection.execute(query, last_idle_claim, discord_id)
 
     async def count_players_in_location(self, location: str) -> int:
         query = """
