@@ -10,7 +10,7 @@ hat_data = {
         luck=2,
     ),
     "wolf_cap": Gear(
-        name="wolf_cap",
+        name="Wolf Cap",
         type=GearType.HAT,
         level=10,
         strength=4,
