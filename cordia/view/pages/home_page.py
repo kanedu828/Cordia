@@ -17,7 +17,7 @@ class HomePage(Page):
         embed.add_field(
             name="📜Quests📜", value="You currently have no quests", inline=False
         )
-        navigation_text = "**Fight**: Fight monsters\n**Stats**: View and upgrade your stats\n**Gear**: View and upgrade your gear"
+        navigation_text = "**Fight**: Fight monsters\n**Fight Boss**: Fight a powerful boss to obtain rewards\n**Stats**: View and upgrade your stats\n**Gear**: View and upgrade your gear"
         embed.add_field(name="🧭Navigation🧭", value=navigation_text, inline=False)
         return embed
 
