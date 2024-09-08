@@ -88,6 +88,10 @@ class CordiaService:
     async def count_players_in_location(self, location: str) -> int:
         return await self.player_dao.count_players_in_location(location)
 
+    async def update_last_boss_killed(self, discord_id):
+        current_time = datetime.datetime.now(datetime.timezone.utc)
+        await self.player_dao.update_last_boss_killed(discord_id, current_time)
+
     # Gear
     async def insert_gear(self, discord_id: int, name: str):
         return await self.gear_dao.insert_gear(discord_id, name)
@@ -214,6 +218,8 @@ class CordiaService:
                     sold_gear_amount += gd.gold_value
 
             await self.increment_gold(discord_id, sold_gear_amount)
+            await self.delete_boss(discord_id)
+            await self.update_last_boss_killed(discord_id)
 
         # Get cooldown expiration
         cooldown_expiration = current_time + datetime.timedelta(

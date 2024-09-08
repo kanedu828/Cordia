@@ -9,7 +9,8 @@ class PlayerDao:
 
     async def get_by_discord_id(self, discord_id: int) -> Player | None:
         query = """
-        SELECT discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location, last_idle_claim
+        SELECT discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location, last_idle_claim,
+               last_boss_killed, created_at, updated_at
         FROM player
         WHERE discord_id = $1
         """
@@ -23,7 +24,8 @@ class PlayerDao:
         query = """
         INSERT INTO player (discord_id)
         VALUES ($1)
-        RETURNING discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location, last_idle_claim
+        RETURNING discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location, last_idle_claim,
+                  last_boss_killed, created_at, updated_at
         """
         async with self.pool.acquire() as connection:
             record = await connection.fetchrow(query, discord_id)
@@ -38,7 +40,7 @@ class PlayerDao:
 
         query = f"""
         UPDATE player
-        SET {stat_name} = $1
+        SET {stat_name} = $1, updated_at = NOW()
         WHERE discord_id = $2
         """
         async with self.pool.acquire() as connection:
@@ -47,7 +49,7 @@ class PlayerDao:
     async def update_exp(self, discord_id: int, exp: int):
         query = """
         UPDATE player
-        SET exp = $1
+        SET exp = $1, updated_at = NOW()
         WHERE discord_id = $2
         """
         async with self.pool.acquire() as connection:
@@ -56,7 +58,7 @@ class PlayerDao:
     async def update_gold(self, discord_id: int, gold: int):
         query = """
         UPDATE player
-        SET gold = $1
+        SET gold = $1, updated_at = NOW()
         WHERE discord_id = $2
         """
         async with self.pool.acquire() as connection:
@@ -65,7 +67,7 @@ class PlayerDao:
     async def update_location(self, discord_id: int, location: str):
         query = """
         UPDATE player
-        SET location = $1
+        SET location = $1, updated_at = NOW()
         WHERE discord_id = $2
         """
         async with self.pool.acquire() as connection:
@@ -73,12 +75,21 @@ class PlayerDao:
 
     async def update_last_idle_claim(self, discord_id: int, last_idle_claim: datetime):
         query = """
-            UPDATE player
-            SET last_idle_claim = $1
-            WHERE discord_id = $2
-            """
+        UPDATE player
+        SET last_idle_claim = $1, updated_at = NOW()
+        WHERE discord_id = $2
+        """
         async with self.pool.acquire() as connection:
             await connection.execute(query, last_idle_claim, discord_id)
+
+    async def update_last_boss_killed(self, discord_id: int, last_boss_killed: datetime):
+        query = """
+        UPDATE player
+        SET last_boss_killed = $1, updated_at = NOW()
+        WHERE discord_id = $2
+        """
+        async with self.pool.acquire() as connection:
+            await connection.execute(query, last_boss_killed, discord_id)
 
     async def count_players_in_location(self, location: str) -> int:
         query = """

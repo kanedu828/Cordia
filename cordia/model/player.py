@@ -14,3 +14,7 @@ class Player:
     gold: int
     location: str
     last_idle_claim: datetime
+    last_boss_killed: datetime
+    created_at: datetime
+    updated_at: datetime
+    

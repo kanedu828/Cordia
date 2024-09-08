@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Literal
 from cordia.model.attack_result import AttackResult
 from cordia.model.boos_fight_result import BossFightResult
@@ -18,6 +18,25 @@ import discord
 class FightBossPage(Page):
     async def render(self, interaction: discord.Interaction):
         bi = await self.cordia_service.get_boss_by_discord_id(self.discord_id)
+        player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
+        current_time = datetime.now(timezone.utc)
+        boss_cd_expiration = player.last_boss_killed + timedelta(hours=8)
+        if boss_cd_expiration > current_time:
+            discord_time = discord.utils.format_dt(
+                player.last_boss_killed + timedelta(hours=8),
+                style="R",
+            )
+            embed = discord.Embed(
+                title=f"You cannot fight a boss right now",
+            )
+
+            embed.add_field(name="", value=f"You have fought a boss too recently. You can fight another boss {discord_time}", inline=False)
+
+            embed.set_image(url="https://kanedu828.github.io/cordia-assets/assets/boss_fight_page.png")
+
+            await interaction.response.edit_message(
+                embed=embed, view=await self._create_loot_room_view()
+            )
         if not bi:
             await self.render_select_boss_page(interaction)
         else:
@@ -69,6 +88,42 @@ class FightBossPage(Page):
         boss_fight_results = await self.cordia_service.boss_fight(self.discord_id)
         await self.fight_boss(interaction, boss_fight_results, "attack")
 
+    async def render_victory_screen(self, interaction: discord.Interaction, boss_fight_results: BossFightResult):
+        bi = boss_fight_results.boss_instance
+        bd = boss_data[bi.name]
+        embed = discord.Embed(
+            title=f"VICTORY! You have defeated {bd.display_monster()}",
+        )
+        embed.set_image(
+            url="https://kanedu828.github.io/cordia-assets/assets/boss_loot_room.png"
+        )
+        # Get loot
+        rewards_text = (
+            f"**{boss_fight_results.exp}** Exp\n**{boss_fight_results.gold}** Gold"
+        )
+        for g in boss_fight_results.gear_loot:
+            new_gear_text = f"**{g.name}. Navigate to your gear to equip it.**"
+            rewards_text += "\n" + new_gear_text
+            new_gear_embed = discord.Embed(
+                title="You found new gear!", color=discord.Color.green()
+            )
+            new_gear_embed.add_field(name="", value=new_gear_text)
+            await interaction.response.send_message(
+                embed=new_gear_embed,
+                ephemeral=True,
+            )
+        if boss_fight_results.sold_gear_amount:
+            rewards_text += f"\nYou found gear you already own. You gained **{boss_fight_results.sold_gear_amount}** gold instead."
+        embed.add_field(
+            name=f"💰Loot💰",
+            value=rewards_text,
+            inline=False,
+        )
+        await interaction.response.edit_message(
+            embed=embed, view=await self._create_loot_room_view()
+        )
+
+
     async def fight_boss(
         self,
         interaction: discord.Interaction,
@@ -113,28 +168,13 @@ class FightBossPage(Page):
         embed.add_field(name="⚔️Battle⚔️", value=battle_text, inline=False)
 
         if boss_fight_results.killed:
-            # Get loot
-            rewards_text = (
-                f"**{boss_fight_results.exp}** Exp\n**{boss_fight_results.gold}** Gold"
-            )
-            for g in boss_fight_results.gear_loot:
-                new_gear_text = f"**{g.name}. Navigate to your gear to equip it.**"
-                rewards_text += "\n" + new_gear_text
-                new_gear_embed = discord.Embed(
-                    title="You found new gear!", color=discord.Color.green()
+            await self.render_victory_screen(interaction, boss_fight_results)
+            if boss_fight_results.leveled_up:
+                level_up_embed = get_level_up_embed(
+                    exp_to_level(boss_fight_results.player_exp)
                 )
-                new_gear_embed.add_field(name="", value=new_gear_text)
-                await interaction.response.send_message(
-                    embed=new_gear_embed,
-                    ephemeral=True,
-                )
-            if boss_fight_results.sold_gear_amount:
-                rewards_text += f"\nYou found gear you already own. You gained **{boss_fight_results.sold_gear_amount}** gold instead."
-            embed.add_field(
-                name=f"💰VICTORY! You have defeated {bd.display_monster()}. Here are you rewards💰",
-                value=rewards_text,
-                inline=False,
-            )
+                await interaction.followup.send(embed=level_up_embed, ephemeral=True)
+            return
 
         # Set the cooldown for the attack button
         cd_embed_index = 3
@@ -153,11 +193,6 @@ class FightBossPage(Page):
             embed=embed, view=await self._create_view()
         )
 
-        if boss_fight_results.leveled_up:
-            level_up_embed = get_level_up_embed(
-                exp_to_level(boss_fight_results.player_exp)
-            )
-            await interaction.followup.send(embed=level_up_embed, ephemeral=True)
 
     async def _create_boss_select_view(self):
         view = View(timeout=None)
@@ -187,6 +222,13 @@ class FightBossPage(Page):
         back_button = Button(label="Back", style=discord.ButtonStyle.grey, row=2)
         back_button.callback = self.back_button_callback
         view.add_item(boss_select)
+        view.add_item(back_button)
+        return view
+    
+    async def _create_loot_room_view(self):
+        view = View(timeout=None)
+        back_button = Button(label="Back", style=discord.ButtonStyle.grey, row=2)
+        back_button.callback = self.back_button_callback
         view.add_item(back_button)
         return view
 
