@@ -13,11 +13,13 @@ class ViewGearPage(Page):
         cordia_service: CordiaService,
         discord_id: int,
         gear_id: int,
+        is_all: bool,
         page: int = -1,
     ):
         super().__init__(cordia_service, discord_id)
         self.gear_id = gear_id
         self.page = page  # Used to get back to previous state in gear_page
+        self.is_all = is_all  # Used to return to all armory if that is origin
 
     async def render(self, interaction: discord.Interaction):
         gi = await self.cordia_service.get_gear_by_id(self.gear_id)
@@ -129,7 +131,9 @@ class ViewGearPage(Page):
 
         gear = await self.cordia_service.get_gear_by_id(self.gear_id)
         gear_page = await GearPage.create(
-            self.cordia_service, self.discord_id, gear_data[gear.name].type
+            self.cordia_service,
+            self.discord_id,
+            None if self.is_all else gear_data[gear.name].type,
         )
         if self.page >= 0:
             gear_page.armory_page = self.page

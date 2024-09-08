@@ -16,7 +16,7 @@ class GearPage(Page):
         super().__init__(cordia_service, discord_id)
         self.armory_pages: List[discord.Embed] = []
         self.armory_page: int = -1  # -1 means we are on equipped gear page
-        self.gear_type = GearType.WEAPON.value.title()
+        self.gear_type = "all"
 
     @classmethod
     async def create(
@@ -89,9 +89,9 @@ class GearPage(Page):
         # Send the response
         await interaction.response.edit_message(embed=embed, view=view)
 
-    async def paginate_gear(self, type: GearType) -> List[List[GearInstance]]:
+    async def paginate_gear(self, type: GearType | None) -> List[List[GearInstance]]:
         gear: List[GearInstance] = await self.cordia_service.get_armory(self.discord_id)
-        filtered_gear = [g for g in gear if gear_data[g.name].type == type]
+        filtered_gear = [g for g in gear if not type or gear_data[g.name].type == type]
         filtered_gear.sort(key=lambda g: gear_data[g.name].level, reverse=True)
         page_size = 10
         return [
@@ -130,7 +130,9 @@ class GearPage(Page):
 
         if len(gear_list) == 0:
             embed.add_field(
-                name="", value=f"You have no {self.gear_type}s", inline=False
+                name="",
+                value=f"You have no {'armor' if self.gear_type == 'all' else self.gear_type}s",
+                inline=False,
             )
         else:
             gear_select = Select(
@@ -167,16 +169,17 @@ class GearPage(Page):
     def _create_armory_view(self):
         view = View(timeout=None)
 
+        gear_type_options = [discord.SelectOption(label="All", value="all")]
+        gear_type_options += [
+            discord.SelectOption(label=snake_case_to_capital(g.value), value=g.value)
+            for g in GearType
+        ]
+
         gear_type_select = Select(
             placeholder="Select a gear type",
             min_values=1,
             max_values=1,
-            options=[
-                discord.SelectOption(
-                    label=snake_case_to_capital(g.value), value=g.value
-                )
-                for g in GearType
-            ],
+            options=gear_type_options,
             row=0,
         )
         gear_type_select.callback = self.gear_type_select_callback
@@ -220,16 +223,21 @@ class GearPage(Page):
             self.cordia_service,
             self.discord_id,
             int(interaction.data["values"][0]),
+            self.gear_type == "all",
             self.armory_page,
         ).render(interaction)
 
     @only_command_invoker()
     async def gear_type_select_callback(self, interaction: discord.Interaction):
-        self.armory_pages = await self.paginate_gear(
-            GearType[interaction.data["values"][0].upper()]
-        )
-        self.armory_page = 0
+        if interaction.data["values"][0] == "all":
+            self.armory_pages = await self.paginate_gear(None)
+        else:
+            self.armory_pages = await self.paginate_gear(
+                GearType[interaction.data["values"][0].upper()]
+            )
         self.gear_type = interaction.data["values"][0]
+        self.armory_page = 0
+
         await self.render_armory(interaction)
 
     @only_command_invoker()

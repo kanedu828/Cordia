@@ -98,6 +98,18 @@ class CordiaService:
         return await self.player_gear_dao.get_player_gear(discord_id)
 
     async def equip_gear(self, discord_id: int, gear_id: int, slot: str):
+        gi = await self.get_gear_by_id(gear_id)
+        gd = gear_data[gi.name]
+        current_time = datetime.datetime.now()
+        attack_cooldown_expiration = current_time + datetime.timedelta(
+            seconds=gd.attack_cooldown
+        )
+        self.player_cooldowns["attack"][discord_id] = attack_cooldown_expiration
+        if gd.spell:
+            spell_cooldown_expiration = current_time + datetime.timedelta(
+                seconds=gd.spell.spell_cooldown
+            )
+            self.player_cooldowns["cast_spell"][discord_id] = spell_cooldown_expiration
         return await self.player_gear_dao.equip_gear(discord_id, gear_id, slot)
 
     async def remove_gear(self, discord_id: int, slot: str):
@@ -136,8 +148,8 @@ class CordiaService:
 
         times_attacked = int(time_passed.total_seconds() / idle_frequency)
 
-        gold_gained = monster_mean["gold"]
-        exp_gained = monster_mean["exp"]
+        gold_gained = monster_mean["gold"] + player_stats["luck"]
+        exp_gained = monster_mean["exp"] + player_stats["efficiency"]
         damage = player_stats["damage"] + player_stats["persistence"]
 
         player_level = exp_to_level(player.exp)
