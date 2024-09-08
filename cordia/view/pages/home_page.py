@@ -131,7 +131,7 @@ class HomePage(Page):
     async def fight_button_callback(self, interaction: discord.Interaction):
         from cordia.view.pages.fight_page import FightPage
 
-        bi = self.cordia_service.get_boss_by_discord_id(self.discord_id)
+        bi = await self.cordia_service.get_boss_by_discord_id(self.discord_id)
         if bi:
             in_boss_embed = discord.Embed(
                 title=f"You cannot fight right now",
