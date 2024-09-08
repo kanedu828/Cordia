@@ -99,7 +99,7 @@ class FightBossPage(Page):
                 embed=embed, view=await self._create_view()
             )
             return
-
+        
         # Fight monster
         battle_text = f"You deal **{boss_fight_results.damage}** damage.\n"
         if action == "cast_spell":

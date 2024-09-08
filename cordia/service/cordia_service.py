@@ -153,14 +153,15 @@ class CordiaService:
     async def boss_fight(
         self, discord_id: int, action: Literal["attack", "cast_spell"] = "attack"
     ) -> BossFightResult:
+        boss_instance = await self.get_boss_by_discord_id(discord_id)
         if self.is_cooldown(discord_id, action):
             return BossFightResult(
                 on_cooldown=True,
                 cooldown_expiration=self.player_cooldowns[action][discord_id],
+                boss_instance=boss_instance,
             )
 
         current_time = datetime.datetime.now(datetime.timezone.utc)
-        boss_instance = await self.get_boss_by_discord_id(discord_id)
 
         if current_time > boss_instance.expiration_time:
             return BossFightResult(
