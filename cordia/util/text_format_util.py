@@ -54,7 +54,7 @@ def hp_bar(current_health: int, max_health: int, bar_length=10):
     bar = filled_emoji * filled_length + empty_emoji * empty_length
 
     # Return the health bar string
-    return f"**Boss HP**: ({current_health}/{max_health}\n{bar}"
+    return f"**Boss HP**: ({current_health}/{max_health})\n{bar}"
 
 
 def get_player_stats_string(player: Player, player_gear: List[GearInstance]) -> tuple:
