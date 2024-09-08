@@ -13,7 +13,3 @@ class Page(ABC):
     async def render(self, interaction: discord.Interaction):
         """Render the page, must be implemented by subclasses."""
         pass
-
-    @abstractmethod
-    async def _create_view(self):
-        pass

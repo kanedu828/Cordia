@@ -1,6 +1,7 @@
 from cordia.model.gear import GearType
 from cordia.model.gear_instance import GearInstance
 from cordia.util.decorators import only_command_invoker
+from cordia.view.pages.fight_boss_page import FightBossPage
 from cordia.view.pages.page import Page
 import discord
 from discord.ui import Button, View
@@ -101,6 +102,14 @@ class HomePage(Page):
             self.fight_button_callback
         )  # Attach the callback function here
 
+        # Fight button with callback attached
+        fight_boss_button = Button(
+            label="Fight Boss", style=discord.ButtonStyle.blurple
+        )
+        fight_boss_button.callback = (
+            self.fight_boss_button_callback
+        )  # Attach the callback function here
+
         # Stats button with callback attached
         stats_button = Button(label="Stats", style=discord.ButtonStyle.blurple)
         stats_button.callback = (
@@ -112,6 +121,7 @@ class HomePage(Page):
 
         # Add buttons to the view
         view.add_item(fight_button)
+        view.add_item(fight_boss_button)
         view.add_item(stats_button)
         view.add_item(gear_button)
 
@@ -122,6 +132,12 @@ class HomePage(Page):
         from cordia.view.pages.fight_page import FightPage
 
         await FightPage(self.cordia_service, self.discord_id).render(interaction)
+
+    @only_command_invoker()
+    async def fight_boss_button_callback(self, interaction: discord.Interaction):
+        from cordia.view.pages.fight_page import FightPage
+
+        await FightBossPage(self.cordia_service, self.discord_id).render(interaction)
 
     @only_command_invoker()
     async def stats_button_callback(self, interaction: discord.Interaction):

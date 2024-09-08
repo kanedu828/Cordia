@@ -1,3 +1,4 @@
+from cordia.dao.boss_instance_dao import BossInstanceDao
 from discord.ext import commands
 from typing import List
 import asyncpg
@@ -60,10 +61,14 @@ class CordiaClient(commands.Bot):
         self.player_dao = PlayerDao(self.pool)
         self.gear_dao = GearDao(self.pool)
         self.player_gear_dao = PlayerGearDao(self.pool)
+        self.boss_instance_dao = BossInstanceDao(self.pool)
 
         # SERVICE
         self.cordia_service = CordiaService(
-            self.player_dao, self.gear_dao, self.player_gear_dao
+            player_dao=self.player_dao,
+            gear_dao=self.gear_dao,
+            player_gear_dao=self.player_gear_dao,
+            boss_instance_dao=self.boss_instance_dao,
         )
 
     async def on_ready(self):

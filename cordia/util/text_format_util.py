@@ -7,7 +7,12 @@ from cordia.model.player import Player
 from cordia.util.stat_mapping import get_stat_emoji, get_stat_modifier
 
 
-def exp_bar(exp, bar_length=10, filled_char="🟩", empty_char="⬜"):
+def exp_bar(
+    exp,
+    bar_length=10,
+    filled_char="<:cordia_exp_bar_filled:1282194013230727248>",
+    empty_char="<:cordia_empty_bar:1282195811115208745>",
+):
     """
     Generate an experience bar using emojis or characters.
 
@@ -35,6 +40,21 @@ def exp_bar(exp, bar_length=10, filled_char="🟩", empty_char="⬜"):
     bar = filled_char * filled_length + empty_char * (bar_length - filled_length)
 
     return f"**lv. {current_level}** ({exp} exp)\n{bar}"
+
+
+def hp_bar(current_health: int, max_health: int, bar_length=10):
+    filled_emoji = "<:cordia_hp_bar_filled:1282187982127763606>"
+    empty_emoji = "<:cordia_empty_bar:1282195811115208745>"
+
+    # Calculate the number of filled segments
+    filled_length = int(bar_length * current_health / max_health)
+    empty_length = bar_length - filled_length
+
+    # Create the health bar using the emojis
+    bar = filled_emoji * filled_length + empty_emoji * empty_length
+
+    # Return the health bar string
+    return f"**Boss HP**:\n{bar}"
 
 
 def get_player_stats_string(player: Player, player_gear: List[GearInstance]) -> tuple:

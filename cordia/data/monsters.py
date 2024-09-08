@@ -20,6 +20,7 @@ monster_data = {
             ("basic_wand", 0.05),
             ("basic_dagger", 0.05),
             ("basic_bow", 0.05),
+            ("goblin_dagger", 0.02),
         ],
     ),
     "wolf": Monster(

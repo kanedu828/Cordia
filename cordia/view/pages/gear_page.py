@@ -23,7 +23,7 @@ class GearPage(Page):
         cls,
         cordia_service: CordiaService,
         discord_id: int,
-        type: GearType = GearType.WEAPON,
+        type: GearType = None,
     ):
         """
         So we can initialize the armory_pages on page creation instead of

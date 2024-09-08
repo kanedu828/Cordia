@@ -1,14 +1,18 @@
 import datetime
 from typing import List, Literal, Tuple
+from cordia.dao.boss_instance_dao import BossInstanceDao
 from cordia.dao.player_dao import PlayerDao
 from cordia.data.locations import location_data
 from cordia.dao.player_gear_dao import PlayerGearDao
 from cordia.dao.gear_dao import GearDao
 from cordia.data.gear import gear_data
+from cordia.data.bosses import boss_data
 import random
 
 from cordia.data.monsters import monster_data
 from cordia.model.attack_result import AttackResult
+from cordia.model.boos_fight_result import BossFightResult
+from cordia.model.boss_instance import BossInstance
 from cordia.model.gear_instance import GearInstance
 from cordia.model.player import Player
 from cordia.model.gear import GearType
@@ -27,11 +31,16 @@ from cordia.util.stats_util import (
 
 class CordiaService:
     def __init__(
-        self, player_dao: PlayerDao, gear_dao: GearDao, player_gear_dao: PlayerGearDao
+        self,
+        player_dao: PlayerDao,
+        gear_dao: GearDao,
+        player_gear_dao: PlayerGearDao,
+        boss_instance_dao: BossInstanceDao,
     ):
         self.player_dao = player_dao
         self.gear_dao = gear_dao
         self.player_gear_dao = player_gear_dao
+        self.boss_instance_dao = boss_instance_dao
 
         self.player_cooldowns = {"attack": {}, "cast_spell": {}}
 
@@ -100,7 +109,7 @@ class CordiaService:
     async def equip_gear(self, discord_id: int, gear_id: int, slot: str):
         gi = await self.get_gear_by_id(gear_id)
         gd = gear_data[gi.name]
-        current_time = datetime.datetime.now()
+        current_time = datetime.datetime.now(datetime.timezone.utc)
         attack_cooldown_expiration = current_time + datetime.timedelta(
             seconds=gd.attack_cooldown
         )
@@ -121,7 +130,126 @@ class CordiaService:
     async def get_player_gear_by_gear_id(self, gear_id: int) -> GearInstance:
         return await self.player_gear_dao.get_by_gear_id(gear_id)
 
+    # Boss Instance
+    async def get_boss_by_discord_id(self, discord_id: int) -> BossInstance:
+        return await self.boss_instance_dao.get_boss_by_discord_id(discord_id)
+
+    async def update_boss_hp(self, discord_id: int, current_hp: int):
+        await self.boss_instance_dao.update_boss_hp(discord_id, current_hp)
+
+    async def insert_boss(self, discord_id: int, name: str):
+        expiration_time = datetime.datetime.now(
+            datetime.timezone.utc
+        ) + datetime.timedelta(hours=1)
+        bd = boss_data[name]
+        await self.boss_instance_dao.insert_boss(
+            discord_id, bd.hp, name, expiration_time
+        )
+
+    async def delete_boss(self, discord_id):
+        await self.boss_instance_dao.delete_boss_by_discord_id(discord_id)
+
     # Battle
+    async def boss_fight(
+        self, discord_id: int, action: Literal["attack", "cast_spell"] = "attack"
+    ) -> BossFightResult:
+        if self.is_cooldown(discord_id, action):
+            return BossFightResult(
+                on_cooldown=True,
+                cooldown_expiration=self.player_cooldowns[action][discord_id],
+            )
+
+        current_time = datetime.datetime.now(datetime.timezone.utc)
+        boss_instance = await self.get_boss_by_discord_id(discord_id)
+
+        if current_time > boss_instance.expiration_time:
+            return BossFightResult(
+                is_expired=True,
+                boss_expiration=boss_instance.expiration_time,
+                boss_instance=boss_instance,
+            )
+
+        player = await self.get_player_by_discord_id(discord_id)
+        player_gear = await self.get_player_gear(discord_id)
+        player_stats = get_player_stats(player, player_gear)
+        weapon = get_weapon_from_player_gear(player_gear)
+        weapon_data = gear_data[weapon.name]
+        boss = boss_data[boss_instance.name]
+
+        # Deal damage
+        damage, is_crit = self.calculate_attack_damage(
+            boss, player, player_gear, action
+        )
+        await self.update_boss_hp(discord_id, boss_instance.current_hp - damage)
+        boss_instance.current_hp = boss_instance.current_hp - damage
+
+        exp_gained = 0
+        gold_gained = 0
+
+        # If boss is killed
+        new_gear_loot = []
+        sold_gear_amount = 0
+        if boss_instance.current_hp <= 0:
+            exp_gained = random_within_range(
+                int((boss.exp + min(player_stats["efficiency"], boss.exp)))
+            )
+
+            gold_gained = random_within_range(
+                int((boss.gold + min(player_stats["luck"], boss.gold)))
+            )
+
+            await self.increment_exp(discord_id, exp_gained)
+            await self.increment_gold(discord_id, gold_gained)
+
+            # Handle gear drops
+            gear_loot = boss.get_dropped_gear()
+
+            for g in gear_loot:
+                gd = gear_data[g]
+                try:
+                    await self.insert_gear(discord_id, g)
+                    new_gear_loot.append(gd)
+                except:
+                    sold_gear_amount += gd.gold_value
+
+            await self.increment_gold(discord_id, sold_gear_amount)
+
+        # Get cooldown expiration
+        cooldown_expiration = current_time + datetime.timedelta(
+            seconds=weapon_data.attack_cooldown
+        )
+
+        is_combo = random.random() < player_stats["combo_chance"] / 100
+        if is_combo:
+            cooldown_expiration = current_time + datetime.timedelta(seconds=1)
+
+        self.player_cooldowns[action][discord_id] = cooldown_expiration
+
+        boss_fight_result = BossFightResult(
+            boss_instance=boss_instance,
+            killed=boss_instance.current_hp <= 0,
+            exp=exp_gained,
+            gold=gold_gained,
+            gear_loot=new_gear_loot,
+            sold_gear_amount=sold_gear_amount,
+            on_cooldown=False,
+            cooldown_expiration=cooldown_expiration,
+            leveled_up=exp_to_level(player.exp + exp_gained) > exp_to_level(player.exp),
+            is_crit=is_crit,
+            damage=damage,
+            is_combo=is_combo,
+            boss_expiration=boss_instance.expiration_time,
+            player_exp=player.exp + exp_gained,
+        )
+
+        if action == "cast_spell" and weapon_data.spell:
+            boss_fight_result.spell_name = weapon_data.spell.name
+            boss_fight_result.spell_text = weapon_data.spell.cast_text
+            boss_fight_result.cooldown_expiration = current_time + datetime.timedelta(
+                seconds=weapon_data.spell.spell_cooldown
+            )
+        return boss_fight_result
+
     async def idle_fight(self, discord_id: int):
         player: Player = await self.get_player_by_discord_id(discord_id)
         player_gear = await self.get_player_gear(discord_id)
@@ -167,7 +295,9 @@ class CordiaService:
         dpm = round(damage * 60 / idle_frequency, 2)
 
         if time_passed > datetime.timedelta(minutes=10):
-            await self.update_last_idle_claim(discord_id, datetime.datetime.now())
+            await self.update_last_idle_claim(
+                discord_id, datetime.datetime.now(datetime.timezone.utc)
+            )
             await self.increment_exp(discord_id, exp_gained)
             await self.increment_gold(discord_id, gold_gained)
         else:
@@ -192,7 +322,7 @@ class CordiaService:
             > exp_to_level(player.exp),
         }
 
-    async def calculate_attack_damage(
+    def calculate_attack_damage(
         self,
         monster: Monster,
         player: Player,
@@ -243,31 +373,39 @@ class CordiaService:
 
         return int(damage), is_crit
 
-    async def attack(
-        self, discord_id: int, action: Literal["attack", "cast_spell"] = "attack"
-    ) -> AttackResult:
-        player = await self.get_or_insert_player(discord_id)
-        player_gear = await self.get_player_gear(discord_id)
-        player_stats = get_player_stats(player, player_gear)
-        location = location_data[player.location]
-        monster_name = location.get_random_monster()
-        monster = monster_data[monster_name]
-
-        current_time = datetime.datetime.now()
-
+    def is_cooldown(
+        self, discord_id: int, action: Literal["attack", "cast_spell"]
+    ) -> bool:
         # Check if the player is on cooldown
+        current_time = datetime.datetime.now(datetime.timezone.utc)
         if discord_id in self.player_cooldowns[action]:
             cooldown_end = self.player_cooldowns[action][discord_id]
             if current_time < cooldown_end:
                 # Player is still on cooldown
-                return AttackResult(
-                    on_cooldown=True,
-                    cooldown_expiration=cooldown_end,
-                    location=location,
-                    player_exp=player.exp,
-                )
+                return True
+        return False
 
-        damage, is_crit = await self.calculate_attack_damage(
+    async def attack(
+        self, discord_id: int, action: Literal["attack", "cast_spell"] = "attack"
+    ) -> AttackResult:
+
+        player = await self.get_or_insert_player(discord_id)
+        player_gear = await self.get_player_gear(discord_id)
+        player_stats = get_player_stats(player, player_gear)
+        location = location_data[player.location]
+        if self.is_cooldown(discord_id, action):
+            return AttackResult(
+                on_cooldown=True,
+                cooldown_expiration=self.player_cooldowns[action][discord_id],
+                location=location,
+                player_exp=player.exp,
+            )
+        monster_name = location.get_random_monster()
+        monster = monster_data[monster_name]
+
+        current_time = datetime.datetime.now(datetime.timezone.utc)
+
+        damage, is_crit = self.calculate_attack_damage(
             monster, player, player_gear, action
         )
         kill_rate = float(damage) / monster.hp

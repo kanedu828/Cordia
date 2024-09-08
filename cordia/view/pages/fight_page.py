@@ -1,12 +1,14 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Literal
 from cordia.model.attack_result import AttackResult
 from cordia.model.location import Location
 from cordia.util.decorators import only_command_invoker
 from cordia.util.exp_util import exp_to_level
 from cordia.util.text_format_util import exp_bar
+from cordia.view.embeds.level_up_embed import get_level_up_embed
 from cordia.view.pages.page import Page
 from cordia.data.locations import location_data
+from cordia.data.bosses import boss_data
 from cordia.data.gear import gear_data
 from discord.ui import View, Button, Select
 import discord
@@ -55,7 +57,8 @@ class FightPage(Page):
             idle_text = f"You battled monsters for **{formatted_time}** with a DPM of **{idle_results['dpm']}**. After all that time, you reap your rewards."
         else:
             discord_time = discord.utils.format_dt(
-                datetime.now() + (timedelta(minutes=10) - time_passed), style="R"
+                datetime.now(timezone.utc) + (timedelta(minutes=10) - time_passed),
+                style="R",
             )
             idle_text = f"You are still battling monsters. You can claim your rewards {discord_time}"
 
@@ -134,6 +137,7 @@ class FightPage(Page):
 
         embed.set_image(url=location.get_image_path())
 
+        # Get the player count at this location
         location_player_count = await self.cordia_service.count_players_in_location(
             location.get_key_name()
         )
@@ -141,6 +145,7 @@ class FightPage(Page):
             text=f"{location_player_count} players are slaying monsters in this location."
         )
 
+        # Cooldown message
         if attack_results.on_cooldown:
             cd_type_text = "attack"
             if action == "cast_spell":
@@ -154,6 +159,7 @@ class FightPage(Page):
             )
             return
 
+        # Fight monster
         battle_text = f"You deal **{attack_results.damage}** damage.\n"
         if action == "cast_spell":
             battle_text = f"You cast **{attack_results.spell_name}**! {attack_results.spell_text}. You deal **{attack_results.damage}** damage.\n"
@@ -174,9 +180,19 @@ class FightPage(Page):
 
         embed.add_field(name="⚔️Battle⚔️", value=battle_text, inline=False)
 
+        # Get loot
         rewards_text = f"**{attack_results.exp}** Exp\n**{attack_results.gold}** Gold"
         for g in attack_results.gear_loot:
-            rewards_text += f"**\n{g.name}. Navigate to your gear to equip it.**"
+            new_gear_text = f"**{g.name}. Navigate to your gear to equip it.**"
+            rewards_text += "\n" + new_gear_text
+            new_gear_embed = discord.Embed(
+                title="You found new gear!", color=discord.Color.green()
+            )
+            new_gear_embed.add_field(name="", value=new_gear_text)
+            await interaction.response.send_message(
+                embed=new_gear_embed,
+                ephemeral=True,
+            )
         if attack_results.sold_gear_amount:
             rewards_text += f"\nYou found gear you already own. You gained **{attack_results.sold_gear_amount}** gold instead."
         embed.add_field(name="💰Rewards💰", value=rewards_text, inline=False)
@@ -198,32 +214,8 @@ class FightPage(Page):
             embed=embed, view=await self._create_view()
         )
 
-        unlocked_locations = {
-            key: location
-            for key, location in location_data.items()
-            if (lambda loc: loc.level_unlock == current_level)(location)
-        }
-        if unlocked_locations:
-            level_up_text = "\n".join(
-                f"**{location.name}**" for location in unlocked_locations.values()
-            )
-        else:
-            level_up_text = "No new locations unlocked."
         if attack_results.leveled_up:
-            level_up_embed = discord.Embed(
-                title=f"✨You leveled up to level {current_level}!✨",
-                color=discord.Color.blue(),
-            )
-            level_up_embed.add_field(
-                name="Go to your stats page to use your upgrade points!",
-                value="",
-                inline=False,
-            )
-            level_up_embed.add_field(
-                name="You unlocked the following new locations:",
-                value=level_up_text,
-                inline=False,
-            )
+            level_up_embed = get_level_up_embed(current_level)
             await interaction.followup.send(embed=level_up_embed, ephemeral=True)
 
     async def _create_view(self):
@@ -291,8 +283,5 @@ class FightPage(Page):
         await self.cordia_service.update_location(
             interaction.user.id, interaction.data["values"][0]
         )
-        from cordia.view.pages.fight_page import (
-            FightPage,
-        )  # Lazy import, avoid circular dep
 
-        await FightPage(self.cordia_service, self.discord_id).render(interaction)
+        await self.render(interaction)

@@ -32,6 +32,11 @@ def upgrade() -> None:
         sa.Column("gold", sa.Integer, nullable=False, server_default="0"),
         sa.Column("location", sa.String(256), server_default="the_plains_i"),
         sa.Column(
+            "last_boss_killed",
+            sa.TIMESTAMP(timezone=True),
+            server_default=func.now() - sa.text("interval '24 hours'"),
+        ),
+        sa.Column(
             "created_at",
             sa.TIMESTAMP(timezone=True),
             server_default=func.now(),
@@ -102,6 +107,69 @@ def upgrade() -> None:
             ["discord_id"], ["player.discord_id"], ondelete="CASCADE"
         ),
         sa.ForeignKeyConstraint(["gear_id"], ["gear.id"], ondelete="CASCADE"),
+    ),
+
+    op.create_table(
+        "boss_instance",
+        sa.Column("id", sa.Integer, autoincrement=True),
+        sa.Column(
+            "discord_id",
+            sa.BigInteger,
+            sa.ForeignKey("player.discord_id", ondelete="CASCADE"),
+            nullable=False,
+        ),
+        sa.Column("current_hp", sa.Integer, nullable=False),
+        sa.Column("name", sa.String(50), nullable=False),
+        sa.PrimaryKeyConstraint("id", "discord_id"),
+        sa.UniqueConstraint(
+            "discord_id"
+        ),  # This ensures discord_id is unique by itself
+        sa.Column(
+            "created_at",
+            sa.TIMESTAMP(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        ),
+        sa.Column(
+            "updated_at",
+            sa.TIMESTAMP(timezone=True),
+            server_default=func.now(),
+            onupdate=func.now(),
+            nullable=False,
+        ),
+        sa.Column(
+            "expiration_time",
+            sa.TIMESTAMP(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        ),
+    )
+
+    op.create_table(
+        "inventory",
+        sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
+        sa.Column(
+            "discord_id",
+            sa.BigInteger,
+            sa.ForeignKey("player.discord_id", ondelete="CASCADE"),
+            nullable=False,
+        ),
+        sa.Column("count", sa.Integer, nullable=False),
+        sa.Column("name", sa.String(50), nullable=False),
+        sa.UniqueConstraint("discord_id"),
+        sa.Column(
+            "created_at",
+            sa.TIMESTAMP(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        ),
+        sa.Column(
+            "updated_at",
+            sa.TIMESTAMP(timezone=True),
+            server_default=func.now(),
+            onupdate=func.now(),
+            nullable=False,
+        ),
     )
 
 
