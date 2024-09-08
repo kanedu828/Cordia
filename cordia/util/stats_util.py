@@ -80,6 +80,7 @@ def get_stats_embed(player: Player, player_gear: List[GearInstance]):
 
 
 def get_upgrade_points(player: Player) -> int:
+    points_per_level = 3
     init_base_stat_sum = 5
     base_stat_sum = (
         player.intelligence
@@ -89,7 +90,7 @@ def get_upgrade_points(player: Player) -> int:
         + player.luck
     )
     level = exp_to_level(player.exp)
-    return max(level - base_stat_sum + init_base_stat_sum, 0)
+    return max(level * points_per_level - base_stat_sum + init_base_stat_sum, 0)
 
 
 def random_within_range(base_value) -> int:

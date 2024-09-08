@@ -7,6 +7,6 @@ shoes_data = {
         type=GearType.SHOES,
         level=5,
         gold_value=25,
-        luck=2,
+        luck=3,
     )
 }

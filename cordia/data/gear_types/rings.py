@@ -7,6 +7,6 @@ ring_data = {
         type=GearType.RING,
         level=10,
         gold_value=25,
-        intelligence=2,
+        intelligence=6,
     ),
 }

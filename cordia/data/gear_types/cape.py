@@ -7,7 +7,7 @@ cape_data = {
         type=GearType.CAPE,
         level=5,
         gold_value=25,
-        luck=1,
+        luck=3,
         efficiency=1,
     )
 }

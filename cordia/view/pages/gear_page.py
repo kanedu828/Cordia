@@ -44,24 +44,12 @@ class GearPage(Page):
             self.discord_id
         )
 
-        # Order gear based on the GearType Enum
-        gear_order = [
-            GearType.WEAPON,
-            GearType.HAT,
-            GearType.TOP,
-            GearType.PANTS,
-            GearType.SHOES,
-            GearType.PENDANT,
-            GearType.CAPE,
-            GearType.RING,
-        ]
-
         # Create a dictionary to quickly look up gear by slot
         gear_dict = {gear.slot: gear for gear in player_gear}
 
         select_options = []
         # Add fields to the embed in the specified order
-        for gear_type in gear_order:
+        for gear_type in GearType:
             gi = gear_dict.get(gear_type.value, None)
             if gi:
                 gd = gear_data[gi.name]

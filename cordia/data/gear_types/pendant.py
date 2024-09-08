@@ -7,6 +7,6 @@ pendant_data = {
         type=GearType.PENDANT,
         level=10,
         gold_value=25,
-        intelligence=2,
+        intelligence=6,
     ),
 }

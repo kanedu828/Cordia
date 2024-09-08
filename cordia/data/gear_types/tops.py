@@ -7,7 +7,7 @@ top_data = {
         type=GearType.TOP,
         level=5,
         gold_value=25,
-        strength=2,
+        strength=3,
         luck=2,
     ),
     "thick_fat_vest": Gear(
@@ -15,6 +15,6 @@ top_data = {
         type=GearType.TOP,
         level=10,
         gold_value=25,
-        strength=6,
+        strength=9,
     ),
 }

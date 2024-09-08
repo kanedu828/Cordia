@@ -8,14 +8,14 @@ pants_data = {
         level=5,
         gold_value=25,
         strength=1,
-        luck=2,
+        luck=3,
     ),
     "goblin_king_pants": Gear(
         name="Goblin King Pants",
         type=GearType.PANTS,
         level=20,
         gold_value=50,
-        strength=4,
-        luck=10,
+        strength=9,
+        luck=12,
     ),
 }
