@@ -135,11 +135,11 @@ class HomePage(Page):
         if bi:
             in_boss_embed = discord.Embed(
                 title=f"You cannot fight right now",
-                color=discord.Color.blue(),
+                color=discord.Color.red(),
             )
             in_boss_embed.add_field(
-                name="You must finish or forfeit your current boss fight."
-                value=""
+                name="You must finish or forfeit your current boss fight.",
+                value="",
                 inline=False
             )
             await interaction.response.send_message(
