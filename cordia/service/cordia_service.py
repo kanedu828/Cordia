@@ -251,11 +251,10 @@ class CordiaService:
             is_combo=is_combo,
             boss_expiration=boss_instance.expiration_time,
             player_exp=player.exp + exp_gained,
+            weapon=weapon_data
         )
 
         if action == "cast_spell" and weapon_data.spell:
-            boss_fight_result.spell_name = weapon_data.spell.name
-            boss_fight_result.spell_text = weapon_data.spell.cast_text
             boss_fight_result.cooldown_expiration = current_time + datetime.timedelta(
                 seconds=weapon_data.spell.spell_cooldown
             )
@@ -477,14 +476,13 @@ class CordiaService:
             cooldown_expiration=cooldown_expiration,
             gear_loot=new_gear_loot,
             sold_gear_amount=sold_gear_amount,
+            weapon=weapon_data
         )
 
         if action == "cast_spell" and weapon_data.spell:
-            attack_result.spell_name = weapon_data.spell.name
-            attack_result.spell_text = weapon_data.spell.cast_text
             attack_result.cooldown_expiration = current_time + datetime.timedelta(
                 seconds=weapon_data.spell.spell_cooldown
-            )
+        )
 
         await self.increment_exp(discord_id, attack_result.exp)
         await self.increment_gold(discord_id, attack_result.gold)

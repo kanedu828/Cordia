@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Literal
 from cordia.model.attack_result import AttackResult
 from cordia.model.location import Location
+from cordia.util.battle_util import get_random_battle_text
 from cordia.util.decorators import only_command_invoker
 from cordia.util.exp_util import exp_to_level
 from cordia.util.text_format_util import exp_bar
@@ -160,23 +161,16 @@ class FightPage(Page):
             return
 
         # Fight monster
-        battle_text = f"You deal **{attack_results.damage}** damage.\n"
+        battle_text = f"You strike the enemy with your **{attack_results.weapon.name}**. You deal **{attack_results.damage}** damage.\n"
         if action == "cast_spell":
-            battle_text = f"You cast **{attack_results.spell_name}**! {attack_results.spell_text}. You deal **{attack_results.damage}** damage.\n"
+            battle_text = f"You cast **{attack_results.weapon.spell.name}** with your {attack_results.weapon.name}! {attack_results.weapon.spell.cast_text}. You deal **{attack_results.damage}** damage.\n"
         if attack_results.is_crit:
             battle_text = "🎯Critical strike! " + battle_text
 
         if attack_results.is_combo:
             battle_text = "🥊Combo! " + battle_text
 
-        if attack_results.kills == 0:
-            battle_text += f"You tried to fight a **{attack_results.monster}**, but you could not defeat it. Try again!"
-        elif attack_results.kills == 1:
-            battle_text += (
-                f"Using all your might, you defeat a **{attack_results.monster}**"
-            )
-        else:
-            battle_text += f"In a show of grandeur, you defeat **{attack_results.kills} {attack_results.monster}s**"
+        battle_text += get_random_battle_text(attack_results.kills, attack_results.monster)
 
         embed.add_field(name="⚔️Battle⚔️", value=battle_text, inline=False)
 

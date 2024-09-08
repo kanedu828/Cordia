@@ -23,8 +23,7 @@ class BossFightResult:
     is_crit: bool = False
     damage: int = 0
     is_combo: bool = False
-    spell_name: str = ""
-    spell_text: str = ""
+    weapon: Gear = None
     boss_expiration: datetime = datetime.now(timezone.utc)
     is_expired: bool = False
     player_exp: int = 0

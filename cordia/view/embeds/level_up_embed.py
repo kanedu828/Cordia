@@ -24,7 +24,7 @@ def get_level_up_embed(
         new_locations_text = "No new locations unlocked."
     if unlocked_bosses:
         new_bosses_text = "\n".join(
-            f"**{location.name}**" for location in unlocked_locations.values()
+            f"**{boss.name}**" for boss in unlocked_bosses.values()
         )
     else:
         new_bosses_text = "No new bosses unlocked."

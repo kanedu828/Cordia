@@ -1,14 +1,11 @@
 from datetime import datetime, timedelta, timezone
 from typing import Literal
-from cordia.model.attack_result import AttackResult
 from cordia.model.boos_fight_result import BossFightResult
-from cordia.model.location import Location
 from cordia.util.decorators import only_command_invoker
 from cordia.util.exp_util import exp_to_level
-from cordia.util.text_format_util import exp_bar, hp_bar
+from cordia.util.text_format_util import hp_bar
 from cordia.view.embeds.level_up_embed import get_level_up_embed
 from cordia.view.pages.page import Page
-from cordia.data.locations import location_data
 from cordia.data.bosses import boss_data
 from cordia.data.gear import gear_data
 from discord.ui import View, Button, Select
@@ -188,9 +185,9 @@ class FightBossPage(Page):
             return
 
         # Fight monster
-        battle_text = f"You deal **{boss_fight_results.damage}** damage.\n"
+        battle_text = f"You strike the enemy with your **{boss_fight_results.weapon.name}**. You deal **{boss_fight_results.damage}** damage.\n"
         if action == "cast_spell":
-            battle_text = f"You cast **{boss_fight_results.spell_name}**! {boss_fight_results.spell_text}. You deal **{boss_fight_results.damage}** damage.\n"
+            battle_text = f"You cast **{boss_fight_results.weapon.spell.name}**! {boss_fight_results.weapon.spell.cast_text}. You deal **{boss_fight_results.damage}** damage.\n"
         if boss_fight_results.is_crit:
             battle_text = "🎯Critical strike! " + battle_text
 

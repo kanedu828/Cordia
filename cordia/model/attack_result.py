@@ -24,5 +24,4 @@ class AttackResult:
     is_crit: bool = False
     damage: int = 0
     is_combo: bool = False
-    spell_name: str = ""
-    spell_text: str = ""
+    weapon: Gear = None
