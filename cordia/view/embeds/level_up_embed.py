@@ -4,7 +4,6 @@ from cordia.data.bosses import boss_data
 
 
 def get_level_up_embed(
-    self,
     current_level: int,
 ):
     unlocked_locations = {
