@@ -82,7 +82,9 @@ class PlayerDao:
         async with self.pool.acquire() as connection:
             await connection.execute(query, last_idle_claim, discord_id)
 
-    async def update_last_boss_killed(self, discord_id: int, last_boss_killed: datetime):
+    async def update_last_boss_killed(
+        self, discord_id: int, last_boss_killed: datetime
+    ):
         query = """
         UPDATE player
         SET last_boss_killed = $1, updated_at = NOW()

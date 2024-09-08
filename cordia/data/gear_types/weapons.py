@@ -95,6 +95,17 @@ weapon_data = {
         crit_chance=10,
         strike_radius=1,
         gold_value=25,
+        spell=Spell(
+            spell_type=SpellType.DAMAGE,
+            name="Volley",
+            description="Shoot several arrows at once",
+            damage=10,
+            spell_cooldown=35,
+            cast_text="You shoot several arrows at once.",
+            strike_radius=3,
+            scaling_stat="persistence",
+            scaling_multiplier=0.2,
+        ),
     ),
     "red_eye_wand": Gear(
         name="Red Eye Wand",

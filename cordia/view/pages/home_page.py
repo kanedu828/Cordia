@@ -140,12 +140,9 @@ class HomePage(Page):
             in_boss_embed.add_field(
                 name="You must finish or forfeit your current boss fight.",
                 value="",
-                inline=False
+                inline=False,
             )
-            await interaction.response.send_message(
-                embed=in_boss_embed, 
-                ephemeral=True
-            )
+            await interaction.response.send_message(embed=in_boss_embed, ephemeral=True)
         await FightPage(self.cordia_service, self.discord_id).render(interaction)
 
     @only_command_invoker()

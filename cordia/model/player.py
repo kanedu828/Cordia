@@ -17,4 +17,3 @@ class Player:
     last_boss_killed: datetime
     created_at: datetime
     updated_at: datetime
-    

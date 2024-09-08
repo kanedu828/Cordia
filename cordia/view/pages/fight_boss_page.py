@@ -30,9 +30,15 @@ class FightBossPage(Page):
                 title=f"You cannot fight a boss right now",
             )
 
-            embed.add_field(name="", value=f"You have fought a boss too recently. You can fight another boss {discord_time}", inline=False)
+            embed.add_field(
+                name="",
+                value=f"You have fought a boss too recently. You can fight another boss {discord_time}",
+                inline=False,
+            )
 
-            embed.set_image(url="https://kanedu828.github.io/cordia-assets/assets/boss_fight_page.png")
+            embed.set_image(
+                url="https://kanedu828.github.io/cordia-assets/assets/boss_fight_page.png"
+            )
 
             await interaction.response.edit_message(
                 embed=embed, view=await self._create_loot_room_view()
@@ -88,7 +94,9 @@ class FightBossPage(Page):
         boss_fight_results = await self.cordia_service.boss_fight(self.discord_id)
         await self.fight_boss(interaction, boss_fight_results, "attack")
 
-    async def render_victory_screen(self, interaction: discord.Interaction, boss_fight_results: BossFightResult):
+    async def render_victory_screen(
+        self, interaction: discord.Interaction, boss_fight_results: BossFightResult
+    ):
         bi = boss_fight_results.boss_instance
         bd = boss_data[bi.name]
         embed = discord.Embed(
@@ -123,7 +131,6 @@ class FightBossPage(Page):
             embed=embed, view=await self._create_loot_room_view()
         )
 
-
     async def fight_boss(
         self,
         interaction: discord.Interaction,
@@ -154,7 +161,7 @@ class FightBossPage(Page):
                 embed=embed, view=await self._create_view()
             )
             return
-        
+
         # Fight monster
         battle_text = f"You deal **{boss_fight_results.damage}** damage.\n"
         if action == "cast_spell":
@@ -193,7 +200,6 @@ class FightBossPage(Page):
             embed=embed, view=await self._create_view()
         )
 
-
     async def _create_boss_select_view(self):
         view = View(timeout=None)
         player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
@@ -224,7 +230,7 @@ class FightBossPage(Page):
         view.add_item(boss_select)
         view.add_item(back_button)
         return view
-    
+
     async def _create_loot_room_view(self):
         view = View(timeout=None)
         back_button = Button(label="Back", style=discord.ButtonStyle.grey, row=2)

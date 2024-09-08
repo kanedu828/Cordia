@@ -185,14 +185,7 @@ class FightPage(Page):
         for g in attack_results.gear_loot:
             new_gear_text = f"**{g.name}. Navigate to your gear to equip it.**"
             rewards_text += "\n" + new_gear_text
-            new_gear_embed = discord.Embed(
-                title="You found new gear!", color=discord.Color.green()
-            )
-            new_gear_embed.add_field(name="", value=new_gear_text)
-            await interaction.response.send_message(
-                embed=new_gear_embed,
-                ephemeral=True,
-            )
+
         if attack_results.sold_gear_amount:
             rewards_text += f"\nYou found gear you already own. You gained **{attack_results.sold_gear_amount}** gold instead."
         embed.add_field(name="💰Rewards💰", value=rewards_text, inline=False)
@@ -217,6 +210,17 @@ class FightPage(Page):
         if attack_results.leveled_up:
             level_up_embed = get_level_up_embed(current_level)
             await interaction.followup.send(embed=level_up_embed, ephemeral=True)
+
+        for g in attack_results.gear_loot:
+            new_gear_text = f"**{g.name}. Navigate to your gear to equip it.**"
+            new_gear_embed = discord.Embed(
+                title="You found new gear!", color=discord.Color.green()
+            )
+            new_gear_embed.add_field(name="", value=new_gear_text)
+            await interaction.followup.send(
+                embed=new_gear_embed,
+                ephemeral=True,
+            )
 
     async def _create_view(self):
         view = View(timeout=None)

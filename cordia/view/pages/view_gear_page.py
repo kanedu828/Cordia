@@ -35,7 +35,7 @@ class ViewGearPage(Page):
         )
 
         embed.add_field(
-            name=get_stars_string(gi.stars, gd.get_max_stars()), value="", inline=False
+            name="", value=get_stars_string(gi.stars, gd.get_max_stars()), inline=False
         )
         embed.add_field(
             name=f"**Type**: {gd.type.value.title()}", value="", inline=False
