@@ -56,9 +56,31 @@ class FightBossPage(Page):
 
             embed.set_image(url=bd.get_image_path())
 
+            expiration_time = self.cordia_service.boss_time_remaining.get(self.discord_id, None)
+            if expiration_time:
+                boss_remaining_time = discord.utils.format_dt(
+                    expiration_time,
+                    style="R",
+                )
+
+                embed.add_field(name="", value=f"Time Left: {boss_remaining_time}", inline=False)
+
             await interaction.response.edit_message(
                 embed=embed, view=await self._create_view()
             )
+
+    async def render_expired_boss(self, interaction: discord.Interaction):
+        embed = discord.Embed(
+            title=f"You have ran out of time to defeat the boss.",
+        )
+
+        embed.set_image(
+            url="https://kanedu828.github.io/cordia-assets/assets/boss_fight_page.png"
+        )
+
+        await interaction.response.edit_message(
+            embed=embed, view=await self._create_loot_room_view()
+        )
 
     async def render_select_boss_page(self, interaction: discord.Interaction):
         embed = discord.Embed(
@@ -137,6 +159,9 @@ class FightBossPage(Page):
         boss_fight_results: BossFightResult,
         action: Literal["attack", "cast_spell"],
     ):
+        if boss_fight_results.is_expired:
+            await self.render_expired_boss(interaction)
+
         bi = boss_fight_results.boss_instance
         bd = boss_data[bi.name]
         embed = discord.Embed(
@@ -195,6 +220,13 @@ class FightBossPage(Page):
             value=f"You can {cd_type_text} again {discord.utils.format_dt(boss_fight_results.cooldown_expiration, style='R')}",
             inline=False,
         )
+
+        boss_remaining_time = discord.utils.format_dt(
+            boss_fight_results.boss_expiration,
+            style="R",
+        )
+
+        embed.add_field(name="", value=f"Time Left: {boss_remaining_time}", inline=False)
 
         await interaction.response.edit_message(
             embed=embed, view=await self._create_view()

@@ -43,6 +43,7 @@ class CordiaService:
         self.boss_instance_dao = boss_instance_dao
 
         self.player_cooldowns = {"attack": {}, "cast_spell": {}}
+        self.boss_time_remaining = {}
 
     # Player
     async def get_player_by_discord_id(self, discord_id: int) -> Player | None:
@@ -142,10 +143,12 @@ class CordiaService:
         await self.boss_instance_dao.update_boss_hp(discord_id, current_hp)
 
     async def insert_boss(self, discord_id: int, name: str):
-        expiration_time = datetime.datetime.now(
+        current_time = datetime.datetime.now(
             datetime.timezone.utc
-        ) + datetime.timedelta(hours=1)
+        )
+        expiration_time = current_time + datetime.timedelta(hours=1)
         bd = boss_data[name]
+        self.boss_time_remaining[discord_id] = expiration_time
         await self.boss_instance_dao.insert_boss(
             discord_id, bd.hp, name, expiration_time
         )
@@ -168,6 +171,7 @@ class CordiaService:
         current_time = datetime.datetime.now(datetime.timezone.utc)
 
         if current_time > boss_instance.expiration_time:
+            await self.delete_boss(discord_id)
             return BossFightResult(
                 is_expired=True,
                 boss_expiration=boss_instance.expiration_time,
