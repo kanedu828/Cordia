@@ -131,6 +131,21 @@ class HomePage(Page):
     async def fight_button_callback(self, interaction: discord.Interaction):
         from cordia.view.pages.fight_page import FightPage
 
+        bi = self.cordia_service.get_boss_by_discord_id(self.discord_id)
+        if bi:
+            in_boss_embed = discord.Embed(
+                title=f"You cannot fight right now",
+                color=discord.Color.blue(),
+            )
+            in_boss_embed.add_field(
+                name="You must finish or forfeit your current boss fight."
+                value=""
+                inline=False
+            )
+            await interaction.response.send_message(
+                embed=in_boss_embed, 
+                ephemeral=True
+            )
         await FightPage(self.cordia_service, self.discord_id).render(interaction)
 
     @only_command_invoker()

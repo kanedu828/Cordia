@@ -4,7 +4,7 @@ boss_data = {
     "goblin_king": Monster(
         name="Goblin King",
         level=20,
-        hp=500,
+        hp=600,
         gold=75,
         exp=150,
         defense=10,
