@@ -244,23 +244,25 @@ class FightBossPage(Page):
             if current_level >= boss_data[boss].level - 10
         ][::-1]
 
-        options = [
-            discord.SelectOption(
-                label=boss_data[boss].name,
-                description=f"Unlocks at level {boss_data[boss].level - 10}",
-                value=boss,
-            )
-            for boss in bosses
-        ]
+        if bosses:
+            options = [
+                discord.SelectOption(
+                    label=boss_data[boss].name,
+                    description=f"Unlocks at level {boss_data[boss].level - 10}",
+                    value=boss,
+                )
+                for boss in bosses
+            ]
 
-        boss_select = Select(
-            placeholder="Select a boss", min_values=1, max_values=1, options=options
-        )
-        boss_select.callback = self.boss_select_callback
+            boss_select = Select(
+                placeholder="Select a boss", min_values=1, max_values=1, options=options
+            )
+            boss_select.callback = self.boss_select_callback
+            view.add_item(boss_select)
 
         back_button = Button(label="Back", style=discord.ButtonStyle.grey, row=2)
         back_button.callback = self.back_button_callback
-        view.add_item(boss_select)
+        
         view.add_item(back_button)
         return view
 

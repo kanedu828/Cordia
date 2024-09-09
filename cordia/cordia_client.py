@@ -24,7 +24,7 @@ class CordiaClient(commands.Bot):
 
     def setup_logger(self) -> logging.Logger:
         logger = logging.getLogger("discord")
-        logger.setLevel(logging.DEBUG)
+        logger.setLevel(logging.INFO)
 
         # File handler
         file_handler = logging.FileHandler(
