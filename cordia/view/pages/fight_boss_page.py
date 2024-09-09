@@ -41,7 +41,7 @@ class FightBossPage(Page):
             await interaction.response.edit_message(
                 embed=embed, view=await self._create_loot_room_view()
             )
-        if not bi:
+        elif not bi:
             await self.render_select_boss_page(interaction)
         else:
             bd = boss_data[bi.name]
