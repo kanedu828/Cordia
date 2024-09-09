@@ -267,9 +267,6 @@ class BattleService:
                 seconds=weapon_data.spell.spell_cooldown
             )
 
-        await self.player_service.increment_exp(discord_id, attack_result.exp)
-        await self.player_service.increment_gold(discord_id, attack_result.gold)
-
         self.cooldown_service.set_cooldown(discord_id, action, cooldown_expiration)
 
         return attack_result
