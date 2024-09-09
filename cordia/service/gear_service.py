@@ -6,12 +6,9 @@ from cordia.model.gear import GearType
 from cordia.model.gear_instance import GearInstance
 from cordia.data.gear import gear_data
 
+
 class GearService:
-    def __init__(
-        self,
-        gear_dao: GearDao,
-        player_gear_dao: PlayerGearDao
-    ):
+    def __init__(self, gear_dao: GearDao, player_gear_dao: PlayerGearDao):
         self.gear_dao = gear_dao
         self.player_gear_dao = player_gear_dao
 

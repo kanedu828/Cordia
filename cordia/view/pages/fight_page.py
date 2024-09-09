@@ -171,7 +171,9 @@ class FightPage(Page):
         if attack_results.is_combo:
             battle_text = "🥊Combo! " + battle_text
 
-        battle_text += get_random_battle_text(attack_results.kills, attack_results.monster)
+        battle_text += get_random_battle_text(
+            attack_results.kills, attack_results.monster
+        )
 
         embed.add_field(name="⚔️Battle⚔️", value=battle_text, inline=False)
 

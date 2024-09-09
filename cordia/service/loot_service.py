@@ -1,5 +1,4 @@
 from typing import List, Tuple
-from cordia.model.boss_instance import BossInstance
 from cordia.model.gear_instance import GearInstance
 from cordia.model.monster import Monster
 from cordia.service.gear_service import GearService
@@ -36,7 +35,10 @@ class LootService:
             except:
                 sold_gear_amount += gd.gold_value
 
-        # Increment gold for sold gear
-        await self.player_service.increment_gold(discord_id, sold_gear_amount)
+        await self.player_service.increment_exp(discord_id, exp_gained)
+        await self.player_service.increment_gold(
+            discord_id, gold_gained + sold_gear_amount
+        )
+        await self.player_service.update_last_boss_killed(discord_id)
 
         return exp_gained, gold_gained, new_gear_loot, sold_gear_amount

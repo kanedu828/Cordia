@@ -15,5 +15,5 @@ ring_data = {
         level=20,
         gold_value=45,
         strength=6,
-    )
+    ),
 }

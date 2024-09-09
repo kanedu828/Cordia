@@ -17,9 +17,7 @@ class BossService:
         await self.boss_instance_dao.update_boss_hp(discord_id, current_hp)
 
     async def insert_boss(self, discord_id: int, name: str):
-        current_time = datetime.datetime.now(
-            datetime.timezone.utc
-        )
+        current_time = datetime.datetime.now(datetime.timezone.utc)
         expiration_time = current_time + datetime.timedelta(hours=1)
         bd = boss_data[name]
         self.boss_time_remaining[discord_id] = expiration_time

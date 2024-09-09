@@ -1,15 +1,21 @@
 import datetime
 from typing import Literal, Dict
 
+
 class CooldownService:
     def __init__(self):
         # Dictionary to hold cooldowns for each player and action
         self.cooldowns: Dict[str, Dict[int, datetime.datetime]] = {
             "attack": {},
-            "cast_spell": {}
+            "cast_spell": {},
         }
 
-    def set_cooldown(self, discord_id: int, action: Literal["attack", "cast_spell"], expiration_time: datetime):
+    def set_cooldown(
+        self,
+        discord_id: int,
+        action: Literal["attack", "cast_spell"],
+        expiration_time: datetime,
+    ):
         """
         Sets a cooldown for a player for the specified action.
 
@@ -19,7 +25,9 @@ class CooldownService:
         """
         self.cooldowns[action][discord_id] = expiration_time
 
-    def is_on_cooldown(self, discord_id: int, action: Literal["attack", "cast_spell"]) -> bool:
+    def is_on_cooldown(
+        self, discord_id: int, action: Literal["attack", "cast_spell"]
+    ) -> bool:
         """
         Checks if a player is currently on cooldown for the specified action.
 
@@ -34,7 +42,9 @@ class CooldownService:
                 return True
         return False
 
-    def get_cooldown_expiration(self, discord_id: int, action: Literal["attack", "cast_spell"]) -> datetime.datetime | None:
+    def get_cooldown_expiration(
+        self, discord_id: int, action: Literal["attack", "cast_spell"]
+    ) -> datetime.datetime | None:
         """
         Retrieves the expiration time of the cooldown for a player and action.
 

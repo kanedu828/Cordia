@@ -54,14 +54,18 @@ class FightBossPage(Page):
 
             embed.set_image(url=bd.get_image_path())
 
-            expiration_time = self.cordia_service.boss_time_remaining.get(self.discord_id, None)
+            expiration_time = self.cordia_service.boss_time_remaining.get(
+                self.discord_id, None
+            )
             if expiration_time:
                 boss_remaining_time = discord.utils.format_dt(
                     expiration_time,
                     style="R",
                 )
 
-                embed.add_field(name="", value=f"Time Left: {boss_remaining_time}", inline=False)
+                embed.add_field(
+                    name="", value=f"Time Left: {boss_remaining_time}", inline=False
+                )
 
             await interaction.response.edit_message(
                 embed=embed, view=await self._create_view()
@@ -132,7 +136,7 @@ class FightBossPage(Page):
         for g in boss_fight_results.gear_loot:
             new_gear_text = f"**{g.name}. Navigate to your gear to equip it.**"
             rewards_text += "\n" + new_gear_text
-           
+
         if boss_fight_results.sold_gear_amount:
             rewards_text += f"\nYou found gear you already own. You gained **{boss_fight_results.sold_gear_amount}** gold instead."
         embed.add_field(
@@ -228,7 +232,9 @@ class FightBossPage(Page):
             style="R",
         )
 
-        embed.add_field(name="", value=f"Time Left: {boss_remaining_time}", inline=False)
+        embed.add_field(
+            name="", value=f"Time Left: {boss_remaining_time}", inline=False
+        )
 
         await interaction.response.edit_message(
             embed=embed, view=await self._create_view()
@@ -263,7 +269,7 @@ class FightBossPage(Page):
 
         back_button = Button(label="Back", style=discord.ButtonStyle.grey, row=2)
         back_button.callback = self.back_button_callback
-        
+
         view.add_item(back_button)
         return view
 

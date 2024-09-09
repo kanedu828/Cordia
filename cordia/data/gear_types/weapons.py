@@ -195,7 +195,7 @@ weapon_data = {
         attack_cooldown=20,
         crit_chance=20,
         strike_radius=1,
-        gold_value=40
+        gold_value=40,
     ),
     "mountain_breaker_blade": Gear(
         name="Mountain Breaker Blade",
@@ -206,6 +206,6 @@ weapon_data = {
         attack_cooldown=60,
         crit_chance=10,
         strike_radius=8,
-        gold_value=50
+        gold_value=50,
     ),
 }

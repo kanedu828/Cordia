@@ -13,7 +13,13 @@ from cordia.service.player_service import PlayerService
 
 
 class CordiaService:
-    def __init__(self, player_service: PlayerService, gear_service: GearService, boss_service: BossService, battle_service: BattleService):
+    def __init__(
+        self,
+        player_service: PlayerService,
+        gear_service: GearService,
+        boss_service: BossService,
+        battle_service: BattleService,
+    ):
         self.player_service = player_service
         self.gear_service = gear_service
         self.boss_service = boss_service
@@ -98,4 +104,3 @@ class CordiaService:
         self, discord_id: int, action: Literal["attack", "cast_spell"] = "attack"
     ) -> AttackResult:
         return await self.battle_service.attack(discord_id, action)
-        

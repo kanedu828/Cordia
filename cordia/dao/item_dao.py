@@ -1,14 +1,15 @@
 import asyncpg
 from typing import Optional
-from cordia.model.item_instance import ItemInstance  # Assuming you have an Item model class
+from cordia.model.item_instance import (
+    ItemInstance,
+)  # Assuming you have an Item model class
+
 
 class ItemDao:
     def __init__(self, pool: asyncpg.Pool):
         self.pool = pool
 
-    async def insert_item(
-        self, discord_id: int, name: str, count: int
-    ) -> ItemInstance:
+    async def insert_item(self, discord_id: int, name: str, count: int) -> ItemInstance:
         query = """
         INSERT INTO item (discord_id, name, count, created_at, updated_at)
         VALUES ($1, $2, $3, NOW(), NOW())

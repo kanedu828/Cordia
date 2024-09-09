@@ -103,5 +103,4 @@ monster_data = {
         exp=120,
         gear_loot=[("earth_elemental_staff", 0.10), ("wyrm_bow", 0.10)],
     ),
-
 }

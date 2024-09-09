@@ -11,9 +11,16 @@ from cordia.service.cooldown_service import CooldownService
 from cordia.service.gear_service import GearService
 from cordia.service.loot_service import LootService
 from cordia.service.player_service import PlayerService
+from cordia.util.battle_util import calculate_attack_damage
 from cordia.util.exp_util import exp_to_level
 from cordia.util.gear_util import get_weapon_from_player_gear
-from cordia.util.stats_util import calculate_weighted_monster_mean, get_player_stats, level_difference_multiplier, random_within_range, simulate_idle_damage
+from cordia.util.stats_util import (
+    calculate_weighted_monster_mean,
+    get_player_stats,
+    level_difference_multiplier,
+    random_within_range,
+    simulate_idle_damage,
+)
 from cordia.data.gear import gear_data
 from cordia.data.bosses import boss_data
 from cordia.data.monsters import monster_data
@@ -21,7 +28,14 @@ from cordia.data.locations import location_data
 
 
 class BattleService:
-    def __init__(self, player_service: PlayerService, gear_service: GearService, boss_service: BossService, cooldown_service: CooldownService, loot_service: LootService):
+    def __init__(
+        self,
+        player_service: PlayerService,
+        gear_service: GearService,
+        boss_service: BossService,
+        cooldown_service: CooldownService,
+        loot_service: LootService,
+    ):
         self.player_service = player_service
         self.gear_service = gear_service
         self.boss_service = boss_service
@@ -35,7 +49,9 @@ class BattleService:
         if self.cooldown_service.is_on_cooldown(discord_id, action):
             return BossFightResult(
                 on_cooldown=True,
-                cooldown_expiration=self.cooldown_service.get_cooldown_expiration(discord_id, action),
+                cooldown_expiration=self.cooldown_service.get_cooldown_expiration(
+                    discord_id, action
+                ),
                 boss_instance=boss_instance,
             )
 
@@ -57,10 +73,10 @@ class BattleService:
         boss = boss_data[boss_instance.name]
 
         # Deal damage
-        damage, is_crit = self.calculate_attack_damage(
-            boss, player, player_gear, action
+        damage, is_crit = calculate_attack_damage(boss, player, player_gear, action)
+        await self.boss_service.update_boss_hp(
+            discord_id, boss_instance.current_hp - damage
         )
-        await self.boss_service.update_boss_hp(discord_id, boss_instance.current_hp - damage)
         boss_instance.current_hp = boss_instance.current_hp - damage
 
         exp_gained = 0
@@ -70,31 +86,10 @@ class BattleService:
         new_gear_loot = []
         sold_gear_amount = 0
         if boss_instance.current_hp <= 0:
-            exp_gained = random_within_range(
-                int((boss.exp + min(player_stats["efficiency"], boss.exp)))
+            exp_gained, gold_gained, new_gear_loot, sold_gear_amount = (
+                await self.loot_service.handle_loot(discord_id, boss, player_stats, 1)
             )
-
-            gold_gained = random_within_range(
-                int((boss.gold + min(player_stats["luck"], boss.gold)))
-            )
-
-            await self.player_service.increment_exp(discord_id, exp_gained)
-            await self.player_service.increment_gold(discord_id, gold_gained)
-
-            # Handle gear drops
-            gear_loot = boss.get_dropped_gear()
-
-            for g in gear_loot:
-                gd = gear_data[g]
-                try:
-                    await self.gear_service.insert_gear(discord_id, g)
-                    new_gear_loot.append(gd)
-                except:
-                    sold_gear_amount += gd.gold_value
-
-            await self.player_service.increment_gold(discord_id, sold_gear_amount)
             await self.boss_service.delete_boss(discord_id)
-            await self.player_service.update_last_boss_killed(discord_id)
 
         # Get cooldown expiration
         cooldown_expiration = current_time + datetime.timedelta(
@@ -122,7 +117,7 @@ class BattleService:
             is_combo=is_combo,
             boss_expiration=boss_instance.expiration_time,
             player_exp=player.exp + exp_gained,
-            weapon=weapon_data
+            weapon=weapon_data,
         )
 
         if action == "cast_spell" and weapon_data.spell:
@@ -203,61 +198,9 @@ class BattleService:
             > exp_to_level(player.exp),
         }
 
-    def calculate_attack_damage(
-        self,
-        monster: Monster,
-        player: Player,
-        player_gear: List[GearInstance],
-        action: Literal["attack", "cast_spell"] = "attack",
-    ) -> Tuple[int, bool]:
-        player_stats = get_player_stats(player, player_gear)
-        # Multiplier depending on player's level compared to monster's
-        level_damage_multiplier = level_difference_multiplier(
-            exp_to_level(player.exp), monster.level
-        )
-        weapon = get_weapon_from_player_gear(player_gear)
-        spell = gear_data[weapon.name].spell
-
-        if action == "cast_spell" and spell:
-            damage = spell.damage + (
-                player_stats[spell.scaling_stat] * spell.scaling_multiplier
-            )
-        else:
-            damage = player_stats["damage"] + player_stats["strength"]
-
-        damage = random_within_range(damage)
-        damage *= level_damage_multiplier
-
-        # Calculate crit
-        CRIT_MULTIPLIER = 1.5
-        is_crit = random.random() < player_stats["crit_chance"] / 100
-        if is_crit:
-            damage *= CRIT_MULTIPLIER
-
-        # Boss damage multiplier
-        if monster.type == MonsterType.BOSS:
-            damage += damage * (player_stats["boss_damage"] / 100)
-
-        if action == "cast_spell" and spell and spell.scaling_stat == "intelligence":
-            monster_resistance_percentage = monster.resistance / 100
-            monster_resistance_percentage -= monster_resistance_percentage * (
-                min(spell.magic_penetration, 100) / 100
-            )
-            damage -= damage * monster_resistance_percentage
-        else:
-            # Penetration multiplier. Cant be over 100%
-            monster_defense_percentage = monster.defense / 100
-            monster_defense_percentage -= monster_defense_percentage * (
-                min(player_stats["penetration"], 100) / 100
-            )
-            damage -= damage * monster_defense_percentage
-
-        return int(damage), is_crit
-
     async def attack(
         self, discord_id: int, action: Literal["attack", "cast_spell"] = "attack"
     ) -> AttackResult:
-
         player = await self.player_service.get_or_insert_player(discord_id)
         player_gear = await self.gear_service.get_player_gear(discord_id)
         player_stats = get_player_stats(player, player_gear)
@@ -265,7 +208,9 @@ class BattleService:
         if self.cooldown_service.is_on_cooldown(discord_id, action):
             return AttackResult(
                 on_cooldown=True,
-                cooldown_expiration=self.cooldown_service.get_cooldown_expiration(discord_id, action),
+                cooldown_expiration=self.cooldown_service.get_cooldown_expiration(
+                    discord_id, action
+                ),
                 location=location,
                 player_exp=player.exp,
             )
@@ -274,9 +219,7 @@ class BattleService:
 
         current_time = datetime.datetime.now(datetime.timezone.utc)
 
-        damage, is_crit = self.calculate_attack_damage(
-            monster, player, player_gear, action
-        )
+        damage, is_crit = calculate_attack_damage(monster, player, player_gear, action)
         kill_rate = float(damage) / monster.hp
 
         weapon = get_weapon_from_player_gear(player_gear)
@@ -291,14 +234,6 @@ class BattleService:
             if action == "cast_spell" and weapon_data.spell:
                 kills = min(int(kill_rate), weapon_data.spell.strike_radius)
 
-        exp_gained = random_within_range(
-            int((monster.exp + min(player_stats["efficiency"], monster.exp)) * kills)
-        )
-
-        gold_gained = random_within_range(
-            int((monster.gold + min(player_stats["luck"], monster.gold)) * kills)
-        )
-
         cooldown_expiration = current_time + datetime.timedelta(
             seconds=weapon_data.attack_cooldown
         )
@@ -307,19 +242,11 @@ class BattleService:
         if is_combo:
             cooldown_expiration = current_time + datetime.timedelta(seconds=1)
 
-        # Handle gear drops
-        gear_loot = monster.get_dropped_gear(kills)
-        sold_gear_amount = 0
-        new_gear_loot = []
-        for g in gear_loot:
-            gd = gear_data[g]
-            try:
-                await self.gear_service.insert_gear(discord_id, g)
-                new_gear_loot.append(gd)
-            except:
-                sold_gear_amount += gd.gold_value
-
-        await self.player_service.increment_gold(discord_id, sold_gear_amount)
+        exp_gained, gold_gained, new_gear_loot, sold_gear_amount = (
+            await self.loot_service.handle_loot(
+                discord_id, monster, player_stats, kills
+            )
+        )
 
         attack_result = AttackResult(
             kills=kills,
@@ -335,13 +262,13 @@ class BattleService:
             cooldown_expiration=cooldown_expiration,
             gear_loot=new_gear_loot,
             sold_gear_amount=sold_gear_amount,
-            weapon=weapon_data
+            weapon=weapon_data,
         )
 
         if action == "cast_spell" and weapon_data.spell:
             attack_result.cooldown_expiration = current_time + datetime.timedelta(
                 seconds=weapon_data.spell.spell_cooldown
-        )
+            )
 
         await self.player_service.increment_exp(discord_id, attack_result.exp)
         await self.player_service.increment_gold(discord_id, attack_result.gold)

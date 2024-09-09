@@ -147,7 +147,12 @@ def upgrade() -> None:
 
     op.create_table(
         "item",
-        sa.Column("discord_id", sa.BigInteger, sa.ForeignKey("player.discord_id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "discord_id",
+            sa.BigInteger,
+            sa.ForeignKey("player.discord_id", ondelete="CASCADE"),
+            nullable=False,
+        ),
         sa.Column("count", sa.Integer, nullable=False),
         sa.Column("name", sa.String(50), nullable=False),
         sa.Column(
@@ -163,7 +168,7 @@ def upgrade() -> None:
             onupdate=func.now(),
             nullable=False,
         ),
-        sa.PrimaryKeyConstraint("discord_id", "name")  # Composite primary key
+        sa.PrimaryKeyConstraint("discord_id", "name"),  # Composite primary key
     )
 
 
