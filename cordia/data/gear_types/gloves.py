@@ -11,7 +11,7 @@ glove_data = {
         crit_chance=3,
     ),
     "stone_scale_gloves": Gear(
-        name="Leather Gloves",
+        name="Stone Scale Gloves",
         type=GearType.GLOVES,
         strength=6,
         level=20,
