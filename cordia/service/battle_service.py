@@ -85,6 +85,7 @@ class BattleService:
             exp_gained, gold_gained, new_gear_loot, sold_gear_amount = (
                 await self.loot_service.handle_loot(discord_id, boss, player_stats, 1)
             )
+            await self.player_service.update_last_boss_killed(discord_id)
             await self.boss_service.delete_boss(discord_id)
 
         # Get cooldown expiration

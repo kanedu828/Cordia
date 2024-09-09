@@ -33,16 +33,6 @@ class GearService:
     async def equip_gear(self, discord_id: int, gear_id: int, slot: str):
         gi = await self.get_gear_by_id(gear_id)
         gd = gear_data[gi.name]
-        current_time = datetime.datetime.now(datetime.timezone.utc)
-        attack_cooldown_expiration = current_time + datetime.timedelta(
-            seconds=gd.attack_cooldown
-        )
-        self.player_cooldowns["attack"][discord_id] = attack_cooldown_expiration
-        if gd.spell:
-            spell_cooldown_expiration = current_time + datetime.timedelta(
-                seconds=gd.spell.spell_cooldown
-            )
-            self.player_cooldowns["cast_spell"][discord_id] = spell_cooldown_expiration
         return await self.player_gear_dao.equip_gear(discord_id, gear_id, slot)
 
     async def remove_gear(self, discord_id: int, slot: str):

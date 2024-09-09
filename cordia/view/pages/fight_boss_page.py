@@ -54,8 +54,8 @@ class FightBossPage(Page):
 
             embed.set_image(url=bd.get_image_path())
 
-            expiration_time = self.cordia_service.boss_time_remaining.get(
-                self.discord_id, None
+            expiration_time = self.cordia_service.get_boss_time_remaining(
+                self.discord_id
             )
             if expiration_time:
                 boss_remaining_time = discord.utils.format_dt(

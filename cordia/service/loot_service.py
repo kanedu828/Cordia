@@ -39,6 +39,5 @@ class LootService:
         await self.player_service.increment_gold(
             discord_id, gold_gained + sold_gear_amount
         )
-        await self.player_service.update_last_boss_killed(discord_id)
 
         return exp_gained, gold_gained, new_gear_loot, sold_gear_amount

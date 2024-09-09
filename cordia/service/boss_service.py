@@ -25,5 +25,8 @@ class BossService:
             discord_id, bd.hp, name, expiration_time
         )
 
+    def get_boss_time_remaining(self, discord_id: int):
+        return self.boss_time_remaining.get(discord_id, None)
+
     async def delete_boss(self, discord_id):
         await self.boss_instance_dao.delete_boss_by_discord_id(discord_id)

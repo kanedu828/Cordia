@@ -1,3 +1,4 @@
+import datetime
 from typing import List, Literal
 
 from cordia.model.attack_result import AttackResult
@@ -90,6 +91,9 @@ class CordiaService:
 
     async def delete_boss(self, discord_id):
         await self.boss_service.delete_boss(discord_id)
+
+    def get_boss_time_remaining(self, discord_id) -> datetime:
+        return self.boss_service.get_boss_time_remaining(discord_id)
 
     # Battle
     async def boss_fight(
