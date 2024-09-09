@@ -12,7 +12,7 @@ def get_random_battle_text(kills: int, monster: str) -> str:
     single_kill_text = [
         f"Using all your might, you defeat a **{monster}**",
         f"After an epic battle, you defeat a **{monster}**",
-        f"After a hard fought, you defeat a **{monster}**",
+        f"After a hard fought battle, you defeat a **{monster}**",
         f"After an intense clash, you emerge victorious against a **{monster}**!",
         f"With a final blow, a **{monster}** falls to your might!"
     ]

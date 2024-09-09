@@ -17,4 +17,11 @@ hat_data = {
         persistence=3,
         gold_value=25,
     ),
+    "stone_plated_helmet": Gear(
+        name="Stone Plated Helmet",
+        type=GearType.HAT,
+        level=20,
+        strength=15,
+        gold_value=40,
+    ),
 }

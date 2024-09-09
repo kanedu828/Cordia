@@ -25,4 +25,14 @@ location_data = {
         level_unlock=25,
         monsters=[("giant_spider", 0.95), ("dryad", 0.05)],
     ),
+    "the_mountains_i": Location(
+        name="The Mountains I",
+        level_unlock=30,
+        monsters=[("rock_golem", 0.40), ("wyvern", 0.40), ("mountain_troll", 0.20)]
+    ),
+    "the_mountains_ii": Location(
+        name="The Mountains II",
+        level_unlock=40,
+        monsters=[("mountain_troll", 0.15), ("stone_drake", 0.45), ("earth_elemental", 0.38), ("cave_wyrm", 0.02)]
+    )
 }

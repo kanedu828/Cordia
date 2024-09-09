@@ -17,4 +17,11 @@ top_data = {
         gold_value=25,
         strength=9,
     ),
+    "stone_plated_chestplate": Gear(
+        name="Stone Plated Chestplate",
+        type=GearType.TOP,
+        level=20,
+        gold_value=40,
+        strength=15,
+    )
 }

@@ -17,5 +17,13 @@ cape_data = {
         gold_value=30,
         persistence=6,
         efficiency=9,
-    )
+    ),
+    "wyvern_wing_cape": Gear(
+        name="Wyvern Wing Cape",
+        type=GearType.GLOVES,
+        persistence=6,
+        efficiency=6,
+        level=20,
+        gold_value=40,
+    ),
 }

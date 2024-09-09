@@ -29,7 +29,10 @@ def get_stat_emoji(stat: str):
         "strike_radius": "🎆",
         "attack_cooldown": "🕒",
         # Spells
+        "spell_damage": "💥",
+        "scaling_multiplier": "🎚️",
         "spell_cooldown": "🕒",
         "magic_penetration": "🌠",
+        "spell_strike_radius": "🎆",
     }
     return emoji_mapping.get(stat, "")

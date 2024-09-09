@@ -9,5 +9,13 @@ glove_data = {
         level=5,
         gold_value=25,
         crit_chance=3,
-    )
+    ),
+    "stone_scale_gloves": Gear(
+        name="Leather Gloves",
+        type=GearType.GLOVES,
+        strength=6,
+        level=20,
+        gold_value=40,
+        crit_chance=10,
+    ),
 }

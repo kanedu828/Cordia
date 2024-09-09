@@ -1,6 +1,7 @@
 import datetime
 from typing import List, Literal, Tuple
 from cordia.dao.boss_instance_dao import BossInstanceDao
+from cordia.dao.item_dao import ItemDao
 from cordia.dao.player_dao import PlayerDao
 from cordia.data.locations import location_data
 from cordia.dao.player_gear_dao import PlayerGearDao
@@ -36,11 +37,13 @@ class CordiaService:
         gear_dao: GearDao,
         player_gear_dao: PlayerGearDao,
         boss_instance_dao: BossInstanceDao,
+        item_dao: ItemDao
     ):
         self.player_dao = player_dao
         self.gear_dao = gear_dao
         self.player_gear_dao = player_gear_dao
         self.boss_instance_dao = boss_instance_dao
+        self.item_dao = item_dao
 
         self.player_cooldowns = {"attack": {}, "cast_spell": {}}
         self.boss_time_remaining = {}

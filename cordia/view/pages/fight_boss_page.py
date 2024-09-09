@@ -131,14 +131,7 @@ class FightBossPage(Page):
         for g in boss_fight_results.gear_loot:
             new_gear_text = f"**{g.name}. Navigate to your gear to equip it.**"
             rewards_text += "\n" + new_gear_text
-            new_gear_embed = discord.Embed(
-                title="You found new gear!", color=discord.Color.green()
-            )
-            new_gear_embed.add_field(name="", value=new_gear_text)
-            await interaction.response.send_message(
-                embed=new_gear_embed,
-                ephemeral=True,
-            )
+           
         if boss_fight_results.sold_gear_amount:
             rewards_text += f"\nYou found gear you already own. You gained **{boss_fight_results.sold_gear_amount}** gold instead."
         embed.add_field(
@@ -149,6 +142,17 @@ class FightBossPage(Page):
         await interaction.response.edit_message(
             embed=embed, view=await self._create_loot_room_view()
         )
+
+        for g in boss_fight_results.gear_loot:
+            new_gear_text = f"**{g.name}. Navigate to your gear to equip it.**"
+            new_gear_embed = discord.Embed(
+                title="You found new gear!", color=discord.Color.green()
+            )
+            new_gear_embed.add_field(name="", value=new_gear_text)
+            await interaction.followup.send(
+                embed=new_gear_embed,
+                ephemeral=True,
+            )
 
     async def fight_boss(
         self,

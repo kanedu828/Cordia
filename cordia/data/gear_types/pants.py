@@ -18,4 +18,11 @@ pants_data = {
         strength=9,
         luck=12,
     ),
+    "troll_pants": Gear(
+        name="Troll Pants",
+        type=GearType.PANTS,
+        level=20,
+        gold_value=40,
+        strength=12,
+    ),
 }

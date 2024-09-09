@@ -146,17 +146,10 @@ def upgrade() -> None:
     )
 
     op.create_table(
-        "inventory",
-        sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
-        sa.Column(
-            "discord_id",
-            sa.BigInteger,
-            sa.ForeignKey("player.discord_id", ondelete="CASCADE"),
-            nullable=False,
-        ),
+        "item",
+        sa.Column("discord_id", sa.BigInteger, sa.ForeignKey("player.discord_id", ondelete="CASCADE"), nullable=False),
         sa.Column("count", sa.Integer, nullable=False),
         sa.Column("name", sa.String(50), nullable=False),
-        sa.UniqueConstraint("discord_id"),
         sa.Column(
             "created_at",
             sa.TIMESTAMP(timezone=True),
@@ -170,6 +163,7 @@ def upgrade() -> None:
             onupdate=func.now(),
             nullable=False,
         ),
+        sa.PrimaryKeyConstraint("discord_id", "name")  # Composite primary key
     )
 
 
@@ -177,3 +171,5 @@ def downgrade() -> None:
     op.drop_table("player_gear")
     op.drop_table("gear")
     op.drop_table("player")
+    op.drop_table("boss_instance")
+    op.drop_table("item")
