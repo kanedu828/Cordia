@@ -1,10 +1,8 @@
 import datetime
 import random
-from typing import List, Literal, Tuple
+from typing import Literal
 from cordia.model.attack_result import AttackResult
 from cordia.model.boos_fight_result import BossFightResult
-from cordia.model.gear_instance import GearInstance
-from cordia.model.monster import Monster, MonsterType
 from cordia.model.player import Player
 from cordia.service.boss_service import BossService
 from cordia.service.cooldown_service import CooldownService
@@ -17,8 +15,6 @@ from cordia.util.gear_util import get_weapon_from_player_gear
 from cordia.util.stats_util import (
     calculate_weighted_monster_mean,
     get_player_stats,
-    level_difference_multiplier,
-    random_within_range,
     simulate_idle_damage,
 )
 from cordia.data.gear import gear_data

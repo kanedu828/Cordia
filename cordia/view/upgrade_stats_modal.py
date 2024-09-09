@@ -1,5 +1,5 @@
 from cordia.service.cordia_service import CordiaService
-from cordia.util.stats_util import get_stats_embed, get_upgrade_points
+from cordia.util.stats_util import get_stats_embed
 from cordia.util.text_format_util import get_stat_emoji
 from discord.ui import Modal, TextInput
 import discord

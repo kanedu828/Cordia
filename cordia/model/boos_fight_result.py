@@ -5,7 +5,6 @@ from typing import List
 from cordia.model.boss_instance import BossInstance
 from cordia.model.gear import Gear
 from cordia.model.item import Item
-from cordia.model.location import Location
 
 
 @dataclass

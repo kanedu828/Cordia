@@ -4,10 +4,6 @@ import random
 import re
 from typing import List, Tuple
 
-from cordia.model.gear import Gear
-from cordia.data.gear import gear_data
-from cordia.model.item import Item
-
 
 class MonsterType(Enum):
     NORMAL = "normal"

@@ -1,8 +1,7 @@
 from cordia.util.decorators import only_command_invoker
 from cordia.util.stats_util import get_stats_embed, get_upgrade_points
-from cordia.util.text_format_util import get_spell_stats_string, get_stat_emoji
+from cordia.util.text_format_util import get_stat_emoji
 from cordia.view.pages.page import Page
-from cordia.data.gear import gear_data
 from cordia.view.upgrade_stats_modal import UpgradeStatsModal
 from discord.ui import View, Button
 import discord
