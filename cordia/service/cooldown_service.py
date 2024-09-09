@@ -9,7 +9,7 @@ class CooldownService:
             "cast_spell": {}
         }
 
-    def set_cooldown(self, discord_id: int, action: Literal["attack", "cast_spell"], duration: int):
+    def set_cooldown(self, discord_id: int, action: Literal["attack", "cast_spell"], expiration_time: datetime):
         """
         Sets a cooldown for a player for the specified action.
 
@@ -17,8 +17,6 @@ class CooldownService:
         :param action: The action for which to set the cooldown (e.g., 'attack' or 'cast_spell').
         :param duration: The cooldown duration in seconds.
         """
-        current_time = datetime.datetime.now(datetime.timezone.utc)
-        expiration_time = current_time + datetime.timedelta(seconds=duration)
         self.cooldowns[action][discord_id] = expiration_time
 
     def is_on_cooldown(self, discord_id: int, action: Literal["attack", "cast_spell"]) -> bool:

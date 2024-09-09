@@ -1,6 +1,7 @@
 from cordia.model.gear import GearType
 from cordia.model.gear_instance import GearInstance
 from cordia.util.decorators import only_command_invoker
+from cordia.util.gear_util import get_weapon_from_player_gear
 from cordia.view.pages.fight_boss_page import FightBossPage
 from cordia.view.pages.page import Page
 import discord
@@ -34,7 +35,7 @@ class HomePage(Page):
         embed.set_image(url=image_path)
         await self.cordia_service.get_or_insert_player(self.discord_id)
         player_gear = await self.cordia_service.get_player_gear(self.discord_id)
-        weapon = self.cordia_service.get_weapon(player_gear)
+        weapon = get_weapon_from_player_gear(player_gear)
         if not weapon:
             welcome_text = (
                 "**Sword**: A slow, but hard hitting weapon that hits many monsters"

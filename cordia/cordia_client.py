@@ -1,5 +1,10 @@
 from cordia.dao.boss_instance_dao import BossInstanceDao
 from cordia.dao.item_dao import ItemDao
+from cordia.service.battle_service import BattleService
+from cordia.service.boss_service import BossService
+from cordia.service.cooldown_service import CooldownService
+from cordia.service.gear_service import GearService
+from cordia.service.player_service import PlayerService
 from discord.ext import commands
 from typing import List
 import asyncpg
@@ -59,19 +64,21 @@ class CordiaClient(commands.Bot):
             self.logger.error(f"Failed to create database pool. [{str(e)}]")
 
         # DAOS
-        self.player_dao = PlayerDao(self.pool)
-        self.gear_dao = GearDao(self.pool)
-        self.player_gear_dao = PlayerGearDao(self.pool)
-        self.boss_instance_dao = BossInstanceDao(self.pool)
-        self.item_dao = ItemDao(self.pool)
+        player_dao = PlayerDao(self.pool)
+        gear_dao = GearDao(self.pool)
+        player_gear_dao = PlayerGearDao(self.pool)
+        boss_instance_dao = BossInstanceDao(self.pool)
+        item_dao = ItemDao(self.pool)
 
-        # SERVICE
+        # SERVICES
+        player_service = PlayerService(player_dao)
+        gear_service = GearService(gear_dao, player_gear_dao)
+        boss_service = BossService(boss_instance_dao)
+        cooldown_service = CooldownService()
+        battle_service = BattleService(player_service, gear_service, boss_service, cooldown_service)
+        
         self.cordia_service = CordiaService(
-            player_dao=self.player_dao,
-            gear_dao=self.gear_dao,
-            player_gear_dao=self.player_gear_dao,
-            boss_instance_dao=self.boss_instance_dao,
-            item_dao=self.item_dao
+            player_service, gear_service, boss_service, battle_service
         )
 
     async def on_ready(self):

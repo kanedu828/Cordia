@@ -5,6 +5,7 @@ from cordia.model.location import Location
 from cordia.util.battle_util import get_random_battle_text
 from cordia.util.decorators import only_command_invoker
 from cordia.util.exp_util import exp_to_level
+from cordia.util.gear_util import get_weapon_from_player_gear
 from cordia.util.text_format_util import exp_bar
 from cordia.view.embeds.level_up_embed import get_level_up_embed
 from cordia.view.pages.page import Page
@@ -227,7 +228,7 @@ class FightPage(Page):
         )
         cast_spell_button.callback = self.cast_spell
         player_gear = await self.cordia_service.get_player_gear(self.discord_id)
-        weapon = self.cordia_service.get_weapon(player_gear)
+        weapon = get_weapon_from_player_gear(player_gear)
         spell = gear_data[weapon.name].spell
         if not spell:
             cast_spell_button.disabled = True

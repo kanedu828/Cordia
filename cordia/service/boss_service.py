@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 from cordia.dao.boss_instance_dao import BossInstanceDao
 from cordia.model.boss_instance import BossInstance
 from cordia.data.bosses import boss_data

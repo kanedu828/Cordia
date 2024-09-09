@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 import random
 from typing import List, Literal, Tuple
 from cordia.model.attack_result import AttackResult
@@ -9,6 +9,7 @@ from cordia.model.player import Player
 from cordia.service.boss_service import BossService
 from cordia.service.cooldown_service import CooldownService
 from cordia.service.gear_service import GearService
+from cordia.service.loot_service import LootService
 from cordia.service.player_service import PlayerService
 from cordia.util.exp_util import exp_to_level
 from cordia.util.gear_util import get_weapon_from_player_gear
@@ -20,11 +21,12 @@ from cordia.data.locations import location_data
 
 
 class BattleService:
-    def __init__(self, player_service: PlayerService, gear_service: GearService, boss_service: BossService, cooldown_service: CooldownService):
+    def __init__(self, player_service: PlayerService, gear_service: GearService, boss_service: BossService, cooldown_service: CooldownService, loot_service: LootService):
         self.player_service = player_service
         self.gear_service = gear_service
         self.boss_service = boss_service
         self.cooldown_service = cooldown_service
+        self.loot_service = loot_service
 
     async def boss_fight(
         self, discord_id: int, action: Literal["attack", "cast_spell"] = "attack"
@@ -103,7 +105,7 @@ class BattleService:
         if is_combo:
             cooldown_expiration = current_time + datetime.timedelta(seconds=1)
 
-        self.cooldown_service.set_cooldown(discord_id, action)
+        self.cooldown_service.set_cooldown(discord_id, action, cooldown_expiration)
 
         boss_fight_result = BossFightResult(
             boss_instance=boss_instance,
@@ -344,6 +346,6 @@ class BattleService:
         await self.player_service.increment_exp(discord_id, attack_result.exp)
         await self.player_service.increment_gold(discord_id, attack_result.gold)
 
-        self.cooldown_service.set_cooldown(discord_id, action)
+        self.cooldown_service.set_cooldown(discord_id, action, cooldown_expiration)
 
         return attack_result
