@@ -148,7 +148,8 @@ class ViewGearPage(Page):
                 value=f"You need {use_core_cost - player.gold} more gold.",
                 inline=False,
             )
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await self.render(interaction)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         bonus_str = gear.get_gear_data().get_bonus_string(core_value)
         await self.cordia_service.update_gear_bonus(self.gear_id, bonus_str)
