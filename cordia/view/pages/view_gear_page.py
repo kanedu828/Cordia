@@ -26,7 +26,7 @@ class ViewGearPage(Page):
         gi = await self.cordia_service.get_gear_by_id(self.gear_id)
         pg = await self.cordia_service.get_player_gear_by_gear_id(gi.id)
         player = await self.cordia_service.get_player_by_discord_id(gi.discord_id)
-        gd = gear_data[gi.name]
+        gd = gi.get_gear_data()
         equipped_tag = "[Equipped] " if pg else ""
 
         cores = await self.cordia_service.get_cores_for_user(self.discord_id)
@@ -134,12 +134,26 @@ class ViewGearPage(Page):
 
     @only_command_invoker()
     async def core_select_callback(self, interaction: discord.Interaction):
+        player = await self.cordia_service.get_player_by_discord_id(interaction.user.id)
         core_value = interaction.data["values"][0]
         gear = await self.cordia_service.get_gear_by_id(self.gear_id)
-        bonus_str = gear_data[gear.name].get_bonus_string(core_value)
+        use_core_cost = gear.get_gear_data().get_use_core_cost()
+        embed = discord.Embed(
+            title=f"Use Core",
+        )
+        if player.gold < use_core_cost:
+            embed.color = discord.Color.red()
+            embed.add_field(
+                name="You do not have enough resources!",
+                value=f"You need {use_core_cost - player.gold} more gold.",
+                inline=False,
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+        bonus_str = gear.get_gear_data().get_bonus_string(core_value)
         await self.cordia_service.update_gear_bonus(self.gear_id, bonus_str)
         await self.cordia_service.insert_item(interaction.user.id, core_value, -1)
-        await self.cordia_service.increment_gold(interaction.user.id, -gear.get_gear_data().get_use_core_cost())
+        await self.cordia_service.increment_gold(interaction.user.id, -use_core_cost)
         await self.render(interaction)
 
     @only_command_invoker()
@@ -162,7 +176,7 @@ class ViewGearPage(Page):
             embed.color = discord.Color.green()
             embed.add_field(
                 name="You successfully upgraded your gear!",
-                value=f"You have upgraded your **{gear_data[gi.name].name}** to **{gi.stars + 1} stars**!",
+                value=f"You have upgraded your **{gi.get_gear_data().name}** to **{gi.stars + 1} stars**!",
                 inline=False,
             )
             await self.cordia_service.increment_gear_stars(self.gear_id, 1)
@@ -178,7 +192,7 @@ class ViewGearPage(Page):
         gear_page = await GearPage.create(
             self.cordia_service,
             self.discord_id,
-            None if self.is_all else gear_data[gear.name].type,
+            None if self.is_all else gear.get_gear_data().type,
         )
         if self.page >= 0:
             gear_page.armory_page = self.page

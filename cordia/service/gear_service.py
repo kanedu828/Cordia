@@ -35,7 +35,6 @@ class GearService:
 
     async def equip_gear(self, discord_id: int, gear_id: int, slot: str):
         gi = await self.get_gear_by_id(gear_id)
-        gd = gear_data[gi.name]
         return await self.player_gear_dao.equip_gear(discord_id, gear_id, slot)
 
     async def remove_gear(self, discord_id: int, slot: str):

@@ -292,7 +292,7 @@ class FightBossPage(Page):
         cast_spell_button.callback = self.cast_spell
         player_gear = await self.cordia_service.get_player_gear(self.discord_id)
         weapon = get_weapon_from_player_gear(player_gear)
-        spell = gear_data[weapon.name].spell
+        spell = weapon.get_gear_data().spell
         if not spell:
             cast_spell_button.disabled = True
 

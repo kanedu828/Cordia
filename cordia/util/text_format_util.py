@@ -89,8 +89,6 @@ def get_player_stats_string(player: Player, player_gear: List[GearInstance]) -> 
                 extra_stats[s] += int(extra_stats[s] * (bonus_stats["%"][s] / 100))
         for s in bonus_stats["+"].keys():
             if s in main_stats:
-                print(main_stats[s]["gear_bonus"])
-                print(bonus_stats["+"][s])
                 main_stats[s]["gear_bonus"] += bonus_stats["+"][s]
             if s in extra_stats:
                 extra_stats[s] += bonus_stats["+"][s]

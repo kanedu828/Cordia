@@ -56,7 +56,7 @@ def calculate_attack_damage(
         exp_to_level(player.exp), monster.level
     )
     weapon = get_weapon_from_player_gear(player_gear)
-    spell = gear_data[weapon.name].spell
+    spell = weapon.get_gear_data().spell
 
     if action == "cast_spell" and spell:
         damage = spell.damage + (

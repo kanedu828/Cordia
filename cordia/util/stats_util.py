@@ -76,7 +76,7 @@ def get_stats_embed(player: Player, player_gear: List[GearInstance]):
     embed.add_field(name="", value=stats_text)
     embed.add_field(name="", value=special_stats_text)
     weapon = get_weapon_from_player_gear(player_gear)
-    spell = gear_data[weapon.name].spell
+    spell = weapon.get_gear_data().spell
     if spell:
         embed.add_field(name="", value=get_spell_stats_string(spell), inline=False)
 

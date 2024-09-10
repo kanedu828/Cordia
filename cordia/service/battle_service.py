@@ -65,7 +65,7 @@ class BattleService:
         player_gear = await self.gear_service.get_player_gear(discord_id)
         player_stats = get_player_stats(player, player_gear)
         weapon = get_weapon_from_player_gear(player_gear)
-        weapon_data = gear_data[weapon.name]
+        weapon_data = weapon.get_gear_data()
         boss = boss_data[boss_instance.name]
 
         # Deal damage
@@ -139,7 +139,7 @@ class BattleService:
 
         IDLE_FREQUENCY_MULTIPLIER = 20
         idle_frequency = (
-            gear_data[get_weapon_from_player_gear(player_gear).name].attack_cooldown
+            get_weapon_from_player_gear(player_gear).get_gear_data().attack_cooldown
             * IDLE_FREQUENCY_MULTIPLIER
         )
 
@@ -160,7 +160,7 @@ class BattleService:
 
         # Kill rate, cannot exceed strike radius
         kill_rate = min(
-            (damage / monster_mean["hp"]), gear_data[weapon.name].strike_radius
+            (damage / monster_mean["hp"]), weapon.get_gear_data().strike_radius
         )
         gold_gained *= kill_rate * times_attacked
         exp_gained *= kill_rate * times_attacked
@@ -222,7 +222,7 @@ class BattleService:
         kill_rate = float(damage) / monster.hp
 
         weapon = get_weapon_from_player_gear(player_gear)
-        weapon_data = gear_data[weapon.name]
+        weapon_data = weapon.get_gear_data()
         # If kill rate < 1, then that is the chance of successfully killing an enemy.
         # If kill rate >= 1, then that is the number of monsters slain
         if kill_rate < 1:

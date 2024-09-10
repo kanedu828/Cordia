@@ -47,7 +47,7 @@ class Monster:
         Returns a tuple containing (item_key, count)
         """
         dropped_items = []
-        item_loot = self.item_loot
+        item_loot = self.item_loot[:]
         # All monsters drop cores by default
         if self.type == MonsterType.NORMAL:
             item_loot += [

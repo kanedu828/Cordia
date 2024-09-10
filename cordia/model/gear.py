@@ -64,32 +64,51 @@ class Gear:
         """
         stat_options = ["strength", "persistence", "intelligence", "efficiency", "luck"]
         weapon_stat_options = ["damage", "boss_damage"]
+
+        # Add weapon-specific stats if the gear is a weapon
         if self.type == GearType.WEAPON:
-            stat_options += weapon_stat_options
+            stat_options = stat_options + weapon_stat_options
+
+        # Determine number of lines (number of bonuses)
         lines = random.randint(1, 3)
-        bonus_str = ""
+
+        # Core-based value modifiers
+        flat_modifiers = {
+            "basic_core": 0.5,
+            "quality_core": 1,
+            "supreme_core": 2,
+            "chaos_core": 3,
+        }
+
+        percentage_ranges = {
+            "basic_core": (1, 5),
+            "quality_core": (6, 10),
+            "supreme_core": (11, 15),
+            "chaos_core": (16, 20),
+        }
+
+        # Build the bonus string
+        bonuses = []
         for _ in range(lines):
             rand_stat = random.choice(stat_options)
-            rand_modifier = random.choices(["+", "%"], weights=[0.7, 0.3], k=1)[0]
-            if rand_modifier == "+":
+
+            # Boss damage can't have a percentage modifier and its value is halved
+            if rand_stat == "boss_damage":
+                rand_modifier = "+"
                 random_val = random.randint(1, self.level)
-                if core == "basic_core":
-                    random_val = math.ceil(random_val * 0.5)
-                elif core == "supreme_core":
-                    random_val *= 2
-                elif core == "chaos_core":
-                    random_val *= 3
+                random_val = max(1, math.ceil(random_val * flat_modifiers.get(core, 1) / 2))
             else:
-                if core == "basic_core":
-                    random_val = random.randint(1, 5)
-                if core == "quality_core":
-                    random_val = random.randint(6, 10)
-                if core == "supreme_core":
-                    random_val = random.randint(11, 15)
-                if core == "chaos_core":
-                    random_val = random.randint(16, 20)
-            bonus_str += f"{rand_stat}:{random_val}:{rand_modifier};"
-        return bonus_str[:-1]
+                rand_modifier = random.choices(["+", "%"], weights=[0.7, 0.3], k=1)[0]
+
+                if rand_modifier == "+":
+                    random_val = random.randint(1, self.level)
+                    random_val = math.ceil(random_val * flat_modifiers.get(core, 1))
+                else:
+                    random_val = random.randint(*percentage_ranges.get(core, (1, 5)))
+
+            bonuses.append(f"{rand_stat}:{random_val}:{rand_modifier}")
+
+        return ";".join(bonuses)
 
     def get_use_core_cost(self):
         return self.level * 10

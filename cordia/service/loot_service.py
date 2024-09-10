@@ -51,7 +51,7 @@ class LootService:
 
         # Handle item drops
         item_drops = []
-        for i, c in monster.get_dropped_items():
+        for i, c in monster.get_dropped_items(kills):
             id = item_data[i]
             await self.item_service.insert_item(discord_id, i, c)
             item_drops.append((id, c))

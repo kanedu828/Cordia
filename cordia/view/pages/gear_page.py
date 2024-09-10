@@ -52,7 +52,7 @@ class GearPage(Page):
         for gear_type in GearType:
             gi = gear_dict.get(gear_type.value, None)
             if gi:
-                gd = gear_data[gi.name]
+                gd = gi.get_gear_data()
                 field_text = f"lv. {gd.level} {gd.name}"
                 select_options.append(
                     discord.SelectOption(
@@ -79,8 +79,8 @@ class GearPage(Page):
 
     async def paginate_gear(self, type: GearType | None) -> List[List[GearInstance]]:
         gear: List[GearInstance] = await self.cordia_service.get_armory(self.discord_id)
-        filtered_gear = [g for g in gear if not type or gear_data[g.name].type == type]
-        filtered_gear.sort(key=lambda g: gear_data[g.name].level, reverse=True)
+        filtered_gear = [g for g in gear if not type or g.get_gear_data().type == type]
+        filtered_gear.sort(key=lambda g: g.get_gear_data().level, reverse=True)
         page_size = 10
         return [
             filtered_gear[i : i + page_size]
@@ -105,7 +105,7 @@ class GearPage(Page):
 
         select_options = []
         for gear_item in gear_list:
-            gd = gear_data[gear_item.name]
+            gd = gear_item.get_gear_data()
             # Format each gear item
             embed.add_field(
                 name="", value=(f"**lv. {gd.level} {gd.name}**"), inline=False
