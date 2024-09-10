@@ -76,8 +76,8 @@ class Gear:
         flat_modifiers = {
             "basic_core": 0.5,
             "quality_core": 1,
-            "supreme_core": 2,
-            "chaos_core": 3,
+            "supreme_core": 1.5,
+            "chaos_core": 2,
         }
 
         percentage_ranges = {
