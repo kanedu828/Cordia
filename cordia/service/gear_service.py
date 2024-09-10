@@ -26,6 +26,9 @@ class GearService:
         gear = await self.gear_dao.get_gear_by_id(gear_id)
         await self.gear_dao.update_gear_stars(gear_id, gear.stars + stars)
 
+    async def update_gear_bonus(self, gear_id: int, bonus: str):
+        await self.gear_dao.update_bonus(gear_id, bonus)
+
     # Player Gear
     async def get_player_gear(self, discord_id: int):
         return await self.player_gear_dao.get_player_gear(discord_id)

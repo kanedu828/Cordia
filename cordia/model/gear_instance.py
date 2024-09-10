@@ -21,6 +21,35 @@ class GearInstance:
         gd = self.get_gear_data()
         base_cost = gd.level * 100
         return int(base_cost + (self.stars * base_cost / 4))
+    
+    def get_bonus_stats(self):
+        bonus_stats = {
+            "%": {
+                "strength": 0,
+                "persistence": 0,
+                "intelligence": 0,
+                "efficiency": 0,
+                "luck": 0,
+                "damage": 0,
+                "boss_damage": 0
+            },
+            "+": {
+                "strength": 0,
+                "persistence": 0,
+                "intelligence": 0,
+                "efficiency": 0,
+                "luck": 0,
+                "damage": 0,
+                "boss_damage": 0
+            }
+        }
+        if self.bonus:
+            split_bonus = self.bonus.split(";")
+            for sb in split_bonus:
+                sb_split = sb.split(":")
+                stat, value, modifier = sb_split
+                bonus_stats[modifier][stat] = int(value)
+        return bonus_stats
 
     def get_upgraded_stats(self):
         gd = self.get_gear_data()
@@ -56,6 +85,19 @@ class GearInstance:
             percentage_increase += 10  # Increase percentage for the next set of stars
 
         return upgraded_stats
+    
+    def get_bonus_stats_string(self):
+        bonus_str = ""
+        if self.bonus:
+            split_bonus = self.bonus.split(";")
+            for sb in split_bonus:
+                sb_split = sb.split(":")
+                stat, value, modifier = sb_split
+                if modifier == "%":
+                    bonus_str += f"\n{value}{modifier} {get_stat_emoji(stat)}{stat}"
+                elif modifier == "+":
+                    bonus_str += f"\n{modifier}{value} {get_stat_emoji(stat)}{stat}" 
+        return f"```{bonus_str}```" if bonus_str else ""
 
     def get_main_stats_string(self) -> str:
         gd = self.get_gear_data()
@@ -98,4 +140,4 @@ class GearInstance:
             if gd.__dict__[s]:
                 secondary_stats_string += f"\n{get_stat_emoji(s)}{s.replace('_', ' ').capitalize().ljust(max_stat_length_extra)} {gd.__dict__[s]}{get_stat_modifier(s)}"
 
-        return f"```{secondary_stats_string}```"
+        return f"```{secondary_stats_string}```" if secondary_stats_string else ""

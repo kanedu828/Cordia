@@ -81,8 +81,9 @@ class BattleService:
         # If boss is killed
         new_gear_loot = []
         sold_gear_amount = 0
+        item_loot = []
         if boss_instance.current_hp <= 0:
-            exp_gained, gold_gained, new_gear_loot, sold_gear_amount = (
+            exp_gained, gold_gained, new_gear_loot, sold_gear_amount, item_loot = (
                 await self.loot_service.handle_loot(discord_id, boss, player_stats, 1)
             )
             await self.player_service.update_last_boss_killed(discord_id)
@@ -115,6 +116,7 @@ class BattleService:
             boss_expiration=boss_instance.expiration_time,
             player_exp=player.exp + exp_gained,
             weapon=weapon_data,
+            item_loot=item_loot,
         )
 
         if action == "cast_spell" and weapon_data.spell:
@@ -239,7 +241,7 @@ class BattleService:
         if is_combo:
             cooldown_expiration = current_time + datetime.timedelta(seconds=1)
 
-        exp_gained, gold_gained, new_gear_loot, sold_gear_amount = (
+        exp_gained, gold_gained, new_gear_loot, sold_gear_amount, item_loot = (
             await self.loot_service.handle_loot(
                 discord_id, monster, player_stats, kills
             )
@@ -260,6 +262,7 @@ class BattleService:
             gear_loot=new_gear_loot,
             sold_gear_amount=sold_gear_amount,
             weapon=weapon_data,
+            item_loot=item_loot,
         )
 
         if action == "cast_spell" and weapon_data.spell:

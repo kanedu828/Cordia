@@ -3,8 +3,9 @@ from cordia.util.decorators import only_command_invoker
 from cordia.util.text_format_util import get_stars_string
 from cordia.view.pages.page import Page
 from cordia.data.gear import gear_data
+from cordia.data.items import item_data
 import discord
-from discord.ui import Button, View
+from discord.ui import Button, View, Select
 
 
 class ViewGearPage(Page):
@@ -28,7 +29,7 @@ class ViewGearPage(Page):
         gd = gear_data[gi.name]
         equipped_tag = "[Equipped] " if pg else ""
 
-        view = self._create_view(bool(pg), gi.stars >= gd.get_max_stars())
+        cores = await self.cordia_service.get_cores_for_user(self.discord_id)
 
         embed = discord.Embed(
             title=f"{equipped_tag}lv.{gd.level} {gd.name}", color=discord.Color.blue()
@@ -46,7 +47,7 @@ class ViewGearPage(Page):
         if gd.spell:
             embed.add_field(
                 name=f"Spell: {gd.spell.name}",
-                value=f"**Description:** {gd.spell.description}\n**Scaling Stat:** {gd.spell.scaling_stat.title()}\n**Scaling Multiplier**: x{gd.spell.scaling_multiplier}",
+                value=f"**Description:** {gd.spell.description}\n**Scaling Stat:** {gd.spell.scaling_stat.title()}",
                 inline=False,
             )
             embed.add_field(
@@ -55,14 +56,48 @@ class ViewGearPage(Page):
                 inline=False,
             )
 
+        if gi.bonus:
+            embed.add_field(
+                name="Bonus Stats",
+                value=gi.get_bonus_stats_string(),
+                inline=False
+            )
+
         upgrade_cost_text = f"🪙**{gi.get_upgrade_cost()} Gold**"
         if gi.stars >= gd.get_max_stars():
             upgrade_cost_text = "This gear is already fully upgraded!"
         embed.add_field(name="Upgrade Costs", value=upgrade_cost_text, inline=False)
-        embed.add_field(name="Your Resources", value=f"🪙**{player.gold} Gold**")
+        embed.add_field(name="Use Core Costs", value=f"🪙**{gd.get_use_core_cost()} Gold**\n**1 Core**", inline=False)
+        your_resources_text = f"🪙**{player.gold} Gold**"
+        for c in cores:
+            your_resources_text += f"\n{c.count} {item_data[c.name].name}"
+        if not cores:
+            your_resources_text += f"\nYou have no cores"
+        embed.add_field(name="Your Resources", value=your_resources_text, inline=False)
+
+        has_upgrade_cost = player.gold >= gi.get_upgrade_cost()
+        has_use_core_cost = player.gold >= gd.get_use_core_cost()
+        view = self._create_view(bool(pg), gi.stars >= gd.get_max_stars(), cores, has_upgrade_cost, has_use_core_cost)
+        
+        cores = await self.cordia_service.get_cores_for_user(self.discord_id)
+        if cores:
+            options = [
+                discord.SelectOption(label=item_data[c.name].name, description="", value=c.name)
+                for c in cores
+            ]
+            core_select = Select(
+                placeholder="Select a core to use",
+                min_values=1,
+                max_values=1,
+                options=options,
+            )
+            core_select.callback = self.core_select_callback
+            view.add_item(core_select)
         await interaction.response.edit_message(embed=embed, view=view)
 
-    def _create_view(self, equipped: bool, max_stars: bool = False):
+    def _create_view(
+        self, equipped: bool, max_stars: bool = False, has_cores: bool = False, has_upgrade_gold=False, has_use_core_gold=False
+    ):
         view = View(timeout=None)
 
         equip_button = Button(label="Equip", style=discord.ButtonStyle.blurple, row=1)
@@ -73,7 +108,7 @@ class ViewGearPage(Page):
             label="Upgrade", style=discord.ButtonStyle.blurple, row=1
         )
         upgrade_button.callback = self.upgrade_button_callback
-        upgrade_button.disabled = max_stars
+        upgrade_button.disabled = max_stars or not has_upgrade_gold
 
         back_button = Button(label="Back", style=discord.ButtonStyle.grey, row=2)
         back_button.callback = self.back_button_callback
@@ -95,6 +130,16 @@ class ViewGearPage(Page):
         await self.cordia_service.equip_gear(
             self.discord_id, self.gear_id, gi.get_gear_data().type.value
         )
+        await self.render(interaction)
+
+    @only_command_invoker()
+    async def core_select_callback(self, interaction: discord.Interaction):
+        core_value = interaction.data["values"][0]
+        gear = await self.cordia_service.get_gear_by_id(self.gear_id)
+        bonus_str = gear_data[gear.name].get_bonus_string(core_value)
+        await self.cordia_service.update_gear_bonus(self.gear_id, bonus_str)
+        await self.cordia_service.insert_item(interaction.user.id, core_value, -1)
+        await self.cordia_service.increment_gold(interaction.user.id, -gear.get_gear_data().get_use_core_cost())
         await self.render(interaction)
 
     @only_command_invoker()

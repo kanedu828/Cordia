@@ -42,14 +42,35 @@ class Monster:
         image_file_name += ".png"
         return image_file_name
 
-    # CHANGE THIS TO GET THE ITEM CLASS
-    def get_dropped_items(self) -> List[str]:
+    def get_dropped_items(self, kills: int = 1) -> List[Tuple[str, int]]:
+        """
+        Returns a tuple containing (item_key, count)
+        """
         dropped_items = []
-        for item, drop_rate in self.item_loot:
-            if (
-                random.random() <= drop_rate
-            ):  # Check if the item drops based on probability
-                dropped_items.append(item)
+        item_loot = self.item_loot
+        # All monsters drop cores by default
+        if self.type == MonsterType.NORMAL:
+            item_loot += [
+                ("basic_core", 0.02),
+                ("quality_core", 0.01),
+                ("supreme_core", 0.005),
+            ]
+        elif self.type == MonsterType.BOSS:
+            item_loot += [
+                ("basic_core", 0.50),
+                ("quality_core", 0.25),
+                ("supreme_core", 0.12),
+                ("chaos_core", 0.06),
+            ]
+        for item, drop_rate in item_loot:
+            count = 0
+            for _ in range(kills):
+                if (
+                    random.random() <= drop_rate
+                ):  # Check if the item drops based on probability
+                    count += 1
+            if count:
+                dropped_items.append((item, count))
         return dropped_items
 
     def get_dropped_gear(self, kills: int = 1) -> List[str]:

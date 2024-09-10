@@ -20,7 +20,7 @@ cape_data = {
     ),
     "wyvern_wing_cape": Gear(
         name="Wyvern Wing Cape",
-        type=GearType.GLOVES,
+        type=GearType.CAPE,
         persistence=6,
         efficiency=6,
         level=20,

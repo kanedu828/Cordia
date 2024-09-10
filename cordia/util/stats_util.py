@@ -32,7 +32,12 @@ def get_player_stats(player: Player, player_gear: List[GearInstance]):
     }
 
     for pg in player_gear:
-        gd: Gear = gear_data[pg.name]
+        gd: Gear = pg.get_gear_data()
+        bonus_stats = pg.get_bonus_stats()
+        for s in bonus_stats["%"].keys():
+            stats[s] += int(stats[s] * (bonus_stats["%"][s] / 100))
+        for s in bonus_stats["+"].keys():
+            stats[s] += bonus_stats["+"][s]
         upgrade_stats = pg.get_upgraded_stats()
         # ADD UPGRADE STATS HERE
         stats["strength"] += upgrade_stats["strength"]

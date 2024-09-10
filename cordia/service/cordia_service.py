@@ -1,15 +1,17 @@
 import datetime
-from typing import List, Literal
+from typing import List, Literal, Optional
 
 from cordia.model.attack_result import AttackResult
 from cordia.model.boos_fight_result import BossFightResult
 from cordia.model.boss_instance import BossInstance
 from cordia.model.gear_instance import GearInstance
+from cordia.model.item_instance import ItemInstance
 from cordia.model.player import Player
 
 from cordia.service.battle_service import BattleService
 from cordia.service.boss_service import BossService
 from cordia.service.gear_service import GearService
+from cordia.service.item_service import ItemService
 from cordia.service.player_service import PlayerService
 
 
@@ -20,11 +22,13 @@ class CordiaService:
         gear_service: GearService,
         boss_service: BossService,
         battle_service: BattleService,
+        item_service: ItemService,
     ):
         self.player_service = player_service
         self.gear_service = gear_service
         self.boss_service = boss_service
         self.battle_service = battle_service
+        self.item_service = item_service
 
     # Player
     async def get_player_by_discord_id(self, discord_id: int) -> Player | None:
@@ -66,6 +70,9 @@ class CordiaService:
     async def increment_gear_stars(self, gear_id: int, stars: int):
         await self.gear_service.increment_gear_stars(gear_id, stars)
 
+    async def update_gear_bonus(self, gear_id: int, bonus: str):
+        await self.gear_service.update_gear_bonus(gear_id, bonus)
+
     # Player Gear
     async def get_player_gear(self, discord_id: int):
         return await self.gear_service.get_player_gear(discord_id)
@@ -78,6 +85,19 @@ class CordiaService:
 
     async def get_player_gear_by_gear_id(self, gear_id: int) -> GearInstance:
         return await self.gear_service.get_player_gear_by_gear_id(gear_id)
+
+    # Items
+    async def insert_item(self, discord_id: int, name: str, count: int):
+        await self.item_service.insert_item(discord_id, name, count)
+
+    async def get_inventory(self, discord_id: int) -> list[ItemInstance]:
+        return await self.item_service.get_inventory(self, discord_id)
+
+    async def get_item(self, discord_id: int, name: str) -> Optional[ItemInstance]:
+        return await self.item_service.get_item(discord_id, name)
+    
+    async def get_cores_for_user(self, discord_id: int) -> list[ItemInstance]:
+        return await self.item_service.get_cores_for_user(discord_id)
 
     # Boss Instance
     async def get_boss_by_discord_id(self, discord_id: int) -> BossInstance:

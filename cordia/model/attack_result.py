@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import List
+from typing import List, Tuple
 
 from cordia.model.gear import Gear
 from cordia.model.item import Item
@@ -12,7 +12,7 @@ class AttackResult:
     kills: int = 0
     exp: int = 0
     gold: int = 0
-    item_loot: List[Item] = field(default_factory=list)
+    item_loot: List[Tuple[Item, int]] = field(default_factory=list)
     gear_loot: List[Gear] = field(default_factory=list)
     sold_gear_amount: int = 0
     monster: str = ""

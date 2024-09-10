@@ -4,6 +4,7 @@ from cordia.service.battle_service import BattleService
 from cordia.service.boss_service import BossService
 from cordia.service.cooldown_service import CooldownService
 from cordia.service.gear_service import GearService
+from cordia.service.item_service import ItemService
 from cordia.service.loot_service import LootService
 from cordia.service.player_service import PlayerService
 from discord.ext import commands
@@ -76,13 +77,14 @@ class CordiaClient(commands.Bot):
         gear_service = GearService(gear_dao, player_gear_dao)
         boss_service = BossService(boss_instance_dao)
         cooldown_service = CooldownService()
-        loot_service = LootService(gear_service, player_service)
+        item_service = ItemService(item_dao)
+        loot_service = LootService(gear_service, player_service, item_service)
         battle_service = BattleService(
             player_service, gear_service, boss_service, cooldown_service, loot_service
         )
 
         self.cordia_service = CordiaService(
-            player_service, gear_service, boss_service, battle_service
+            player_service, gear_service, boss_service, battle_service, item_service
         )
 
     async def on_ready(self):

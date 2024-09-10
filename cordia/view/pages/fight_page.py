@@ -182,6 +182,9 @@ class FightPage(Page):
             new_gear_text = f"**{g.name}. Navigate to your gear to equip it.**"
             rewards_text += "\n" + new_gear_text
 
+        for i, c in attack_results.item_loot:
+            rewards_text += f"\n**{c} {i.name}(s)**"
+
         if attack_results.sold_gear_amount:
             rewards_text += f"\nYou found gear you already own. You gained **{attack_results.sold_gear_amount}** gold instead."
         embed.add_field(name="💰Rewards💰", value=rewards_text, inline=False)

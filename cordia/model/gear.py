@@ -1,5 +1,8 @@
 from dataclasses import dataclass
 from enum import Enum
+import math
+import random
+from typing import Literal
 
 from cordia.model.spells import Spell
 
@@ -51,3 +54,42 @@ class Gear:
             return 20
         elif self.level < 100:
             return 25
+
+    def get_bonus_string(
+        self, core: Literal["basic_core", "quality_core", "supreme_core", "chaos_core"]
+    ):
+        """
+        Formatted as <stat>:<amount>:<modifier> separated by ;
+        ex: intelligence:10:+;strength:21:%
+        """
+        stat_options = ["strength", "persistence", "intelligence", "efficiency", "luck"]
+        weapon_stat_options = ["damage", "boss_damage"]
+        if self.type == GearType.WEAPON:
+            stat_options += weapon_stat_options
+        lines = random.randint(1, 3)
+        bonus_str = ""
+        for _ in range(lines):
+            rand_stat = random.choice(stat_options)
+            rand_modifier = random.choices(["+", "%"], weights=[0.7, 0.3], k=1)[0]
+            if rand_modifier == "+":
+                random_val = random.randint(1, self.level)
+                if core == "basic_core":
+                    random_val = math.ceil(random_val * 0.5)
+                elif core == "supreme_core":
+                    random_val *= 2
+                elif core == "chaos_core":
+                    random_val *= 3
+            else:
+                if core == "basic_core":
+                    random_val = random.randint(1, 5)
+                if core == "quality_core":
+                    random_val = random.randint(6, 10)
+                if core == "supreme_core":
+                    random_val = random.randint(11, 15)
+                if core == "chaos_core":
+                    random_val = random.randint(16, 20)
+            bonus_str += f"{rand_stat}:{random_val}:{rand_modifier};"
+        return bonus_str[:-1]
+
+    def get_use_core_cost(self):
+        return self.level * 10

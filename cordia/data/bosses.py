@@ -1,4 +1,4 @@
-from cordia.model.monster import Monster
+from cordia.model.monster import Monster, MonsterType
 
 boss_data = {
     "goblin_king": Monster(
@@ -16,6 +16,7 @@ boss_data = {
             ("goblin_dagger", 0.40),
             ("goblin_king_pants", 0.30),
         ],
+        type=MonsterType.BOSS,
     ),
     "ancient_treant": Monster(
         name="Ancient Treant",
@@ -30,6 +31,7 @@ boss_data = {
             ("vine_cloak", 0.30),
             ("ancient_forest_sword", 0.20),
         ],
+        type=MonsterType.BOSS,
     ),
     "mountain_behemoth": Monster(
         name="Mountain Behemoth",
@@ -46,5 +48,6 @@ boss_data = {
             ("polished_stone_pendant", 0.30),
             ("mountain_breaker_blade", 0.10),
         ],
+        type=MonsterType.BOSS,
     ),
 }
