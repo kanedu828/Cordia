@@ -4,7 +4,7 @@ import math
 import random
 from typing import Literal
 
-from cordia.model.spells import Spell
+from cordia.model.spells import Spell, SpellType
 
 
 class GearType(Enum):
@@ -64,10 +64,13 @@ class Gear:
         """
         stat_options = ["strength", "persistence", "intelligence", "efficiency", "luck"]
         weapon_stat_options = ["damage", "boss_damage"]
+        spell_stat_options = ["spell_damage"]
 
         # Add weapon-specific stats if the gear is a weapon
         if self.type == GearType.WEAPON:
-            stat_options = stat_options + weapon_stat_options
+            stat_options += weapon_stat_options
+        if self.spell and self.spell.spell_type == SpellType.DAMAGE:
+            stat_options += spell_stat_options
 
         # Determine number of lines (number of bonuses)
         lines = random.randint(1, 3)

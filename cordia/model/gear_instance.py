@@ -31,7 +31,8 @@ class GearInstance:
                 "efficiency": 0,
                 "luck": 0,
                 "damage": 0,
-                "boss_damage": 0
+                "boss_damage": 0,
+                "spell_damage": 0,
             },
             "+": {
                 "strength": 0,
@@ -40,7 +41,8 @@ class GearInstance:
                 "efficiency": 0,
                 "luck": 0,
                 "damage": 0,
-                "boss_damage": 0
+                "boss_damage": 0,
+                "spell_damage": 0,
             }
         }
         if self.bonus:
@@ -63,7 +65,11 @@ class GearInstance:
             "efficiency": gd.efficiency,
             "luck": gd.luck,
             "boss_damage": gd.boss_damage,
+            "spell_damage": 0
         }
+
+        if gd.spell:
+            base_stats["spell_damage"] = gd.spell.damage
 
         upgraded_stats = base_stats.copy()
 
@@ -141,3 +147,25 @@ class GearInstance:
                 secondary_stats_string += f"\n{get_stat_emoji(s)}{s.replace('_', ' ').capitalize().ljust(max_stat_length_extra)} {gd.__dict__[s]}{get_stat_modifier(s)}"
 
         return f"```{secondary_stats_string}```" if secondary_stats_string else ""
+
+    def get_spell_stats_string(self, split_spell_damage=False):
+        wd = self.get_gear_data()
+        split_text = f" ({wd.spell.damage} + {self.get_upgraded_stats()['spell_damage'] - wd.spell.damage})"
+        spell_stats = {
+            "spell_damage": f"{self.get_upgraded_stats()['spell_damage']}",
+            "spell_cooldown": wd.spell.spell_cooldown,
+            "spell_strike_radius": wd.spell.strike_radius,
+            "magic_penetration": wd.spell.magic_penetration,
+            "scaling_multiplier": wd.spell.scaling_multiplier
+        }
+
+        if split_spell_damage:
+            spell_stats["spell_damage"] += split_text
+        max_stat_length_extra = max(len(stat) for stat in spell_stats)
+
+        spell_stats_string = "\n".join(
+            f"{get_stat_emoji(stat)}{stat.replace('_', ' ').capitalize().ljust(max_stat_length_extra)} {value}{get_stat_modifier(stat)}"
+            for stat, value in spell_stats.items()
+        )
+
+        return f"```{spell_stats_string}```"

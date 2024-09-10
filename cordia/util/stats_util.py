@@ -6,12 +6,10 @@ from cordia.util.gear_util import get_weapon_from_player_gear
 import discord
 from cordia.model.gear import Gear
 from cordia.model.player import Player
-from cordia.data.gear import gear_data
 from cordia.util.exp_util import exp_to_level
 from cordia.util.text_format_util import (
     exp_bar,
     get_player_stats_string,
-    get_spell_stats_string,
 )
 
 
@@ -29,6 +27,7 @@ def get_player_stats(player: Player, player_gear: List[GearInstance]):
         "combo_chance": 0,
         "strike_radius": 0,
         "attack_cooldown": 0,
+        "spell_damage": 0
     }
 
     for pg in player_gear:
@@ -52,6 +51,7 @@ def get_player_stats(player: Player, player_gear: List[GearInstance]):
         stats["combo_chance"] += gd.combo_chance
         stats["strike_radius"] += gd.strike_radius
         stats["attack_cooldown"] += gd.attack_cooldown
+        stats["spell_damage"] += upgrade_stats["spell_damage"]
 
     return stats
 
@@ -78,7 +78,7 @@ def get_stats_embed(player: Player, player_gear: List[GearInstance]):
     weapon = get_weapon_from_player_gear(player_gear)
     spell = weapon.get_gear_data().spell
     if spell:
-        embed.add_field(name="", value=get_spell_stats_string(spell), inline=False)
+        embed.add_field(name="", value=weapon.get_spell_stats_string(False), inline=False)
 
     embed.add_field(name="Gold", value=f"🪙**{player.gold}**", inline=False)
     return embed

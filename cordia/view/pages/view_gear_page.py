@@ -52,7 +52,7 @@ class ViewGearPage(Page):
             )
             embed.add_field(
                 name="Spell Stats",
-                value=gd.spell.get_spell_stats_string(),
+                value=gi.get_spell_stats_string(True),
                 inline=False,
             )
 

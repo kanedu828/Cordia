@@ -238,7 +238,7 @@ class FightPage(Page):
             cast_spell_button.disabled = True
 
         idle_fight_button = Button(
-            label="Idle Fight", style=discord.ButtonStyle.blurple, row=1
+            label="Claim Idle Rewards", style=discord.ButtonStyle.blurple, row=1
         )
         idle_fight_button.callback = self.idle_fight
 

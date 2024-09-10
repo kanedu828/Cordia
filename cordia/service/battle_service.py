@@ -90,9 +90,15 @@ class BattleService:
             await self.boss_service.delete_boss(discord_id)
 
         # Get cooldown expiration
-        cooldown_expiration = current_time + datetime.timedelta(
-            seconds=weapon_data.attack_cooldown
-        )
+        cooldown_expiration = current_time
+        if action == "attack":
+            cooldown_expiration = current_time + datetime.timedelta(
+                seconds=weapon_data.attack_cooldown
+            )
+        elif action == "cast_spell" and weapon_data.spell:
+            cooldown_expiration = current_time + datetime.timedelta(
+                seconds=weapon_data.spell.spell_cooldown
+            )
 
         is_combo = random.random() < player_stats["combo_chance"] / 100
         if is_combo:
@@ -236,6 +242,12 @@ class BattleService:
         cooldown_expiration = current_time + datetime.timedelta(
             seconds=weapon_data.attack_cooldown
         )
+        if action == "cast_spell" and weapon_data.spell:
+            cooldown_expiration = current_time + datetime.timedelta(
+                seconds=weapon_data.spell.spell_cooldown
+            )
+
+        self.cooldown_service.set_cooldown(discord_id, action, cooldown_expiration)
 
         is_combo = random.random() < player_stats["combo_chance"] / 100
         if is_combo:
@@ -265,11 +277,6 @@ class BattleService:
             item_loot=item_loot,
         )
 
-        if action == "cast_spell" and weapon_data.spell:
-            attack_result.cooldown_expiration = current_time + datetime.timedelta(
-                seconds=weapon_data.spell.spell_cooldown
-            )
-
-        self.cooldown_service.set_cooldown(discord_id, action, cooldown_expiration)
+  
 
         return attack_result

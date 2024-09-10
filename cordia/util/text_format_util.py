@@ -1,6 +1,5 @@
 from typing import List
 from cordia.model.gear_instance import GearInstance
-from cordia.model.spells import Spell
 from cordia.util.exp_util import exp_to_level, level_to_exp
 from cordia.model.gear import Gear
 from cordia.model.player import Player
@@ -126,25 +125,6 @@ def get_player_stats_string(player: Player, player_gear: List[GearInstance]) -> 
 
     # Wrap both strings in code blocks for Discord and return as a tuple
     return f"```{main_stats_string}```", f"```{extra_stats_string}```"
-
-
-def get_spell_stats_string(spell: Spell):
-    spell_stats = {
-        "spell_damage": spell.damage,
-        "spell_cooldown": spell.spell_cooldown,
-        "spell_strike_radius": spell.strike_radius,
-        "magic_penetration": spell.magic_penetration,
-    }
-
-    max_stat_length_extra = max(len(stat) for stat in spell_stats)
-
-    spell_stats_string = "\n".join(
-        f"{get_stat_emoji(stat)}{stat.replace('_', ' ').capitalize().ljust(max_stat_length_extra)} {value}{get_stat_modifier(stat)}"
-        for stat, value in spell_stats.items()
-    )
-
-    return f"```{spell_stats_string}```"
-
 
 # snake_case -> Snake Case
 def snake_case_to_capital(snake_str):

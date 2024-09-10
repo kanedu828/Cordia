@@ -30,9 +30,9 @@ def get_random_battle_text(kills: int, monster: str) -> str:
     ]
 
     multi_kill_text = [
-        f"With your might, you overpower and kill **{kills}** **{monster}**s",
-        f"In a show of grandeur, you defeat **{kills}** **{monster}**s",
-        f"With your overwhelming strength, you defeat **{kills}** **{monster}**s",
+        f"With your might, you overpower and kill **{kills}** **{monster}s**",
+        f"In a show of grandeur, you defeat **{kills}** **{monster}s**",
+        f"With your overwhelming strength, you defeat **{kills}** **{monster}s**",
     ]
 
     if kills == 0:
@@ -59,7 +59,7 @@ def calculate_attack_damage(
     spell = weapon.get_gear_data().spell
 
     if action == "cast_spell" and spell:
-        damage = spell.damage + (
+        damage = player_stats["spell_damage"] + (
             player_stats[spell.scaling_stat] * spell.scaling_multiplier
         )
     else:
