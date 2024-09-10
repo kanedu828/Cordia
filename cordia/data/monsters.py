@@ -105,7 +105,7 @@ monster_data = {
         item_loot=[
             ("supreme_core", 0.10),
             ("chaos_core", 0.05),
-        ]
+        ],
     ),
     "cave_wyrm": Monster(
         name="Cave Wyrm",
@@ -122,6 +122,6 @@ monster_data = {
         item_loot=[
             ("supreme_core", 0.10),
             ("chaos_core", 0.05),
-        ]
+        ],
     ),
 }
