@@ -96,7 +96,7 @@ class Gear:
             rand_stat = random.choice(stat_options)
 
             # Boss damage and damage can't have a percentage modifier and its value is halved
-            if rand_stat == "boss_damage" or rand_modifier == "damage":
+            if rand_stat == "boss_damage" or rand_stat == "damage":
                 rand_modifier = "+"
                 random_val = random.randint(1, self.level)
                 random_val = max(

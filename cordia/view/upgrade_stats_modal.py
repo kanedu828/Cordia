@@ -31,9 +31,8 @@ class UpgradeStatsModal(Modal):
             )
             player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
             player_gear = await self.cordia_service.get_player_gear(self.discord_id)
-            await interaction.response.edit_message(
-                embed=get_stats_embed(player, player_gear)
-            )
+            from cordia.view.pages.stats_page import StatsPage
+            await StatsPage(self.cordia_service, self.discord_id).render(interaction)
             await interaction.followup.send(embed=succeed_embed, ephemeral=True)
         except Exception as e:
             fail_embed = discord.Embed(

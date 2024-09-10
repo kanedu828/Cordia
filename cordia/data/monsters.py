@@ -101,9 +101,11 @@ monster_data = {
         exp=60,
         gear_loot=[
             ("ancient_forest_sword", 0.20),
+        ],
+        item_loot=[
             ("supreme_core", 0.10),
             ("chaos_core", 0.05),
-        ],
+        ]
     ),
     "cave_wyrm": Monster(
         name="Cave Wyrm",
@@ -116,8 +118,10 @@ monster_data = {
         gear_loot=[
             ("earth_elemental_staff", 0.10),
             ("wyrm_bow", 0.10),
+        ],
+        item_loot=[
             ("supreme_core", 0.10),
             ("chaos_core", 0.05),
-        ],
+        ]
     ),
 }

@@ -103,7 +103,7 @@ class GearInstance:
                     bonus_str += f"\n{value}{modifier} {get_stat_emoji(stat)}{stat}"
                 elif modifier == "+":
                     bonus_str += f"\n{modifier}{value} {get_stat_emoji(stat)}{stat}"
-        return f"```{bonus_str}```" if bonus_str else ""
+        return f"```{bonus_str.replace('_', ' ').title()}```" if bonus_str else ""
 
     def get_main_stats_string(self) -> str:
         gd = self.get_gear_data()

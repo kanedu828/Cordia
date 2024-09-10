@@ -72,7 +72,7 @@ class ViewGearPage(Page):
         )
         your_resources_text = f"🪙**{player.gold} Gold**"
         for c in cores:
-            your_resources_text += f"\n{c.count} {item_data[c.name].name}"
+            your_resources_text += f"\n{c.display_item()}"
         if not cores:
             your_resources_text += f"\nYou have no cores"
         embed.add_field(name="Your Resources", value=your_resources_text, inline=False)

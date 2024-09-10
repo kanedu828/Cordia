@@ -17,7 +17,7 @@ item_data = {
         name="Chaos Core", description="Grants a great amount of bonus stats to gear"
     ),
     "basic_shard": Item(name="Basic Shard", description="Used to upgrade gear"),
-    "quality_shard": Item(name="Basic Shard", description="Used to upgrade gear"),
-    "supreme_shard": Item(name="Basic Shard", description="Used to upgrade gear"),
-    "chaos_shard": Item(name="Basic Shard", description="Used to upgrade gear"),
+    "quality_shard": Item(name="Quality Shard", description="Used to upgrade gear"),
+    "supreme_shard": Item(name="Supreme Shard", description="Used to upgrade gear"),
+    "chaos_shard": Item(name="Chaos Shard", description="Used to upgrade gear"),
 }
