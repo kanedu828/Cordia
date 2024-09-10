@@ -102,3 +102,27 @@ class PlayerDao:
         async with self.pool.acquire() as connection:
             count = await connection.fetchval(query, location)
             return count
+
+    async def get_top_100_players_by_exp(self) -> list[Player]:
+        query = """
+        SELECT discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location, last_idle_claim,
+            last_boss_killed, created_at, updated_at
+        FROM player
+        ORDER BY exp DESC
+        LIMIT 100
+        """
+        async with self.pool.acquire() as connection:
+            records = await connection.fetch(query)
+            return [Player(**record) for record in records]
+
+    async def get_player_rank_by_exp(self, discord_id: int) -> int:
+        query = """
+        SELECT COUNT(*)
+        FROM player
+        WHERE exp > (SELECT exp FROM player WHERE discord_id = $1)
+        """
+        async with self.pool.acquire() as connection:
+            rank = await connection.fetchval(query, discord_id)
+            return (
+                rank + 1
+            )  # The rank is +1 because the player is behind 'rank' players

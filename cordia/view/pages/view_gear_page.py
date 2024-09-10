@@ -47,7 +47,7 @@ class ViewGearPage(Page):
         if gd.spell:
             embed.add_field(
                 name=f"Spell: {gd.spell.name}",
-                value=f"**Description:** {gd.spell.description}\n**Scaling Stat:** {gd.spell.scaling_stat.title()}",
+                value=f"**Description:** {gd.spell.description}",
                 inline=False,
             )
             embed.add_field(
@@ -58,16 +58,18 @@ class ViewGearPage(Page):
 
         if gi.bonus:
             embed.add_field(
-                name="Bonus Stats",
-                value=gi.get_bonus_stats_string(),
-                inline=False
+                name="Bonus Stats", value=gi.get_bonus_stats_string(), inline=False
             )
 
         upgrade_cost_text = f"🪙**{gi.get_upgrade_cost()} Gold**"
         if gi.stars >= gd.get_max_stars():
             upgrade_cost_text = "This gear is already fully upgraded!"
         embed.add_field(name="Upgrade Costs", value=upgrade_cost_text, inline=False)
-        embed.add_field(name="Use Core Costs", value=f"🪙**{gd.get_use_core_cost()} Gold**\n**1 Core**", inline=False)
+        embed.add_field(
+            name="Use Core Costs",
+            value=f"🪙**{gd.get_use_core_cost()} Gold**\n**1 Core**",
+            inline=False,
+        )
         your_resources_text = f"🪙**{player.gold} Gold**"
         for c in cores:
             your_resources_text += f"\n{c.count} {item_data[c.name].name}"
@@ -77,12 +79,20 @@ class ViewGearPage(Page):
 
         has_upgrade_cost = player.gold >= gi.get_upgrade_cost()
         has_use_core_cost = player.gold >= gd.get_use_core_cost()
-        view = self._create_view(bool(pg), gi.stars >= gd.get_max_stars(), cores, has_upgrade_cost, has_use_core_cost)
-        
+        view = self._create_view(
+            bool(pg),
+            gi.stars >= gd.get_max_stars(),
+            cores,
+            has_upgrade_cost,
+            has_use_core_cost,
+        )
+
         cores = await self.cordia_service.get_cores_for_user(self.discord_id)
         if cores:
             options = [
-                discord.SelectOption(label=item_data[c.name].name, description="", value=c.name)
+                discord.SelectOption(
+                    label=item_data[c.name].name, description="", value=c.name
+                )
                 for c in cores
             ]
             core_select = Select(
@@ -96,7 +106,12 @@ class ViewGearPage(Page):
         await interaction.response.edit_message(embed=embed, view=view)
 
     def _create_view(
-        self, equipped: bool, max_stars: bool = False, has_cores: bool = False, has_upgrade_gold=False, has_use_core_gold=False
+        self,
+        equipped: bool,
+        max_stars: bool = False,
+        has_cores: bool = False,
+        has_upgrade_gold=False,
+        has_use_core_gold=False,
     ):
         view = View(timeout=None)
 

@@ -21,7 +21,7 @@ class GearInstance:
         gd = self.get_gear_data()
         base_cost = gd.level * 100
         return int(base_cost + (self.stars * base_cost / 4))
-    
+
     def get_bonus_stats(self):
         bonus_stats = {
             "%": {
@@ -43,7 +43,7 @@ class GearInstance:
                 "damage": 0,
                 "boss_damage": 0,
                 "spell_damage": 0,
-            }
+            },
         }
         if self.bonus:
             split_bonus = self.bonus.split(";")
@@ -65,7 +65,7 @@ class GearInstance:
             "efficiency": gd.efficiency,
             "luck": gd.luck,
             "boss_damage": gd.boss_damage,
-            "spell_damage": 0
+            "spell_damage": 0,
         }
 
         if gd.spell:
@@ -91,7 +91,7 @@ class GearInstance:
             percentage_increase += 10  # Increase percentage for the next set of stars
 
         return upgraded_stats
-    
+
     def get_bonus_stats_string(self):
         bonus_str = ""
         if self.bonus:
@@ -102,7 +102,7 @@ class GearInstance:
                 if modifier == "%":
                     bonus_str += f"\n{value}{modifier} {get_stat_emoji(stat)}{stat}"
                 elif modifier == "+":
-                    bonus_str += f"\n{modifier}{value} {get_stat_emoji(stat)}{stat}" 
+                    bonus_str += f"\n{modifier}{value} {get_stat_emoji(stat)}{stat}"
         return f"```{bonus_str}```" if bonus_str else ""
 
     def get_main_stats_string(self) -> str:
@@ -153,10 +153,11 @@ class GearInstance:
         split_text = f" ({wd.spell.damage} + {self.get_upgraded_stats()['spell_damage'] - wd.spell.damage})"
         spell_stats = {
             "spell_damage": f"{self.get_upgraded_stats()['spell_damage']}",
-            "spell_cooldown": wd.spell.spell_cooldown,
-            "spell_strike_radius": wd.spell.strike_radius,
             "magic_penetration": wd.spell.magic_penetration,
-            "scaling_multiplier": wd.spell.scaling_multiplier
+            "spell_strike_radius": wd.spell.strike_radius,
+            "spell_cooldown": wd.spell.spell_cooldown,
+            "scaling_multiplier": wd.spell.scaling_multiplier,
+            "scaling_stat": wd.spell.scaling_stat.title(),
         }
 
         if split_spell_damage:

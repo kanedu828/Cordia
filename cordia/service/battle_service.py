@@ -277,6 +277,4 @@ class BattleService:
             item_loot=item_loot,
         )
 
-  
-
         return attack_result

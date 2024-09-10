@@ -95,11 +95,13 @@ class Gear:
         for _ in range(lines):
             rand_stat = random.choice(stat_options)
 
-            # Boss damage can't have a percentage modifier and its value is halved
-            if rand_stat == "boss_damage":
+            # Boss damage and damage can't have a percentage modifier and its value is halved
+            if rand_stat == "boss_damage" or rand_modifier == "damage":
                 rand_modifier = "+"
                 random_val = random.randint(1, self.level)
-                random_val = max(1, math.ceil(random_val * flat_modifiers.get(core, 1) / 2))
+                random_val = max(
+                    1, math.ceil(random_val * flat_modifiers.get(core, 1) / 2)
+                )
             else:
                 rand_modifier = random.choices(["+", "%"], weights=[0.7, 0.3], k=1)[0]
 

@@ -57,8 +57,8 @@ class Monster:
             ]
         elif self.type == MonsterType.BOSS:
             item_loot += [
-                ("basic_core", 0.50),
-                ("quality_core", 0.25),
+                ("basic_core", 1.0),
+                ("quality_core", 0.40),
                 ("supreme_core", 0.12),
                 ("chaos_core", 0.06),
             ]

@@ -9,6 +9,9 @@ from discord.ui import Button, View
 
 
 class HomePage(Page):
+    def __init__(self, cordia_service, discord_id):
+        super().__init__(cordia_service, discord_id)
+
     def _get_embed(self):
         embed = discord.Embed(
             title=f"Welcome to Cordia",
@@ -120,11 +123,17 @@ class HomePage(Page):
         gear_button = Button(label="Gear", style=discord.ButtonStyle.blurple)
         gear_button.callback = self.gear_button_callback
 
+        leaderboard_button = Button(
+            label="Leaderboard", style=discord.ButtonStyle.blurple
+        )
+        leaderboard_button.callback = self.leaderboard_button_callback
+
         # Add buttons to the view
         view.add_item(fight_button)
         view.add_item(fight_boss_button)
         view.add_item(stats_button)
         view.add_item(gear_button)
+        view.add_item(leaderboard_button)
 
         return view
 
@@ -164,3 +173,10 @@ class HomePage(Page):
 
         gear_page = await GearPage.create(self.cordia_service, self.discord_id)
         await gear_page.render(interaction)
+
+    @only_command_invoker()
+    async def leaderboard_button_callback(self, interaction: discord.Interaction):
+        from cordia.view.pages.leaderboard_page import LeaderboardPage
+
+        leaderboard_page = LeaderboardPage(self.cordia_service, self.discord_id)
+        await leaderboard_page.render(interaction)

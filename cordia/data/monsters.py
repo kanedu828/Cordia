@@ -53,6 +53,7 @@ monster_data = {
         hp=105,
         gold=30,
         exp=55,
+        defense=20,
         gear_loot=[("polished_stone_ring", 0.05), ("polished_stone_pendant", 0.05)],
     ),
     "wyvern": Monster(
@@ -61,6 +62,8 @@ monster_data = {
         hp=85,
         gold=27,
         exp=48,
+        defense=10,
+        resistance=10,
         gear_loot=[("wyvern_tooth_dagger", 0.05), ("wyvern_wing_cape", 0.05)],
     ),
     "mountain_troll": Monster(
@@ -69,6 +72,7 @@ monster_data = {
         hp=120,
         gold=35,
         exp=62,
+        defense=10,
         gear_loot=[("troll_shoes", 0.05), ("troll_pants", 0.05)],
     ),
     "stone_drake": Monster(
@@ -77,6 +81,7 @@ monster_data = {
         hp=125,
         gold=35,
         exp=64,
+        defense=20,
         gear_loot=[("stone_scale_gloves", 0.05), ("stone_plated_helmet", 0.05)],
     ),
     "earth_elemental": Monster(
@@ -85,6 +90,7 @@ monster_data = {
         hp=142,
         gold=35,
         exp=70,
+        defense=25,
         gear_loot=[("earth_elemental_staff", 0.05), ("stone_plated_chestplate", 0.05)],
     ),
     "dryad": Monster(
@@ -93,7 +99,11 @@ monster_data = {
         hp=250,
         gold=50,
         exp=60,
-        gear_loot=[("ancient_forest_sword", 0.20), ("supreme_core", 0.10), ("chaos_core", 0.05)],
+        gear_loot=[
+            ("ancient_forest_sword", 0.20),
+            ("supreme_core", 0.10),
+            ("chaos_core", 0.05),
+        ],
     ),
     "cave_wyrm": Monster(
         name="Cave Wyrm",
@@ -101,6 +111,13 @@ monster_data = {
         hp=350,
         gold=60,
         exp=120,
-        gear_loot=[("earth_elemental_staff", 0.10), ("wyrm_bow", 0.10), ("supreme_core", 0.10), ("chaos_core", 0.05)],
+        defense=10,
+        resistance=10,
+        gear_loot=[
+            ("earth_elemental_staff", 0.10),
+            ("wyrm_bow", 0.10),
+            ("supreme_core", 0.10),
+            ("chaos_core", 0.05),
+        ],
     ),
 }

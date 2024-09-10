@@ -12,6 +12,7 @@ from cordia.service.battle_service import BattleService
 from cordia.service.boss_service import BossService
 from cordia.service.gear_service import GearService
 from cordia.service.item_service import ItemService
+from cordia.service.leaderboard_service import LeaderboardService
 from cordia.service.player_service import PlayerService
 
 
@@ -23,12 +24,14 @@ class CordiaService:
         boss_service: BossService,
         battle_service: BattleService,
         item_service: ItemService,
+        leaderboard_service: LeaderboardService,
     ):
         self.player_service = player_service
         self.gear_service = gear_service
         self.boss_service = boss_service
         self.battle_service = battle_service
         self.item_service = item_service
+        self.leaderboard_service = leaderboard_service
 
     # Player
     async def get_player_by_discord_id(self, discord_id: int) -> Player | None:
@@ -95,9 +98,19 @@ class CordiaService:
 
     async def get_item(self, discord_id: int, name: str) -> Optional[ItemInstance]:
         return await self.item_service.get_item(discord_id, name)
-    
+
     async def get_cores_for_user(self, discord_id: int) -> list[ItemInstance]:
         return await self.item_service.get_cores_for_user(discord_id)
+
+    # Leaderboard
+    async def get_top_100_players_by_exp(self) -> list[Player]:
+        return await self.leaderboard_service.get_top_100_players_by_exp()
+
+    async def get_player_rank_by_exp(self, discord_id) -> int:
+        return await self.leaderboard_service.get_player_rank_by_exp(discord_id)
+
+    async def get_leaderboard_user(self, discord_id: int) -> str:
+        return await self.leaderboard_service.get_leaderboard_user(discord_id)
 
     # Boss Instance
     async def get_boss_by_discord_id(self, discord_id: int) -> BossInstance:

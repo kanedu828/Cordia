@@ -83,7 +83,9 @@ def get_player_stats_string(player: Player, player_gear: List[GearInstance]) -> 
         bonus_stats = pg.get_bonus_stats()
         for s in bonus_stats["%"].keys():
             if s in main_stats:
-                main_stats[s]["gear_bonus"] += int(main_stats[s]["base"] * (bonus_stats["%"][s] / 100))
+                main_stats[s]["gear_bonus"] += int(
+                    main_stats[s]["base"] * (bonus_stats["%"][s] / 100)
+                )
             if s in extra_stats:
                 extra_stats[s] += int(extra_stats[s] * (bonus_stats["%"][s] / 100))
         for s in bonus_stats["+"].keys():
@@ -125,6 +127,7 @@ def get_player_stats_string(player: Player, player_gear: List[GearInstance]) -> 
 
     # Wrap both strings in code blocks for Discord and return as a tuple
     return f"```{main_stats_string}```", f"```{extra_stats_string}```"
+
 
 # snake_case -> Snake Case
 def snake_case_to_capital(snake_str):

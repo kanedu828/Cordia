@@ -63,7 +63,7 @@ def upgrade() -> None:
         sa.Column("discord_id", sa.BigInteger, nullable=False),
         sa.Column("name", sa.String(256), nullable=False),
         sa.Column("stars", sa.Integer, server_default="0", nullable=False),
-        sa.Column("bonus", sa.String(50), nullable=False, server_default="''"),
+        sa.Column("bonus", sa.String(1024), nullable=False, server_default=""),
         sa.Column(
             "created_at",
             sa.TIMESTAMP(timezone=True),

@@ -5,3 +5,7 @@ from dataclasses import dataclass
 class Item:
     name: str
     description: str = ""
+    emoji: str = ""
+
+    def display_item(self):
+        return f"{self.emoji} **{self.name}**"

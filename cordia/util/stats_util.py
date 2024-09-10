@@ -14,7 +14,7 @@ from cordia.util.text_format_util import (
 
 
 def get_player_stats(player: Player, player_gear: List[GearInstance]):
-    stats = {
+    base_stats = {
         "strength": player.strength,
         "persistence": player.persistence,
         "intelligence": player.intelligence,
@@ -27,14 +27,16 @@ def get_player_stats(player: Player, player_gear: List[GearInstance]):
         "combo_chance": 0,
         "strike_radius": 0,
         "attack_cooldown": 0,
-        "spell_damage": 0
+        "spell_damage": 0,
     }
+
+    stats = base_stats.copy()
 
     for pg in player_gear:
         gd: Gear = pg.get_gear_data()
         bonus_stats = pg.get_bonus_stats()
         for s in bonus_stats["%"].keys():
-            stats[s] += int(stats[s] * (bonus_stats["%"][s] / 100))
+            stats[s] += int(base_stats[s] * (bonus_stats["%"][s] / 100))
         for s in bonus_stats["+"].keys():
             stats[s] += bonus_stats["+"][s]
         upgrade_stats = pg.get_upgraded_stats()
@@ -78,7 +80,9 @@ def get_stats_embed(player: Player, player_gear: List[GearInstance]):
     weapon = get_weapon_from_player_gear(player_gear)
     spell = weapon.get_gear_data().spell
     if spell:
-        embed.add_field(name="", value=weapon.get_spell_stats_string(False), inline=False)
+        embed.add_field(
+            name="", value=weapon.get_spell_stats_string(False), inline=False
+        )
 
     embed.add_field(name="Gold", value=f"🪙**{player.gold}**", inline=False)
     return embed

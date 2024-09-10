@@ -34,5 +34,6 @@ def get_stat_emoji(stat: str):
         "spell_cooldown": "🕒",
         "magic_penetration": "🌠",
         "spell_strike_radius": "🎆",
+        "scaling_stat": "📊",
     }
     return emoji_mapping.get(stat, "")
