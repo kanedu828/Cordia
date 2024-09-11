@@ -25,4 +25,12 @@ pants_data = {
         gold_value=40,
         strength=12,
     ),
+    "shadow_pants": Gear(
+        name="Shadow Pants",
+        type=GearType.PANTS,
+        level=50,
+        gold_value=50,
+        efficiency=12,
+        persistence=8,
+    ),
 }

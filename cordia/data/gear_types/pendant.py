@@ -16,4 +16,12 @@ pendant_data = {
         gold_value=40,
         strength=6,
     ),
+    "shadow_pendant": Gear(
+        name="Shadow Pendant",
+        type=GearType.PENDANT,
+        level=50,
+        gold_value=50,
+        persistence=6,
+        efficiency=6
+    ),
 }

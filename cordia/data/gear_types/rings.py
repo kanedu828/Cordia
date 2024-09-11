@@ -16,4 +16,11 @@ ring_data = {
         gold_value=45,
         strength=6,
     ),
+    "ice_crystal_ring": Gear(
+        name="Ice Crystal Ring",
+        type=GearType.RING,
+        level=50,
+        gold_value=50,
+        intelligence=10,
+    ),
 }

@@ -16,16 +16,16 @@ class TestLocationData(unittest.TestCase):
                         f"{monster} is missing from monster_data for location {location}",
                     )
 
-    def test_monster_spawn_rate_add_to_100(self):
-        """Test that monster spawn rates add up to 1.0 (100%) for each location."""
+    def test_monster_spawn_rate_adds_to_1(self):
+        """Test that monster spawn rates add up to approximately 1.0 (100%) for each location."""
         for location, data in location_data.items():
             with self.subTest(location=location):
                 total_rate = sum(spawn_rate for _, spawn_rate in data.monsters)
                 self.assertAlmostEqual(
-                    total_rate,
-                    1,
-                    places=5,
-                    msg=f"{location} monster spawn rate does not add up to 1.",
+                    total_rate, 
+                    1, 
+                    places=5,  # Adjust precision for floating-point tolerance
+                    msg=f"{location} monster spawn rate does not add up to 1."
                 )
 
     def test_locations_ordered_by_level(self):

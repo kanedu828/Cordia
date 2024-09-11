@@ -24,4 +24,12 @@ top_data = {
         gold_value=40,
         strength=15,
     ),
+    "ice_crystal_chestplate": Gear(
+        name="Ice Crystal Chestplate",
+        type=GearType.TOP,
+        level=50,
+        gold_value=40,
+        strength=15,
+        intelligence=15,
+    ),
 }

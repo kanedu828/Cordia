@@ -16,4 +16,13 @@ shoes_data = {
         strength=15,
         gold_value=40,
     ),
+    "snow_shoes": Gear(
+        name="Snow Shoes",
+        type=GearType.SHOES,
+        level=50,
+        strength=12,
+        persistence=6,
+        efficiency=6,
+        gold_value=50,
+    ),
 }

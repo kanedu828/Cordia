@@ -20,4 +20,7 @@ item_data = {
     "quality_shard": Item(name="Quality Shard", description="Used to upgrade gear"),
     "supreme_shard": Item(name="Supreme Shard", description="Used to upgrade gear"),
     "chaos_shard": Item(name="Chaos Shard", description="Used to upgrade gear"),
+
+    "ice_queen_soul": Item(name="Ice Queen Soul", description="Used to purchase certain gear"),
+    "shadow_master_soul": Item(name="Shadow Master Soul", description="Used to purchase certain gear"),
 }

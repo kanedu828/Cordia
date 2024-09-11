@@ -32,7 +32,7 @@ location_data = {
     ),
     "the_mountains_ii": Location(
         name="The Mountains II",
-        level_unlock=40,
+        level_unlock=50,
         monsters=[
             ("mountain_troll", 0.15),
             ("stone_drake", 0.45),
@@ -40,4 +40,22 @@ location_data = {
             ("cave_wyrm", 0.02),
         ],
     ),
+    "frostveil_expanse": Location(
+        name="Frontveil Expanse",
+        level_unlock=70,
+        monsters=[
+            ("snowstalker_wolf", 0.6),
+            ("glacial_wraith", 0.3),
+            ("frost_elemental", 0.1)
+        ]
+    ),
+    "shadowreach_cavern": Location(
+        name="Shadowreach Cavern",
+        level_unlock=70,
+        monsters=[
+            ("cave_stalker", 0.6),
+            ("cave_phantom", 0.3),
+            ("shadewalker", 0.1)
+        ]
+    )
 }
