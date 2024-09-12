@@ -90,7 +90,7 @@ monster_data = {
         level=40,
         hp=86,
         gold=73,
-        exp=43,
+        exp=73,
         defense=10,
         gear_loot=[("troll_shoes", 0.02), ("troll_pants", 0.02)],
     ),

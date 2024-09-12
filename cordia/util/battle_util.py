@@ -43,6 +43,13 @@ def get_random_battle_text(kills: int, monster: str) -> str:
 
     return random.choice(multi_kill_text)
 
+def get_diminished_stat(damage: int, stat: int):
+    # Any stat above base damage gives diminishing returns
+    DIMINISHING_SCALING_FACTOR = 0.8
+    scaled_stat = stat
+    if stat > damage:
+        scaled_stat = damage + (scaled_stat - damage) ** DIMINISHING_SCALING_FACTOR
+    return scaled_stat
 
 def calculate_attack_damage(
     monster: Monster,
@@ -58,12 +65,13 @@ def calculate_attack_damage(
     weapon = get_weapon_from_player_gear(player_gear)
     spell = weapon.get_gear_data().spell
 
+
     if action == "cast_spell" and spell:
-        damage = player_stats["spell_damage"] + (
-            player_stats[spell.scaling_stat] * spell.scaling_multiplier
-        )
+        scaled_stat = get_diminished_stat(player_stats["spell_damage"], player_stats[spell.scaling_stat])
+        damage = player_stats["spell_damage"] + (scaled_stat * spell.scaling_multiplier)
     else:
-        damage = player_stats["damage"] + player_stats["strength"]
+        scaled_strength = get_diminished_stat(player_stats["damage"], player_stats["strength"])
+        damage = player_stats["damage"] + scaled_strength
 
     damage = random_within_range(damage)
     damage *= level_damage_multiplier
