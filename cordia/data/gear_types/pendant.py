@@ -16,6 +16,13 @@ pendant_data = {
         gold_value=40,
         strength=6,
     ),
+    "tangling_choker": Gear(
+        name="Tangling Choker",
+        type=GearType.PENDANT,
+        level=40,
+        gold_value=45,
+        strength=10
+    ),
     "shadow_pendant": Gear(
         name="Shadow Pendant",
         type=GearType.PENDANT,

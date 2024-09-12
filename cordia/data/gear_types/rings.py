@@ -16,6 +16,14 @@ ring_data = {
         gold_value=45,
         strength=6,
     ),
+    "hibiscus_ring": Gear(
+        name="Hibiscus Ring",
+        type=GearType.RING,
+        level=40,
+        gold_value=45,
+        strength=6,
+        intelligence=7,
+    ),
     "ice_crystal_ring": Gear(
         name="Ice Crystal Ring",
         type=GearType.RING,

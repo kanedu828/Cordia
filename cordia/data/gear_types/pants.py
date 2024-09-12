@@ -25,6 +25,14 @@ pants_data = {
         gold_value=40,
         strength=12,
     ),
+    "leafy_pants": Gear(
+        name="Leafy Pants",
+        type=GearType.PANTS,
+        level=40,
+        gold_value=40,
+        efficiency=9,
+        luck=7,
+    ),
     "shadow_pants": Gear(
         name="Shadow Pants",
         type=GearType.PANTS,

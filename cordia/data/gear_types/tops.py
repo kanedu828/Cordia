@@ -24,6 +24,14 @@ top_data = {
         gold_value=40,
         strength=15,
     ),
+     "leafy_top": Gear(
+        name="Leafy Top",
+        type=GearType.TOP,
+        level=40,
+        gold_value=40,
+        strength=9,
+        intelligence=12,
+    ),
     "ice_crystal_chestplate": Gear(
         name="Ice Crystal Chestplate",
         type=GearType.TOP,

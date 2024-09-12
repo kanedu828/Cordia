@@ -98,7 +98,7 @@ class FightBossPage(Page):
                 "You will not be able to fight monsters while a boss fight is active. "
                 "If you leave the fight early, you will forfeit any rewards. "
                 "You may only fight a boss every 8 hours. "
-                "Select a boss to get started!"
+                "Select a boss to get started! (First boss is unlocked at level 15.)" 
             ),
         )
 

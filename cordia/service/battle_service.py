@@ -247,11 +247,12 @@ class BattleService:
                 seconds=weapon_data.spell.spell_cooldown
             )
 
-        self.cooldown_service.set_cooldown(discord_id, action, cooldown_expiration)
 
         is_combo = random.random() < player_stats["combo_chance"] / 100
         if is_combo:
             cooldown_expiration = current_time + datetime.timedelta(seconds=1)
+
+        self.cooldown_service.set_cooldown(discord_id, action, cooldown_expiration)
 
         exp_gained, gold_gained, new_gear_loot, sold_gear_amount, item_loot = (
             await self.loot_service.handle_loot(

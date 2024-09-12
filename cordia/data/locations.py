@@ -2,15 +2,15 @@ from cordia.model.location import Location
 
 location_data = {
     "the_plains_i": Location(
-        name="The Plains I", level_unlock=0, monsters=[("rat", 1.0)]
+        name="The Plains I", level_unlock=0, monsters=[("rat", 0.75), ("goblin", 0.25)]
     ),
     "the_plains_ii": Location(
-        name="The Plains II", level_unlock=5, monsters=[("goblin", 0.25), ("rat", 0.75)]
+        name="The Plains II", level_unlock=5, monsters=[("goblin", 0.75), ("bandit", 0.25)]
     ),
     "the_plains_iii": Location(
         name="The Plains III",
         level_unlock=10,
-        monsters=[("goblin", 0.75), ("rat", 0.25)],
+        monsters=[("goblin", 0.25), ("bandit", 0.75)],
     ),
     "the_forest_i": Location(
         name="The Forest I", level_unlock=15, monsters=[("wolf", 0.70), ("bear", 0.30)]
@@ -32,7 +32,7 @@ location_data = {
     ),
     "the_mountains_ii": Location(
         name="The Mountains II",
-        level_unlock=50,
+        level_unlock=40,
         monsters=[
             ("mountain_troll", 0.15),
             ("stone_drake", 0.45),
@@ -40,8 +40,25 @@ location_data = {
             ("cave_wyrm", 0.02),
         ],
     ),
+    "philpots_garden": Location(
+        name="Philpots Garden",
+        level_unlock=50,
+        monsters=[
+            ("brussel_sprout", 0.7),
+            ("tangling_hibiscus", 0.3)
+        ]
+    ),
+    "shadowreach_cavern": Location(
+        name="Shadowreach Cavern",
+        level_unlock=60,
+        monsters=[
+            ("cave_stalker", 0.6),
+            ("cave_phantom", 0.3),
+            ("shadewalker", 0.1)
+        ]
+    ),
     "frostveil_expanse": Location(
-        name="Frontveil Expanse",
+        name="Frostveil Expanse",
         level_unlock=70,
         monsters=[
             ("snowstalker_wolf", 0.6),
@@ -49,13 +66,4 @@ location_data = {
             ("frost_elemental", 0.1)
         ]
     ),
-    "shadowreach_cavern": Location(
-        name="Shadowreach Cavern",
-        level_unlock=70,
-        monsters=[
-            ("cave_stalker", 0.6),
-            ("cave_phantom", 0.3),
-            ("shadewalker", 0.1)
-        ]
-    )
 }

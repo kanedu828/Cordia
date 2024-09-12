@@ -24,6 +24,13 @@ hat_data = {
         strength=15,
         gold_value=40,
     ),
+    "flower_crown": Gear(
+        name="Flower Crown",
+        type=GearType.HAT,
+        level=40,
+        intelligence=15,
+        gold_value=45,
+    ),
     "shadow_hood": Gear(
         name="Shadow Hood",
         type=GearType.HAT,
@@ -37,8 +44,8 @@ hat_data = {
         name="Frost Hood",
         type=GearType.HAT,
         level=50,
-        intelligence=12,
-        persistence=5,
+        intelligence=19,
+        persistence=6,
         gold_value=50,
     ),
 }
