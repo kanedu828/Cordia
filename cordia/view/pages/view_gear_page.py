@@ -1,6 +1,6 @@
 from cordia.service.cordia_service import CordiaService
 from cordia.util.decorators import only_command_invoker
-from cordia.util.text_format_util import get_stars_string
+from cordia.util.text_format_util import display_gold, get_stars_string
 from cordia.view.pages.page import Page
 from cordia.data.gear import gear_data
 from cordia.data.items import item_data
@@ -61,16 +61,16 @@ class ViewGearPage(Page):
                 name="Bonus Stats", value=gi.get_bonus_stats_string(), inline=False
             )
 
-        upgrade_cost_text = f"🪙**{gi.get_upgrade_cost()} Gold**"
+        upgrade_cost_text = f"{display_gold(gi.get_upgrade_cost())}"
         if gi.stars >= gd.get_max_stars():
             upgrade_cost_text = "This gear is already fully upgraded!"
         embed.add_field(name="Upgrade Costs", value=upgrade_cost_text, inline=False)
         embed.add_field(
             name="Use Core Costs",
-            value=f"🪙**{gd.get_use_core_cost()} Gold**\n**1 Core**",
+            value=f"{display_gold(gd.get_use_core_cost())}\n**1 Core**",
             inline=False,
         )
-        your_resources_text = f"🪙**{player.gold} Gold**"
+        your_resources_text = f"{display_gold(player.gold)}"
         for c in cores:
             your_resources_text += f"\n{c.display_item()}"
         if not cores:
@@ -78,13 +78,10 @@ class ViewGearPage(Page):
         embed.add_field(name="Your Resources", value=your_resources_text, inline=False)
 
         has_upgrade_cost = player.gold >= gi.get_upgrade_cost()
-        has_use_core_cost = player.gold >= gd.get_use_core_cost()
         view = self._create_view(
             bool(pg),
             gi.stars >= gd.get_max_stars(),
-            cores,
             has_upgrade_cost,
-            has_use_core_cost,
         )
 
         cores = await self.cordia_service.get_cores_for_user(self.discord_id)
@@ -109,9 +106,7 @@ class ViewGearPage(Page):
         self,
         equipped: bool,
         max_stars: bool = False,
-        has_cores: bool = False,
         has_upgrade_gold=False,
-        has_use_core_gold=False,
     ):
         view = View(timeout=None)
 

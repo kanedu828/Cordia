@@ -1,4 +1,6 @@
+import math
 from cordia.util.decorators import only_command_invoker
+from cordia.util.text_format_util import display_exp
 from cordia.view.pages.page import Page
 import discord
 from discord.ui import View, Button
@@ -49,7 +51,7 @@ class LeaderboardPage(Page):
         return view
 
     async def _create_leaderboard_embed(self, player_rank):
-        embed = discord.Embed(title="Leaderboard", description="Top 100 Players by EXP")
+        embed = discord.Embed(title="Leaderboard", description="Top 100 Players by EXP", color=discord.Color.blue())
 
         # Get the players for the current page
         start_index = self.page_number * self.players_per_page
@@ -72,12 +74,12 @@ class LeaderboardPage(Page):
 
             embed.add_field(
                 name=f"{rank_display} {user}",
-                value=f"**{player.exp} exp**",
+                value=f"{display_exp(player.exp)}",
                 inline=False,
             )
 
         # Show the player's rank at the bottom
-        embed.set_footer(text=f"Your rank: {player_rank}")
+        embed.set_footer(text=f"Your rank: {player_rank}\nPage: {self.page_number + 1}/{math.ceil(len(self.top_100_players) / self.players_per_page)}")
 
         return embed
 

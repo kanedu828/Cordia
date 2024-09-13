@@ -57,37 +57,6 @@ def get_player_stats(player: Player, player_gear: List[GearInstance]):
 
     return stats
 
-
-def get_stats_embed(player: Player, player_gear: List[GearInstance]):
-    embed = discord.Embed(title=f"Your Stats")
-    stats_text, special_stats_text = get_player_stats_string(player, player_gear)
-    upgrade_points = get_upgrade_points(player)
-
-    exp_bar_text = f"{exp_bar(player.exp)}\n\n"
-    embed.add_field(name="", value=exp_bar_text, inline=False)
-    if upgrade_points > 0:
-        embed.add_field(
-            name="",
-            value=f"✨You have {upgrade_points} upgrade points!✨",
-            inline=False,
-        )
-    else:
-        embed.add_field(
-            name="", value=f"You have {upgrade_points} upgrade points.", inline=False
-        )
-    embed.add_field(name="", value=stats_text)
-    embed.add_field(name="", value=special_stats_text)
-    weapon = get_weapon_from_player_gear(player_gear)
-    spell = weapon.get_gear_data().spell
-    if spell:
-        embed.add_field(
-            name="", value=weapon.get_spell_stats_string(False), inline=False
-        )
-
-    embed.add_field(name="Gold", value=f"🪙**{player.gold}**", inline=False)
-    return embed
-
-
 def get_upgrade_points(player: Player) -> int:
     points_per_level = 3
     init_base_stat_sum = 5

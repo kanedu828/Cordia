@@ -94,7 +94,7 @@ class CordiaService:
         await self.item_service.insert_item(discord_id, name, count)
 
     async def get_inventory(self, discord_id: int) -> list[ItemInstance]:
-        return await self.item_service.get_inventory(self, discord_id)
+        return await self.item_service.get_inventory(discord_id)
 
     async def get_item(self, discord_id: int, name: str) -> Optional[ItemInstance]:
         return await self.item_service.get_item(discord_id, name)

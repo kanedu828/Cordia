@@ -38,7 +38,7 @@ def exp_bar(
     # Create the bar string
     bar = filled_char * filled_length + empty_char * (bar_length - filled_length)
 
-    return f"**lv. {current_level}** ({exp} exp)\n{bar}"
+    return f"**lv. {current_level}** ({display_exp(exp)})\n{bar}\n"
 
 
 def hp_bar(current_health: int, max_health: int, bar_length=10):
@@ -154,3 +154,11 @@ def get_stars_string(stars, max_stars):
 
     # Join the chunks with a space
     return " ".join(star_chunks)
+
+def display_gold(amount: int):
+    gold_emoji = "<:cordia_gold:1284046011496529975>"
+    return f"**{amount:,}** {gold_emoji} **Gold**"
+
+def display_exp(amount: int):
+    exp_emoji = "<:cordia_exp:1284045273793826877>"
+    return f"**{amount:,}** {exp_emoji} **Exp**"

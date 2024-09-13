@@ -16,4 +16,4 @@ class ItemInstance:
         return item_data[self.name]
 
     def display_item(self):
-        return f"**{self.count}** {self.get_item_data().display_item()}"
+        return f"**{self.count}** {self.get_item_data().display_item()}(s)"

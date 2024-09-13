@@ -37,6 +37,7 @@ class GearPage(Page):
         view = self._create_view()
         embed = discord.Embed(
             title=f"Equipped Gear",
+            color=discord.Color.blue()
         )
 
         # Fetch the player's gear

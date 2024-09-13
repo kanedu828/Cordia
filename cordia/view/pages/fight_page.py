@@ -6,7 +6,7 @@ from cordia.util.battle_util import get_random_battle_text
 from cordia.util.decorators import only_command_invoker
 from cordia.util.exp_util import exp_to_level
 from cordia.util.gear_util import get_weapon_from_player_gear
-from cordia.util.text_format_util import exp_bar
+from cordia.util.text_format_util import display_exp, display_gold, exp_bar
 from cordia.view.embeds.level_up_embed import get_level_up_embed
 from cordia.view.pages.page import Page
 from cordia.data.locations import location_data
@@ -22,6 +22,7 @@ class FightPage(Page):
         location: Location = location_data[player.location]
         embed = discord.Embed(
             title=f"Fighting Monsters in {location.name}",
+            color=discord.Color.dark_teal()
         )
         exp_bar_text = f"{exp_bar(player.exp)}\n\n"
         embed.add_field(name="", value=exp_bar_text, inline=False)
@@ -42,6 +43,7 @@ class FightPage(Page):
         location: Location = idle_results["location"]
         embed = discord.Embed(
             title=f"Idle Fighting Monsters in {location.name}",
+            color=discord.Color.dark_teal()
         )
 
         embed.set_image(url=location.get_image_path())
@@ -68,7 +70,7 @@ class FightPage(Page):
         embed.add_field(name="", value=exp_bar_text, inline=False)
         embed.add_field(name="⚔️Idle Battle⚔️", value=idle_text, inline=False)
 
-        rewards_text = f"**{idle_results['exp_gained']}** Exp\n**{idle_results['gold_gained']}** Gold"
+        rewards_text = f"{display_exp(idle_results['exp_gained'])}\n{display_gold(idle_results['gold_gained'])}"
         embed.add_field(name="💰Rewards💰", value=rewards_text, inline=False)
         location_player_count = await self.cordia_service.count_players_in_location(
             location.get_key_name()
@@ -131,6 +133,7 @@ class FightPage(Page):
         location: Location = attack_results.location
         embed = discord.Embed(
             title=f"Fighting Monsters in {location.name}",
+            color=discord.Color.dark_teal()
         )
 
         exp_bar_text = f"{exp_bar(current_exp)}\n\n"
@@ -163,7 +166,7 @@ class FightPage(Page):
         # Fight monster
         battle_text = f"You strike the enemy with your **{attack_results.weapon.name}**. You deal **{attack_results.damage}** damage.\n"
         if action == "cast_spell":
-            battle_text = f"You cast **{attack_results.weapon.spell.name}** with your {attack_results.weapon.name}! {attack_results.weapon.spell.cast_text}. You deal **{attack_results.damage}** damage.\n"
+            battle_text = f"You cast **{attack_results.weapon.spell.name}** with your **{attack_results.weapon.name}**! {attack_results.weapon.spell.cast_text}. You deal **{attack_results.damage}** damage.\n"
         if attack_results.is_crit:
             battle_text = "🎯Critical strike! " + battle_text
 
@@ -177,13 +180,13 @@ class FightPage(Page):
         embed.add_field(name="⚔️Battle⚔️", value=battle_text, inline=False)
 
         # Get loot
-        rewards_text = f"**{attack_results.exp}** Exp\n**{attack_results.gold}** Gold"
+        rewards_text = f"{display_exp(attack_results.exp)}\n{display_gold(attack_results.gold)}"
         for g in attack_results.gear_loot:
             new_gear_text = f"**{g.name}. Navigate to your gear to equip it.**"
             rewards_text += "\n" + new_gear_text
 
         for i, c in attack_results.item_loot:
-            rewards_text += f"\n**{c} {i.name}(s)**"
+            rewards_text += f"\n**{c}** {i.display_item()}"
 
         if attack_results.sold_gear_amount:
             rewards_text += f"\nYou found gear you already own. You gained **{attack_results.sold_gear_amount}** gold instead."
@@ -213,7 +216,7 @@ class FightPage(Page):
         for g in attack_results.gear_loot:
             new_gear_text = f"**{g.name}. Navigate to your gear to equip it.**"
             new_gear_embed = discord.Embed(
-                title="You found new gear!", color=discord.Color.green()
+                title="You found new gear!", color=discord.Color.gold()
             )
             new_gear_embed.add_field(name="", value=new_gear_text)
             await interaction.followup.send(

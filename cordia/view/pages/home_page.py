@@ -3,6 +3,7 @@ from cordia.model.gear_instance import GearInstance
 from cordia.util.decorators import only_command_invoker
 from cordia.util.gear_util import get_weapon_from_player_gear
 from cordia.view.pages.fight_boss_page import FightBossPage
+from cordia.view.pages.inventory_page import InventoryPage
 from cordia.view.pages.page import Page
 import discord
 from discord.ui import Button, View
@@ -15,13 +16,21 @@ class HomePage(Page):
     def _get_embed(self):
         embed = discord.Embed(
             title=f"Welcome to Cordia",
+            color=discord.Color.dark_orange()
         )
         image_path = "https://kanedu828.github.io/cordia-assets/assets/home_page.png"
         embed.set_image(url=image_path)
         embed.add_field(
-            name="📜Quests📜", value="You currently have no quests", inline=False
+            name="📜Quests📜", value="You currently have no quests", inline=False,
         )
-        navigation_text = "**Fight**: Fight monsters\n**Fight Boss**: Fight a powerful boss to obtain rewards\n**Stats**: View and upgrade your stats\n**Gear**: View and upgrade your gear"
+        navigation_text = (
+            "**Fight**: Fight monsters\n"
+            "**Fight Boss**: Fight a powerful boss to obtain rewards\n"
+            "**Stats**: View and upgrade your stats\n"
+            "**Gear**: View and upgrade your gear\n"
+            "**Inventory**: View your inventory items\n"
+            "**Leaderboard**: View the leaderboard\n"
+        )
         embed.add_field(name="🧭Navigation🧭", value=navigation_text, inline=False)
         return embed
 
@@ -33,6 +42,7 @@ class HomePage(Page):
     async def init_render(self, interaction: discord.Interaction):
         embed = discord.Embed(
             title=f"Welcome to Cordia",
+            color=discord.Color.dark_orange()
         )
         image_path = "https://kanedu828.github.io/cordia-assets/assets/home_page.png"
         embed.set_image(url=image_path)
@@ -115,26 +125,32 @@ class HomePage(Page):
         )  # Attach the callback function here
 
         # Stats button with callback attached
-        stats_button = Button(label="Stats", style=discord.ButtonStyle.blurple)
+        stats_button = Button(label="Stats", style=discord.ButtonStyle.blurple, row=1)
         stats_button.callback = (
             self.stats_button_callback
         )  # Attach the callback function here
 
-        gear_button = Button(label="Gear", style=discord.ButtonStyle.blurple)
+        gear_button = Button(label="Gear", style=discord.ButtonStyle.blurple, row=1)
         gear_button.callback = self.gear_button_callback
 
         leaderboard_button = Button(
-            label="Leaderboard", style=discord.ButtonStyle.blurple
+            label="Leaderboard", style=discord.ButtonStyle.blurple, row=1
         )
         leaderboard_button.callback = self.leaderboard_button_callback
+
+        inventory_button = Button(
+            label="Inventory", style=discord.ButtonStyle.blurple, row=1
+        )
+        inventory_button.callback = self.inventory_button_callback
 
         # Add buttons to the view
         view.add_item(fight_button)
         view.add_item(fight_boss_button)
         view.add_item(stats_button)
         view.add_item(gear_button)
+        view.add_item(inventory_button)
         view.add_item(leaderboard_button)
-
+        
         return view
 
     @only_command_invoker()
@@ -180,3 +196,10 @@ class HomePage(Page):
 
         leaderboard_page = LeaderboardPage(self.cordia_service, self.discord_id)
         await leaderboard_page.render(interaction)
+
+    @only_command_invoker()
+    async def inventory_button_callback(self, interaction: discord.Interaction):
+        from cordia.view.pages.leaderboard_page import LeaderboardPage
+
+        inventory_page = InventoryPage(self.cordia_service, self.discord_id)
+        await inventory_page.render(interaction)

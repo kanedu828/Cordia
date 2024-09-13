@@ -4,7 +4,7 @@ from cordia.model.boos_fight_result import BossFightResult
 from cordia.util.decorators import only_command_invoker
 from cordia.util.exp_util import exp_to_level
 from cordia.util.gear_util import get_weapon_from_player_gear
-from cordia.util.text_format_util import hp_bar
+from cordia.util.text_format_util import display_exp, display_gold, hp_bar
 from cordia.view.embeds.level_up_embed import get_level_up_embed
 from cordia.view.pages.page import Page
 from cordia.data.bosses import boss_data
@@ -26,6 +26,7 @@ class FightBossPage(Page):
             )
             embed = discord.Embed(
                 title=f"You cannot fight a boss right now",
+                color=discord.Color.red()
             )
 
             embed.add_field(
@@ -47,6 +48,7 @@ class FightBossPage(Page):
             bd = boss_data[bi.name]
             embed = discord.Embed(
                 title=f"Fighting Boss: {bd.display_monster()}",
+                color=discord.Color.dark_red()
             )
 
             hp_bar_text = f"{hp_bar(bi.current_hp, bd.hp)}"
@@ -74,6 +76,7 @@ class FightBossPage(Page):
     async def render_expired_boss(self, interaction: discord.Interaction):
         embed = discord.Embed(
             title=f"You have ran out of time to defeat the boss.",
+            color=discord.Color.red()
         )
 
         embed.set_image(
@@ -87,6 +90,7 @@ class FightBossPage(Page):
     async def render_select_boss_page(self, interaction: discord.Interaction):
         embed = discord.Embed(
             title=f"Select a Boss to Fight",
+            color=discord.Color.dark_red()
         )
         embed.set_image(
             url="https://kanedu828.github.io/cordia-assets/assets/boss_fight_page.png"
@@ -125,17 +129,21 @@ class FightBossPage(Page):
         bd = boss_data[bi.name]
         embed = discord.Embed(
             title=f"VICTORY! You have defeated {bd.display_monster()}",
+            color=discord.Color.gold()
         )
         embed.set_image(
             url="https://kanedu828.github.io/cordia-assets/assets/boss_loot_room.png"
         )
         # Get loot
         rewards_text = (
-            f"**{boss_fight_results.exp}** Exp\n**{boss_fight_results.gold}** Gold"
+            f"{display_exp(boss_fight_results.exp)}\n{display_gold(boss_fight_results.gold)}"
         )
         for g in boss_fight_results.gear_loot:
             new_gear_text = f"**{g.name}. Navigate to your gear to equip it.**"
             rewards_text += "\n" + new_gear_text
+        
+        for i, c in boss_fight_results.item_loot:
+            rewards_text += f"\n**{c}** {i.display_item()}"
 
         if boss_fight_results.sold_gear_amount:
             rewards_text += f"\nYou found gear you already own. You gained **{boss_fight_results.sold_gear_amount}** gold instead."
@@ -151,7 +159,7 @@ class FightBossPage(Page):
         for g in boss_fight_results.gear_loot:
             new_gear_text = f"**{g.name}. Navigate to your gear to equip it.**"
             new_gear_embed = discord.Embed(
-                title="You found new gear!", color=discord.Color.green()
+                title="You found new gear!", color=discord.Color.gold(),
             )
             new_gear_embed.add_field(name="", value=new_gear_text)
             await interaction.followup.send(
@@ -172,6 +180,7 @@ class FightBossPage(Page):
         bd = boss_data[bi.name]
         embed = discord.Embed(
             title=f"Fighting Boss: {bd.display_monster()}",
+            color=discord.Color.dark_red()
         )
 
         hp_bar_text = f"{hp_bar(bi.current_hp, bd.hp)}"
