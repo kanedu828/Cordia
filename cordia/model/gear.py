@@ -42,6 +42,8 @@ class Gear:
     spell: Spell = None
     # Gear Set
     gear_set: str = ""
+    # Upgrades
+    upgrade_item: str = ""
 
     def get_max_stars(self):
         if self.level < 10:

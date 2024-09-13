@@ -40,4 +40,14 @@ top_data = {
         strength=15,
         intelligence=15,
     ),
+    "shadow_master_top": Gear(
+        name="Shadow Master Top",
+        type=GearType.TOP,
+        level=60,
+        gold_value=100,
+        efficiency=30,
+        luck=30,
+        gear_set="shadow_master",
+        upgrade_item="shadow_master_soul"
+    ),
 }

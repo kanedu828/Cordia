@@ -101,3 +101,21 @@ def calculate_attack_damage(
         damage -= damage * monster_defense_percentage
 
     return int(damage), is_crit
+
+def simulate_idle_damage(
+    stat_value: float, monster_mean, player_stats, player_level
+) -> float:
+    stat_value = random_within_range(stat_value)
+    stat_value *= level_difference_multiplier(player_level, monster_mean["level"])
+
+    # Calculate crit
+    stat_value += (stat_value * 1.5 - stat_value) * (player_stats["crit_chance"] / 100)
+
+    # Penetration
+    monster_defense_percentage = monster_mean["defense"] / 100
+    monster_defense_percentage -= monster_defense_percentage * (
+        min(player_stats["penetration"], 100) / 100
+    )
+    stat_value -= stat_value * monster_defense_percentage
+
+    return stat_value

@@ -12,6 +12,8 @@ from cordia.data.gear_types.shoes import shoes_data
 from cordia.data.gear_types.tops import top_data
 from cordia.data.gear_types.gloves import glove_data
 from cordia.data.gear import gear_data
+from cordia.data.gear_sets import gear_set_data
+from cordia.data.items import item_data
 
 
 class TestGearData(unittest.TestCase):
@@ -130,6 +132,21 @@ class TestGearData(unittest.TestCase):
                     f"{gear.name} in glove_data should have GearType.GLOVES but has {gear.type}",
                 )
 
+    def test_gear_set_in_gear_set_data(self):
+        for key, gear in gear_data.items():
+            with self.subTest(gear=key):
+                if gear.gear_set:
+                    self.assertIn(
+                        gear.gear_set, gear_set_data, f"{gear.gear_set} is missing from gear_set_data for gear {gear.name}"
+                    )
 
+    def test_upgrade_item_in_item_data(self):
+        for key, gear in gear_data.items():
+            with self.subTest(gear=key):
+                if gear.upgrade_item:
+                    self.assertIn(
+                        gear.upgrade_item, item_data, f"{gear.upgrade_item} is missing from gear_set_data for gear {gear.name}"
+                    )
+                    
 if __name__ == "__main__":
     unittest.main()

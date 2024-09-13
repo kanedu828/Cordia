@@ -1,16 +1,12 @@
 import random
-from typing import List
+from typing import Counter, List
 
 from cordia.model.gear_instance import GearInstance
-from cordia.util.gear_util import get_weapon_from_player_gear
-import discord
 from cordia.model.gear import Gear
 from cordia.model.player import Player
 from cordia.util.exp_util import exp_to_level
-from cordia.util.text_format_util import (
-    exp_bar,
-    get_player_stats_string,
-)
+from cordia.data.gear_sets import gear_set_data
+
 
 
 def get_player_stats(player: Player, player_gear: List[GearInstance]):
@@ -31,6 +27,8 @@ def get_player_stats(player: Player, player_gear: List[GearInstance]):
     }
 
     stats = base_stats.copy()
+
+    gear_sets = Counter()
 
     for pg in player_gear:
         gd: Gear = pg.get_gear_data()
@@ -54,6 +52,11 @@ def get_player_stats(player: Player, player_gear: List[GearInstance]):
         stats["strike_radius"] += gd.strike_radius
         stats["attack_cooldown"] += gd.attack_cooldown
         stats["spell_damage"] += upgrade_stats["spell_damage"]
+
+        if gd.gear_set:
+            gear_sets[gd.gear_set] += 1
+            set_stats = gear_set_data[gd.gear_set].get(gear_sets[gd.gear_set], {})
+            stats = dict(Counter(stats) + Counter(set_stats))
 
     return stats
 
@@ -133,21 +136,3 @@ def calculate_weighted_monster_mean(monster_tuples):
 
     return weighted_means
 
-
-def simulate_idle_damage(
-    stat_value: float, monster_mean, player_stats, player_level
-) -> float:
-    stat_value = random_within_range(stat_value)
-    stat_value *= level_difference_multiplier(player_level, monster_mean["level"])
-
-    # Calculate crit
-    stat_value += (stat_value * 1.5 - stat_value) * (player_stats["crit_chance"] / 100)
-
-    # Penetration
-    monster_defense_percentage = monster_mean["defense"] / 100
-    monster_defense_percentage -= monster_defense_percentage * (
-        min(player_stats["penetration"], 100) / 100
-    )
-    stat_value -= stat_value * monster_defense_percentage
-
-    return stat_value

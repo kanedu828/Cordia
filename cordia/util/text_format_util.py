@@ -1,9 +1,10 @@
-from typing import List
+from typing import Counter, List
 from cordia.model.gear_instance import GearInstance
 from cordia.util.exp_util import exp_to_level, level_to_exp
 from cordia.model.gear import Gear
 from cordia.model.player import Player
 from cordia.util.stat_mapping import get_stat_emoji, get_stat_modifier
+from cordia.data.gear_sets import gear_set_data
 
 
 def exp_bar(
@@ -77,6 +78,7 @@ def get_player_stats_string(player: Player, player_gear: List[GearInstance]) -> 
         "attack_cooldown": 0,
     }
 
+    gear_sets = Counter()
     # Loop through player gear to accumulate bonuses
     for pg in player_gear:
         gd: Gear = pg.get_gear_data()
@@ -106,6 +108,12 @@ def get_player_stats_string(player: Player, player_gear: List[GearInstance]) -> 
         extra_stats["combo_chance"] += gd.combo_chance
         extra_stats["strike_radius"] += gd.strike_radius
         extra_stats["attack_cooldown"] += gd.attack_cooldown
+
+        if gd.gear_set:
+            gear_sets[gd.gear_set] += 1
+            set_stats = gear_set_data[gd.gear_set].get(gear_sets[gd.gear_set], {})
+            main_stats = {key: main_stats[key] + set_stats.get(key, 0) for key in main_stats}
+            extra_stats = {key: extra_stats[key] + set_stats.get(key, 0) for key in extra_stats}
 
     # Get the longest stat name for main stats to calculate uniform spacing
     max_stat_length_main = max(len(stat) for stat in main_stats)

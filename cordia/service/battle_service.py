@@ -9,13 +9,12 @@ from cordia.service.cooldown_service import CooldownService
 from cordia.service.gear_service import GearService
 from cordia.service.loot_service import LootService
 from cordia.service.player_service import PlayerService
-from cordia.util.battle_util import calculate_attack_damage, get_diminished_stat
+from cordia.util.battle_util import calculate_attack_damage, get_diminished_stat, simulate_idle_damage
 from cordia.util.exp_util import exp_to_level
 from cordia.util.gear_util import get_weapon_from_player_gear
 from cordia.util.stats_util import (
     calculate_weighted_monster_mean,
     get_player_stats,
-    simulate_idle_damage,
 )
 from cordia.data.gear import gear_data
 from cordia.data.bosses import boss_data

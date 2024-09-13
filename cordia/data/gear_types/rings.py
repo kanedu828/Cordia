@@ -31,4 +31,15 @@ ring_data = {
         gold_value=50,
         intelligence=10,
     ),
+    "ice_queen_ring": Gear(
+        name="Ice Queen Ring",
+        type=GearType.RING,
+        level=60,
+        gold_value=100,
+        intelligence=30,
+        efficiency=30,
+        crit_chance=5,
+        gear_set="ice_queen",
+        upgrade_item="ice_queen_soul"
+    )
 }

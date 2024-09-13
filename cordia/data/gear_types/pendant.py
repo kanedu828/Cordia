@@ -29,6 +29,18 @@ pendant_data = {
         level=50,
         gold_value=50,
         persistence=6,
-        efficiency=6
+        efficiency=6,
     ),
+    "ice_queen_pendant": Gear(
+        name="Ice Queen Pendant",
+        type=GearType.PENDANT,
+        level=60,
+        gold_value=100,
+        persistence=6,
+        efficiency=30,
+        intelligence=30,
+        boss_damage=10,
+        gear_set="ice_queen",
+        upgrade_item="ice_queen_soul"
+    )
 }

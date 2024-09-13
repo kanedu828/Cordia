@@ -41,4 +41,14 @@ pants_data = {
         efficiency=12,
         persistence=8,
     ),
+    "shadow_master_pants": Gear(
+        name="Shadow Master Pants",
+        type=GearType.PANTS,
+        level=60,
+        gold_value=100,
+        efficiency=30,
+        luck=30,
+        gear_set="shadow_master",
+        upgrade_item="shadow_master_soul"
+    ),
 }
