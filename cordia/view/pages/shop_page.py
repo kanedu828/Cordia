@@ -129,7 +129,7 @@ class ShopPage(Page):
         if si.type == ShopItemType.GEAR:
             await self.cordia_service.insert_gear(self.discord_id, si.item_name)
         elif si.type == ShopItemType.ITEM:
-            await self.cordia_service.insert_item(self.discord_id, si.item_name)
+            await self.cordia_service.insert_item(self.discord_id, si.item_name, 1)
 
         # Render the interaction and confirm the purchase
         await self.render(interaction)
