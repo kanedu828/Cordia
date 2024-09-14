@@ -33,8 +33,8 @@ class LeaderboardPage(Page):
 
     async def render_daily_leaderboard(self, interaction: discord.Interaction):
         # Fetch top 100 players and player rank
-        self.top_100_players = await self.cordia_service.get_top_100_daily_players_by_column(
-            self.type
+        self.top_100_players = (
+            await self.cordia_service.get_top_100_daily_players_by_column(self.type)
         )
         player_rank = await self.cordia_service.get_player_daily_rank_by_column(
             self.discord_id, self.type
@@ -47,6 +47,7 @@ class LeaderboardPage(Page):
         view = self._create_view(daily=True)
 
         await interaction.response.edit_message(embed=embed, view=view)
+
     def _create_view(self, daily: bool = False):
         view = View(timeout=None)
 
@@ -59,10 +60,10 @@ class LeaderboardPage(Page):
 
         if daily:
             leaderboard_select_options = [
-            discord.SelectOption(label="Exp", value="exp"),
-            discord.SelectOption(label="Monsters Killed", value="monsters_killed"),
-            discord.SelectOption(label="Gold", value="gold"),
-        ]
+                discord.SelectOption(label="Exp", value="exp"),
+                discord.SelectOption(label="Monsters Killed", value="monsters_killed"),
+                discord.SelectOption(label="Gold", value="gold"),
+            ]
 
         leaderboard_type_select = Select(
             placeholder="Select a leaderboard type",
@@ -71,14 +72,22 @@ class LeaderboardPage(Page):
             options=leaderboard_select_options,
             row=0,
         )
-        leaderboard_type_select.callback = self.daily_leaderboard_type_select_callback if daily else self.leaderboard_type_select_callback
+        leaderboard_type_select.callback = (
+            self.daily_leaderboard_type_select_callback
+            if daily
+            else self.leaderboard_type_select_callback
+        )
         view.add_item(leaderboard_type_select)
 
-        leaderboard_button = Button(label="Leaderboard" , style=discord.ButtonStyle.primary, row=1)
+        leaderboard_button = Button(
+            label="Leaderboard", style=discord.ButtonStyle.primary, row=1
+        )
         leaderboard_button.callback = self.leaderboard_button_callback
         view.add_item(leaderboard_button)
 
-        daily_leaderboard_button = Button(label="Daily Leaderboard" , style=discord.ButtonStyle.primary, row=1)
+        daily_leaderboard_button = Button(
+            label="Daily Leaderboard", style=discord.ButtonStyle.primary, row=1
+        )
         daily_leaderboard_button.callback = self.daily_leaderboard_button_callback
         view.add_item(daily_leaderboard_button)
 
@@ -175,7 +184,9 @@ class LeaderboardPage(Page):
         await self.render(interaction)
 
     @only_command_invoker()
-    async def daily_leaderboard_type_select_callback(self, interaction: discord.Interaction):
+    async def daily_leaderboard_type_select_callback(
+        self, interaction: discord.Interaction
+    ):
         self.type = interaction.data["values"][0]
         await self.render_daily_leaderboard(interaction)
 

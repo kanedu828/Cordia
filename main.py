@@ -2,7 +2,9 @@ import os
 import asyncio
 import discord
 from cordia.cordia_client import CordiaClient
+from dotenv import load_dotenv
 
+load_dotenv()
 # Set intents
 intents = discord.Intents.default()
 intents.message_content = False

@@ -115,12 +115,20 @@ class CordiaService:
 
     async def get_leaderboard_user(self, discord_id: int) -> str:
         return await self.leaderboard_service.get_leaderboard_user(discord_id)
-    
-    async def get_top_100_daily_players_by_column(self, column: str) -> list[DailyLeaderboard]:
-        return await self.leaderboard_service.get_top_100_daily_players_by_column(column)
 
-    async def get_player_daily_rank_by_column(self, discord_id: int, column: str) -> int:
-        return await self.leaderboard_service.get_player_daily_rank_by_column(discord_id, column)
+    async def get_top_100_daily_players_by_column(
+        self, column: str
+    ) -> list[DailyLeaderboard]:
+        return await self.leaderboard_service.get_top_100_daily_players_by_column(
+            column
+        )
+
+    async def get_player_daily_rank_by_column(
+        self, discord_id: int, column: str
+    ) -> int:
+        return await self.leaderboard_service.get_player_daily_rank_by_column(
+            discord_id, column
+        )
 
     # Boss Instance
     async def get_boss_by_discord_id(self, discord_id: int) -> BossInstance:

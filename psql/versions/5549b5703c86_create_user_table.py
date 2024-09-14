@@ -191,13 +191,8 @@ def upgrade() -> None:
             server_default=func.now(),
             nullable=False,
         ),
-        sa.Column(
-            "date",
-            sa.Date,
-            nullable=False,
-            server_default=func.current_date()
-        ),
-        sa.UniqueConstraint("discord_id", "date", name="uq_discord_id_date")
+        sa.Column("date", sa.Date, nullable=False, server_default=func.current_date()),
+        sa.UniqueConstraint("discord_id", "date", name="uq_discord_id_date"),
     )
 
 
@@ -208,4 +203,3 @@ def downgrade() -> None:
     op.drop_table("boss_instance")
     op.drop_table("item")
     op.drop_table("player")
-    

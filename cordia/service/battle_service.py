@@ -35,7 +35,7 @@ class BattleService:
         boss_service: BossService,
         cooldown_service: CooldownService,
         loot_service: LootService,
-        leaderboard_service: LeaderboardService
+        leaderboard_service: LeaderboardService,
     ):
         self.player_service = player_service
         self.gear_service = gear_service
@@ -271,8 +271,10 @@ class BattleService:
             )
         )
 
-        await self.leaderboard_service.upsert_daily_leaderboard(discord_id, exp_gained, gold_gained, kills)
-        
+        await self.leaderboard_service.upsert_daily_leaderboard(
+            discord_id, exp_gained, gold_gained, kills
+        )
+
         attack_result = AttackResult(
             kills=kills,
             exp=exp_gained,

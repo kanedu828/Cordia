@@ -164,7 +164,6 @@ class TestGearData(unittest.TestCase):
                         f"{gear.upgrade_item} is missing from gear_set_data for gear {gear.name}",
                     )
 
-
     def test_cast_text_ends_with_period(self):
         for key, gear in gear_data.items():
             with self.subTest(gear=key):
@@ -172,8 +171,9 @@ class TestGearData(unittest.TestCase):
                     self.assertEqual(
                         gear.spell.cast_text[-1],
                         ".",
-                        f"{gear.name} cast text does not end with \".\""
+                        f'{gear.name} cast text does not end with "."',
                     )
+
 
 if __name__ == "__main__":
     unittest.main()

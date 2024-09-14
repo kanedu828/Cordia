@@ -82,9 +82,16 @@ class CordiaClient(commands.Bot):
         cooldown_service = CooldownService()
         item_service = ItemService(item_dao)
         loot_service = LootService(gear_service, player_service, item_service)
-        leaderboard_service = LeaderboardService(player_dao, daily_leaderboard_dao, self)
+        leaderboard_service = LeaderboardService(
+            player_dao, daily_leaderboard_dao, self
+        )
         battle_service = BattleService(
-            player_service, gear_service, boss_service, cooldown_service, loot_service, leaderboard_service
+            player_service,
+            gear_service,
+            boss_service,
+            cooldown_service,
+            loot_service,
+            leaderboard_service,
         )
 
         self.cordia_service = CordiaService(
