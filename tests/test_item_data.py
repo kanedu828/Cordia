@@ -1,6 +1,5 @@
 import unittest
 import re
-from cordia.model.item import Item
 from cordia.data.items import (
     item_data,
 )  # Assuming item_data is imported from the correct module

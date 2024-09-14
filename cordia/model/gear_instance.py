@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from math import ceil
+import math
 from cordia.data.gear import gear_data
+from cordia.data.items import item_data
 from cordia.model.gear import Gear
 from cordia.util.stat_mapping import get_stat_emoji, get_stat_modifier
 
@@ -20,7 +22,11 @@ class GearInstance:
     def get_upgrade_cost(self) -> int:
         gd = self.get_gear_data()
         base_cost = gd.level * 100
-        return int(base_cost + (self.stars * base_cost / 4))
+        gold_cost = int(base_cost + (self.stars * base_cost / 4))
+        upgrade_item_cost = max(math.floor((self.stars - 10) / 5), -1) + 1
+        cost = {"gold": gold_cost, "item": (gd.upgrade_item, upgrade_item_cost)}
+
+        return cost
 
     def get_bonus_stats(self):
         bonus_stats = {
@@ -64,7 +70,6 @@ class GearInstance:
             "intelligence": gd.intelligence,
             "efficiency": gd.efficiency,
             "luck": gd.luck,
-            "boss_damage": gd.boss_damage,
             "spell_damage": 0,
         }
 
@@ -110,7 +115,6 @@ class GearInstance:
         upgraded_stats = self.get_upgraded_stats()
         main_stats = [
             "damage",
-            "boss_damage",
             "strength",
             "persistence",
             "intelligence",
@@ -134,6 +138,7 @@ class GearInstance:
     def get_secondary_stats_string(self) -> str:
         gd = self.get_gear_data()
         secondary_stats = [
+            "boss_damage",
             "attack_cooldown",
             "crit_chance",
             "penetration",

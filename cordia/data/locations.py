@@ -5,7 +5,9 @@ location_data = {
         name="The Plains I", level_unlock=0, monsters=[("rat", 0.75), ("goblin", 0.25)]
     ),
     "the_plains_ii": Location(
-        name="The Plains II", level_unlock=5, monsters=[("goblin", 0.75), ("bandit", 0.25)]
+        name="The Plains II",
+        level_unlock=5,
+        monsters=[("goblin", 0.75), ("bandit", 0.25)],
     ),
     "the_plains_iii": Location(
         name="The Plains III",
@@ -43,19 +45,12 @@ location_data = {
     "philpots_garden": Location(
         name="Philpots Garden",
         level_unlock=50,
-        monsters=[
-            ("brussel_sprout", 0.7),
-            ("tangling_hibiscus", 0.3)
-        ]
+        monsters=[("brussel_sprout", 0.7), ("tangling_hibiscus", 0.3)],
     ),
     "shadowreach_cavern": Location(
         name="Shadowreach Cavern",
         level_unlock=60,
-        monsters=[
-            ("cave_stalker", 0.6),
-            ("cave_phantom", 0.3),
-            ("shadewalker", 0.1)
-        ]
+        monsters=[("cave_stalker", 0.6), ("cave_phantom", 0.3), ("shadewalker", 0.1)],
     ),
     "frostveil_expanse": Location(
         name="Frostveil Expanse",
@@ -63,7 +58,7 @@ location_data = {
         monsters=[
             ("snowstalker_wolf", 0.6),
             ("glacial_wraith", 0.3),
-            ("frost_elemental", 0.1)
-        ]
+            ("frost_elemental", 0.1),
+        ],
     ),
 }

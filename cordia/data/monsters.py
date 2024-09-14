@@ -48,7 +48,12 @@ monster_data = {
         hp=28,
         gold=10,
         exp=25,
-        gear_loot=[("wolf_fang_sword", 0.02), ("wolf_cap", 0.02), ("hunter_bow", 0.02), ("wolf_fang_dagger", 0.02)],
+        gear_loot=[
+            ("wolf_fang_sword", 0.02),
+            ("wolf_cap", 0.02),
+            ("hunter_bow", 0.02),
+            ("wolf_fang_dagger", 0.02),
+        ],
     ),
     "bear": Monster(
         name="Bear",
@@ -137,8 +142,8 @@ monster_data = {
             ("thorny_dagger", 0.02),
             ("staff_of_roots", 0.02),
             ("leafy_top", 0.02),
-            ("leafy_pants", 0.02)
-        ]
+            ("leafy_pants", 0.02),
+        ],
     ),
     "tangling_hibiscus": Monster(
         name="Tangling Hibiscus",
@@ -151,8 +156,8 @@ monster_data = {
         gear_loot=[
             ("tangling_choker", 0.02),
             ("flower_crown", 0.02),
-            ("hibiscus_ring", 0.02)
-        ]
+            ("hibiscus_ring", 0.02),
+        ],
     ),
     "cave_wyrm": Monster(
         name="Cave Wyrm",
@@ -183,8 +188,8 @@ monster_data = {
             ("shadow_hunter_bow", 0.02),
             ("shadow_gloves", 0.02),
             ("shadow_hood", 0.02),
-            ("shadow_pants", 0.02)
-        ]
+            ("shadow_pants", 0.02),
+        ],
     ),
     "cave_phantom": Monster(
         name="Cave Phantom",
@@ -198,8 +203,8 @@ monster_data = {
             ("shadow_gloves", 0.02),
             ("shadow_hood", 0.02),
             ("shadow_pants", 0.02),
-            ("shadow_pendant", 0.02)
-        ]
+            ("shadow_pendant", 0.02),
+        ],
     ),
     "shadewalker": Monster(
         name="Shadewalker",
@@ -213,8 +218,8 @@ monster_data = {
             ("shadow_hunter_bow", 0.02),
             ("shadow_gloves", 0.02),
             ("shadow_hood", 0.02),
-            ("shadow_pants", 0.02)
-        ]
+            ("shadow_pants", 0.02),
+        ],
     ),
     "snowstalker_wolf": Monster(
         name="Snowstalker Wolf",
@@ -228,8 +233,8 @@ monster_data = {
             ("frost_gloves", 0.02),
             ("frost_hood", 0.02),
             ("frost_veil_cloak", 0.02),
-            ("snow_shoes", 0.02)
-        ]
+            ("snow_shoes", 0.02),
+        ],
     ),
     "glacial_wraith": Monster(
         name="Glacial Wraith",
@@ -243,9 +248,8 @@ monster_data = {
             ("frozen_spell_blade", 0.025),
             ("frost_veil_cloak", 0.02),
             ("frost_gloves", 0.02),
-            ("frost_hood", 0.02)
-            
-        ]
+            ("frost_hood", 0.02),
+        ],
     ),
     "frost_elemental": Monster(
         name="Frost Elemental",
@@ -258,7 +262,7 @@ monster_data = {
             ("frozen_spell_blade", 0.02),
             ("ice_crystal_ring", 0.02),
             ("snow_shoes", 0.02),
-            ("ice_crystal_chestplate", 0.02)
-        ]
+            ("ice_crystal_chestplate", 0.02),
+        ],
     ),
 }

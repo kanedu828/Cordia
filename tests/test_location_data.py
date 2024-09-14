@@ -22,10 +22,10 @@ class TestLocationData(unittest.TestCase):
             with self.subTest(location=location):
                 total_rate = sum(spawn_rate for _, spawn_rate in data.monsters)
                 self.assertAlmostEqual(
-                    total_rate, 
-                    1, 
+                    total_rate,
+                    1,
                     places=5,  # Adjust precision for floating-point tolerance
-                    msg=f"{location} monster spawn rate does not add up to 1."
+                    msg=f"{location} monster spawn rate does not add up to 1.",
                 )
 
     def test_locations_ordered_by_level(self):

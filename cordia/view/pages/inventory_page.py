@@ -21,7 +21,9 @@ class InventoryPage(Page):
         await interaction.response.edit_message(embed=embed, view=view)
 
     async def _create_inventory_embed(self):
-        embed = discord.Embed(title="Inventory", description="", color=discord.Color.blue())
+        embed = discord.Embed(
+            title="Inventory", description="", color=discord.Color.blue()
+        )
 
         start_index = self.page_number * self.items_per_page
         end_index = min(start_index + self.items_per_page, len(self.items))
@@ -33,15 +35,15 @@ class InventoryPage(Page):
 
         for i in items_on_page:
             embed.add_field(
-                name=f"{i.display_item()}",
-                value="",
-                inline=False
+                name=i.display_item(), value=i.get_item_data().description, inline=False
             )
 
-        embed.set_footer(text=f"Page: {self.page_number + 1}/{math.ceil(len(self.items) / self.items_per_page)}")
-        
+        embed.set_footer(
+            text=f"Page: {self.page_number + 1}/{math.ceil(len(self.items) / self.items_per_page)}"
+        )
+
         return embed
-    
+
     def _create_view(self):
         view = View(timeout=None)
 
@@ -65,7 +67,6 @@ class InventoryPage(Page):
             next_button.disabled = True
 
         return view
-
 
     @only_command_invoker()
     async def back_button_callback(self, interaction: discord.Interaction):

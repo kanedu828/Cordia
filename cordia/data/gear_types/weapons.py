@@ -288,7 +288,7 @@ weapon_data = {
             spell_cooldown=5,
             cast_text="Several shadows fly through the floor and strikes your enemy.",
             strike_radius=5,
-        ),   
+        ),
     ),
     "frostblade_dagger": Gear(
         name="Frostblade Dagger",
@@ -377,10 +377,10 @@ weapon_data = {
             spell_cooldown=30,
             cast_text="The air crystalizes into ice and damages all enemies near you.",
             strike_radius=10,
-            magic_penetration=30
+            magic_penetration=30,
         ),
         gear_set="ice_queen",
-        upgrade_item="ice_queen_soul"
+        upgrade_item="ice_queen_soul",
     ),
     "ice_queen_blade": Gear(
         name="Ice Queen Blade",
@@ -407,7 +407,7 @@ weapon_data = {
             strike_radius=2,
         ),
         gear_set="ice_queen",
-        upgrade_item="ice_queen_soul"
+        upgrade_item="ice_queen_soul",
     ),
     "shadow_master_dagger": Gear(
         name="Shadow Master Dagger",
@@ -435,7 +435,7 @@ weapon_data = {
             strike_radius=1,
         ),
         gear_set="shadow_master",
-        upgrade_item="shadow_master_soul"
+        upgrade_item="shadow_master_soul",
     ),
     "shadow_master_bow": Gear(
         name="Shadow Master Bow",
@@ -463,6 +463,6 @@ weapon_data = {
             strike_radius=5,
         ),
         gear_set="shadow_master",
-        upgrade_item="shadow_master_soul"
+        upgrade_item="shadow_master_soul",
     ),
 }

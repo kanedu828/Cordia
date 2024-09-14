@@ -9,7 +9,11 @@ from cordia.service.cooldown_service import CooldownService
 from cordia.service.gear_service import GearService
 from cordia.service.loot_service import LootService
 from cordia.service.player_service import PlayerService
-from cordia.util.battle_util import calculate_attack_damage, get_diminished_stat, simulate_idle_damage
+from cordia.util.battle_util import (
+    calculate_attack_damage,
+    get_diminished_stat,
+    simulate_idle_damage,
+)
 from cordia.util.exp_util import exp_to_level
 from cordia.util.gear_util import get_weapon_from_player_gear
 from cordia.util.stats_util import (
@@ -156,9 +160,15 @@ class BattleService:
 
         times_attacked = int(time_passed.total_seconds() / idle_frequency)
 
-        gold_gained = monster_mean["gold"] + min(monster_mean["gold"], player_stats["luck"])
-        exp_gained = monster_mean["exp"] + min(monster_mean["exp"], player_stats["efficiency"])
-        damage = player_stats["damage"] + get_diminished_stat(player_stats["damage"], player_stats["persistence"])
+        gold_gained = monster_mean["gold"] + min(
+            monster_mean["gold"], player_stats["luck"]
+        )
+        exp_gained = monster_mean["exp"] + min(
+            monster_mean["exp"], player_stats["efficiency"]
+        )
+        damage = player_stats["damage"] + get_diminished_stat(
+            player_stats["damage"], player_stats["persistence"]
+        )
 
         player_level = exp_to_level(player.exp)
         damage = simulate_idle_damage(damage, monster_mean, player_stats, player_level)
@@ -245,7 +255,6 @@ class BattleService:
             cooldown_expiration = current_time + datetime.timedelta(
                 seconds=weapon_data.spell.spell_cooldown
             )
-
 
         is_combo = random.random() < player_stats["combo_chance"] / 100
         if is_combo:

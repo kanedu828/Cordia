@@ -1,6 +1,6 @@
 import unittest
 import re
-from cordia.model.monster import Monster, MonsterType
+from cordia.model.monster import MonsterType
 from cordia.data.monsters import monster_data  # Existing regular monster data
 from cordia.data.bosses import boss_data  # Importing the boss data for testing
 from cordia.data.gear import gear_data  # For gear_loot validation

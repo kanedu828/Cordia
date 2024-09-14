@@ -1,7 +1,9 @@
 import unittest
 import re
-from cordia.model.gear import Gear, GearType
-from cordia.model.spells import Spell  # Assuming Spell class exists and contains spell-related attributes
+from cordia.model.gear import GearType
+from cordia.model.spells import (
+    Spell,
+)  # Assuming Spell class exists and contains spell-related attributes
 from cordia.data.gear_types.weapons import weapon_data
 from cordia.data.gear_types.cape import cape_data
 from cordia.data.gear_types.hats import hat_data
@@ -42,8 +44,14 @@ class TestGearData(unittest.TestCase):
 
     def test_gear_in_weapon_data(self):
         """Test that all gear in weapon_data is of type GearType.WEAPON."""
-        valid_scaling_stats = ["persistence", "strength", "intelligence", "luck", "efficiency"]
-        
+        valid_scaling_stats = [
+            "persistence",
+            "strength",
+            "intelligence",
+            "luck",
+            "efficiency",
+        ]
+
         for key, gear in weapon_data.items():
             with self.subTest(gear=key):
                 self.assertEqual(
@@ -54,12 +62,16 @@ class TestGearData(unittest.TestCase):
 
                 # If the weapon has a spell, check the scaling_stat is valid
                 if gear.spell:
-                    self.assertIsInstance(gear.spell, Spell, f"{gear.name} should have a valid spell object")
+                    self.assertIsInstance(
+                        gear.spell,
+                        Spell,
+                        f"{gear.name} should have a valid spell object",
+                    )
                     if gear.spell.scaling_stat:
                         self.assertIn(
                             gear.spell.scaling_stat,
                             valid_scaling_stats,
-                            f"{gear.name} has an invalid scaling stat '{gear.spell.scaling_stat}'"
+                            f"{gear.name} has an invalid scaling stat '{gear.spell.scaling_stat}'",
                         )
 
     def test_gear_in_hat_data(self):
@@ -137,7 +149,9 @@ class TestGearData(unittest.TestCase):
             with self.subTest(gear=key):
                 if gear.gear_set:
                     self.assertIn(
-                        gear.gear_set, gear_set_data, f"{gear.gear_set} is missing from gear_set_data for gear {gear.name}"
+                        gear.gear_set,
+                        gear_set_data,
+                        f"{gear.gear_set} is missing from gear_set_data for gear {gear.name}",
                     )
 
     def test_upgrade_item_in_item_data(self):
@@ -145,8 +159,11 @@ class TestGearData(unittest.TestCase):
             with self.subTest(gear=key):
                 if gear.upgrade_item:
                     self.assertIn(
-                        gear.upgrade_item, item_data, f"{gear.upgrade_item} is missing from gear_set_data for gear {gear.name}"
+                        gear.upgrade_item,
+                        item_data,
+                        f"{gear.upgrade_item} is missing from gear_set_data for gear {gear.name}",
                     )
-                    
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -25,8 +25,7 @@ class FightBossPage(Page):
                 style="R",
             )
             embed = discord.Embed(
-                title=f"You cannot fight a boss right now",
-                color=discord.Color.red()
+                title=f"You cannot fight a boss right now", color=discord.Color.red()
             )
 
             embed.add_field(
@@ -48,7 +47,7 @@ class FightBossPage(Page):
             bd = boss_data[bi.name]
             embed = discord.Embed(
                 title=f"Fighting Boss: {bd.display_monster()}",
-                color=discord.Color.dark_red()
+                color=discord.Color.dark_red(),
             )
 
             hp_bar_text = f"{hp_bar(bi.current_hp, bd.hp)}"
@@ -76,7 +75,7 @@ class FightBossPage(Page):
     async def render_expired_boss(self, interaction: discord.Interaction):
         embed = discord.Embed(
             title=f"You have ran out of time to defeat the boss.",
-            color=discord.Color.red()
+            color=discord.Color.red(),
         )
 
         embed.set_image(
@@ -89,8 +88,7 @@ class FightBossPage(Page):
 
     async def render_select_boss_page(self, interaction: discord.Interaction):
         embed = discord.Embed(
-            title=f"Select a Boss to Fight",
-            color=discord.Color.dark_red()
+            title=f"Select a Boss to Fight", color=discord.Color.dark_red()
         )
         embed.set_image(
             url="https://kanedu828.github.io/cordia-assets/assets/boss_fight_page.png"
@@ -102,7 +100,7 @@ class FightBossPage(Page):
                 "You will not be able to fight monsters while a boss fight is active. "
                 "If you leave the fight early, you will forfeit any rewards. "
                 "You may only fight a boss every 8 hours. "
-                "Select a boss to get started! (First boss is unlocked at level 15.)" 
+                "Select a boss to get started! (First boss is unlocked at level 15.)"
             ),
         )
 
@@ -129,19 +127,17 @@ class FightBossPage(Page):
         bd = boss_data[bi.name]
         embed = discord.Embed(
             title=f"VICTORY! You have defeated {bd.display_monster()}",
-            color=discord.Color.gold()
+            color=discord.Color.gold(),
         )
         embed.set_image(
             url="https://kanedu828.github.io/cordia-assets/assets/boss_loot_room.png"
         )
         # Get loot
-        rewards_text = (
-            f"{display_exp(boss_fight_results.exp)}\n{display_gold(boss_fight_results.gold)}"
-        )
+        rewards_text = f"{display_exp(boss_fight_results.exp)}\n{display_gold(boss_fight_results.gold)}"
         for g in boss_fight_results.gear_loot:
             new_gear_text = f"**{g.name}. Navigate to your gear to equip it.**"
             rewards_text += "\n" + new_gear_text
-        
+
         for i, c in boss_fight_results.item_loot:
             rewards_text += f"\n**{c}** {i.display_item()}"
 
@@ -159,7 +155,8 @@ class FightBossPage(Page):
         for g in boss_fight_results.gear_loot:
             new_gear_text = f"**{g.name}. Navigate to your gear to equip it.**"
             new_gear_embed = discord.Embed(
-                title="You found new gear!", color=discord.Color.gold(),
+                title="You found new gear!",
+                color=discord.Color.gold(),
             )
             new_gear_embed.add_field(name="", value=new_gear_text)
             await interaction.followup.send(
@@ -180,7 +177,7 @@ class FightBossPage(Page):
         bd = boss_data[bi.name]
         embed = discord.Embed(
             title=f"Fighting Boss: {bd.display_monster()}",
-            color=discord.Color.dark_red()
+            color=discord.Color.dark_red(),
         )
 
         hp_bar_text = f"{hp_bar(bi.current_hp, bd.hp)}"

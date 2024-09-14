@@ -40,6 +40,6 @@ ring_data = {
         efficiency=30,
         crit_chance=5,
         gear_set="ice_queen",
-        upgrade_item="ice_queen_soul"
-    )
+        upgrade_item="ice_queen_soul",
+    ),
 }

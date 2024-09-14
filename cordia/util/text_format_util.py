@@ -4,7 +4,6 @@ from cordia.util.exp_util import exp_to_level, level_to_exp
 from cordia.model.gear import Gear
 from cordia.model.player import Player
 from cordia.util.stat_mapping import get_stat_emoji, get_stat_modifier
-from cordia.data.gear_sets import gear_set_data
 
 
 def exp_bar(
@@ -78,7 +77,6 @@ def get_player_stats_string(player: Player, player_gear: List[GearInstance]) -> 
         "attack_cooldown": 0,
     }
 
-    gear_sets = Counter()
     # Loop through player gear to accumulate bonuses
     for pg in player_gear:
         gd: Gear = pg.get_gear_data()
@@ -103,17 +101,11 @@ def get_player_stats_string(player: Player, player_gear: List[GearInstance]) -> 
         main_stats["luck"]["gear_bonus"] += upgrade_stats["luck"]
         extra_stats["damage"] += upgrade_stats["damage"]
         extra_stats["crit_chance"] += gd.crit_chance
-        extra_stats["boss_damage"] += upgrade_stats["boss_damage"]
+        extra_stats["boss_damage"] += gd.boss_damage
         extra_stats["penetration"] += gd.penetration
         extra_stats["combo_chance"] += gd.combo_chance
         extra_stats["strike_radius"] += gd.strike_radius
         extra_stats["attack_cooldown"] += gd.attack_cooldown
-
-        if gd.gear_set:
-            gear_sets[gd.gear_set] += 1
-            set_stats = gear_set_data[gd.gear_set].get(gear_sets[gd.gear_set], {})
-            main_stats = {key: main_stats[key] + set_stats.get(key, 0) for key in main_stats}
-            extra_stats = {key: extra_stats[key] + set_stats.get(key, 0) for key in extra_stats}
 
     # Get the longest stat name for main stats to calculate uniform spacing
     max_stat_length_main = max(len(stat) for stat in main_stats)
@@ -163,9 +155,11 @@ def get_stars_string(stars, max_stars):
     # Join the chunks with a space
     return " ".join(star_chunks)
 
+
 def display_gold(amount: int):
     gold_emoji = "<:cordia_gold:1284046011496529975>"
     return f"**{amount:,}** {gold_emoji} **Gold**"
+
 
 def display_exp(amount: int):
     exp_emoji = "<:cordia_exp:1284045273793826877>"

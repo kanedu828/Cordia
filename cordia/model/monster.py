@@ -51,13 +51,19 @@ class Monster:
         # All monsters drop cores by default
         if self.type == MonsterType.NORMAL:
             item_loot += [
+                ("shard", 0.02),
                 ("basic_core", 0.02),
                 ("quality_core", 0.01),
                 ("supreme_core", 0.005),
             ]
         elif self.type == MonsterType.BOSS:
             item_loot += [
+                ("shard", 1.0),
+                ("shard", 0.25),
+                ("shard", 0.25),
                 ("basic_core", 1.0),
+                ("basic_core", 0.25),
+                ("basic_core", 0.25),
                 ("quality_core", 0.40),
                 ("supreme_core", 0.12),
                 ("chaos_core", 0.06),

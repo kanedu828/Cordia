@@ -28,8 +28,7 @@ class UpgradeStatsModal(Modal):
                 title=f"Allocated {stat_value} points into {get_stat_emoji(self.stat)}{self.stat}",
                 color=discord.Color.green(),
             )
-            player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
-            player_gear = await self.cordia_service.get_player_gear(self.discord_id)
+
             from cordia.view.pages.stats_page import StatsPage
 
             await StatsPage(self.cordia_service, self.discord_id).render(interaction)

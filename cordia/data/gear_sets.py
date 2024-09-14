@@ -17,11 +17,7 @@ gear_set_data = {
     },
     "shadow_master": {
         1: {},
-        2: {
-            "persistence": 15,
-            "strength": 15,
-            "luck": 15
-        },
+        2: {"persistence": 15, "strength": 15, "luck": 15},
         3: {
             "persistence": 15,
             "strength": 15,
@@ -29,6 +25,6 @@ gear_set_data = {
             "damage": 10,
             "boss_damage": 10,
             "crit_chance": 10,
-        }
-    }
+        },
+    },
 }

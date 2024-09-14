@@ -3,7 +3,12 @@ from cordia.model.player import Player
 from cordia.util.decorators import only_command_invoker
 from cordia.util.gear_util import get_weapon_from_player_gear
 from cordia.util.stats_util import get_upgrade_points
-from cordia.util.text_format_util import display_gold, exp_bar, get_player_stats_string, get_stat_emoji
+from cordia.util.text_format_util import (
+    display_gold,
+    exp_bar,
+    get_player_stats_string,
+    get_stat_emoji,
+)
 from cordia.view.pages.page import Page
 from cordia.view.upgrade_stats_modal import UpgradeStatsModal
 from discord.ui import View, Button
@@ -58,7 +63,7 @@ class StatsPage(Page):
         view.add_item(back_button)
 
         return view
-    
+
     def _create_embed(self, player: Player, player_gear: list[GearInstance]):
         embed = discord.Embed(title=f"Your Stats", color=discord.Color.blue())
         stats_text, special_stats_text = get_player_stats_string(player, player_gear)
@@ -74,7 +79,9 @@ class StatsPage(Page):
             )
         else:
             embed.add_field(
-                name="", value=f"You have {upgrade_points} upgrade points.", inline=False
+                name="",
+                value=f"You have {upgrade_points} upgrade points.",
+                inline=False,
             )
         embed.add_field(name="", value=stats_text)
         embed.add_field(name="", value=special_stats_text)
@@ -87,7 +94,6 @@ class StatsPage(Page):
 
         embed.add_field(name="Gold", value=display_gold(player.gold), inline=False)
         return embed
-
 
     @only_command_invoker()
     async def back_button_callback(self, interaction: discord.Interaction):

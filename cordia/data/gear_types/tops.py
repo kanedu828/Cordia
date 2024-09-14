@@ -24,7 +24,7 @@ top_data = {
         gold_value=40,
         strength=15,
     ),
-     "leafy_top": Gear(
+    "leafy_top": Gear(
         name="Leafy Top",
         type=GearType.TOP,
         level=40,
@@ -48,6 +48,6 @@ top_data = {
         efficiency=30,
         luck=30,
         gear_set="shadow_master",
-        upgrade_item="shadow_master_soul"
+        upgrade_item="shadow_master_soul",
     ),
 }

@@ -43,7 +43,10 @@ class Gear:
     # Gear Set
     gear_set: str = ""
     # Upgrades
-    upgrade_item: str = ""
+    upgrade_item: str = "shard"
+
+    def display_item(self):
+        return f"**Lv. {self.level} {self.name}**"
 
     def get_max_stars(self):
         if self.level < 10:

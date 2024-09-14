@@ -22,7 +22,7 @@ class FightPage(Page):
         location: Location = location_data[player.location]
         embed = discord.Embed(
             title=f"Fighting Monsters in {location.name}",
-            color=discord.Color.dark_teal()
+            color=discord.Color.dark_teal(),
         )
         exp_bar_text = f"{exp_bar(player.exp)}\n\n"
         embed.add_field(name="", value=exp_bar_text, inline=False)
@@ -43,7 +43,7 @@ class FightPage(Page):
         location: Location = idle_results["location"]
         embed = discord.Embed(
             title=f"Idle Fighting Monsters in {location.name}",
-            color=discord.Color.dark_teal()
+            color=discord.Color.dark_teal(),
         )
 
         embed.set_image(url=location.get_image_path())
@@ -133,7 +133,7 @@ class FightPage(Page):
         location: Location = attack_results.location
         embed = discord.Embed(
             title=f"Fighting Monsters in {location.name}",
-            color=discord.Color.dark_teal()
+            color=discord.Color.dark_teal(),
         )
 
         exp_bar_text = f"{exp_bar(current_exp)}\n\n"
@@ -180,7 +180,9 @@ class FightPage(Page):
         embed.add_field(name="⚔️Battle⚔️", value=battle_text, inline=False)
 
         # Get loot
-        rewards_text = f"{display_exp(attack_results.exp)}\n{display_gold(attack_results.gold)}"
+        rewards_text = (
+            f"{display_exp(attack_results.exp)}\n{display_gold(attack_results.gold)}"
+        )
         for g in attack_results.gear_loot:
             new_gear_text = f"**{g.name}. Navigate to your gear to equip it.**"
             rewards_text += "\n" + new_gear_text

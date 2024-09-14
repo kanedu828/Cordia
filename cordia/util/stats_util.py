@@ -4,9 +4,9 @@ from typing import Counter, List
 from cordia.model.gear_instance import GearInstance
 from cordia.model.gear import Gear
 from cordia.model.player import Player
+from cordia.model.player_gear import PlayerGear
 from cordia.util.exp_util import exp_to_level
 from cordia.data.gear_sets import gear_set_data
-
 
 
 def get_player_stats(player: Player, player_gear: List[GearInstance]):
@@ -28,8 +28,6 @@ def get_player_stats(player: Player, player_gear: List[GearInstance]):
 
     stats = base_stats.copy()
 
-    gear_sets = Counter()
-
     for pg in player_gear:
         gd: Gear = pg.get_gear_data()
         bonus_stats = pg.get_bonus_stats()
@@ -46,19 +44,27 @@ def get_player_stats(player: Player, player_gear: List[GearInstance]):
         stats["luck"] += upgrade_stats["luck"]
         stats["damage"] += upgrade_stats["damage"]
         stats["crit_chance"] += gd.crit_chance
-        stats["boss_damage"] += upgrade_stats["boss_damage"]
+        stats["boss_damage"] += gd.boss_damage
         stats["penetration"] += gd.penetration
         stats["combo_chance"] += gd.combo_chance
         stats["strike_radius"] += gd.strike_radius
         stats["attack_cooldown"] += gd.attack_cooldown
         stats["spell_damage"] += upgrade_stats["spell_damage"]
 
+    return stats
+
+
+def get_total_gear_set_stats(player_gear: list[PlayerGear]):
+    gear_sets = Counter()
+    total_stats = {}
+    for pg in player_gear:
+        gd = pg.get_gear_data()
         if gd.gear_set:
             gear_sets[gd.gear_set] += 1
             set_stats = gear_set_data[gd.gear_set].get(gear_sets[gd.gear_set], {})
-            stats = dict(Counter(stats) + Counter(set_stats))
+            total_stats = dict(Counter(total_stats) + Counter(set_stats))
+    return total_stats
 
-    return stats
 
 def get_upgrade_points(player: Player) -> int:
     points_per_level = 3
@@ -135,4 +141,3 @@ def calculate_weighted_monster_mean(monster_tuples):
         }
 
     return weighted_means
-

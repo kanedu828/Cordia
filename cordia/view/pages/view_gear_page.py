@@ -1,3 +1,4 @@
+from cordia.model.item import Item
 from cordia.service.cordia_service import CordiaService
 from cordia.util.decorators import only_command_invoker
 from cordia.util.text_format_util import display_gold, get_stars_string
@@ -61,7 +62,18 @@ class ViewGearPage(Page):
                 name="Bonus Stats", value=gi.get_bonus_stats_string(), inline=False
             )
 
-        upgrade_cost_text = f"{display_gold(gi.get_upgrade_cost())}"
+        upgrade_cost = gi.get_upgrade_cost()
+        upgrade_item: Item = item_data[upgrade_cost["item"][0]]
+        upgrade_cost_text = f"{display_gold(upgrade_cost['gold'])}"
+
+        player_upgrade_item = await self.cordia_service.get_item(
+            self.discord_id, upgrade_cost["item"][0]
+        )
+
+        if upgrade_cost["item"][1]:
+            upgrade_cost_text += (
+                f"\n**{upgrade_cost['item'][1]}** {upgrade_item.display_item()}"
+            )
         if gi.stars >= gd.get_max_stars():
             upgrade_cost_text = "This gear is already fully upgraded!"
         embed.add_field(name="Upgrade Costs", value=upgrade_cost_text, inline=False)
@@ -71,13 +83,21 @@ class ViewGearPage(Page):
             inline=False,
         )
         your_resources_text = f"{display_gold(player.gold)}"
+        if player_upgrade_item:
+            your_resources_text += f"\n{player_upgrade_item.display_item()}"
         for c in cores:
             your_resources_text += f"\n{c.display_item()}"
         if not cores:
             your_resources_text += f"\nYou have no cores"
         embed.add_field(name="Your Resources", value=your_resources_text, inline=False)
 
-        has_upgrade_cost = player.gold >= gi.get_upgrade_cost()
+        player_upgrade_item_count = 0
+        if player_upgrade_item:
+            player_upgrade_item_count = player_upgrade_item.count
+        has_upgrade_cost = (
+            player.gold >= upgrade_cost["gold"]
+            and player_upgrade_item_count >= upgrade_cost["item"][1]
+        )
         view = self._create_view(
             bool(pg),
             gi.stars >= gd.get_max_stars(),
@@ -169,31 +189,23 @@ class ViewGearPage(Page):
 
     @only_command_invoker()
     async def upgrade_button_callback(self, interaction: discord.Interaction):
-        player = await self.cordia_service.get_player_by_discord_id(interaction.user.id)
         gi = await self.cordia_service.get_gear_by_id(self.gear_id)
-        upgrade_cost = gi.get_upgrade_cost()
-        embed = discord.Embed(
-            title=f"Upgrade Gear",
+        upgrade_cost = gi.get_upgrade_cost()["gold"]
+        upgrade_item_cost = gi.get_upgrade_cost()["item"]
+        embed = discord.Embed(title=f"Upgrade Gear", color=discord.Color.green())
+
+        embed.add_field(
+            name="You successfully upgraded your gear!",
+            value=f"You have upgraded your **{gi.get_gear_data().name}** to **{gi.stars + 1} stars**!",
+            inline=False,
         )
-        if player.gold < upgrade_cost:
-            embed.color = discord.Color.red()
-            embed.add_field(
-                name="You do not have enough resources!",
-                value=f"You need {upgrade_cost - player.gold} more gold.",
-                inline=False,
-            )
-            await interaction.response.send_message(embed=embed, ephemeral=True)
-        else:
-            embed.color = discord.Color.green()
-            embed.add_field(
-                name="You successfully upgraded your gear!",
-                value=f"You have upgraded your **{gi.get_gear_data().name}** to **{gi.stars + 1} stars**!",
-                inline=False,
-            )
-            await self.cordia_service.increment_gear_stars(self.gear_id, 1)
-            await self.cordia_service.increment_gold(interaction.user.id, -upgrade_cost)
-            await self.render(interaction)
-            await interaction.followup.send(embed=embed, ephemeral=True)
+        await self.cordia_service.increment_gear_stars(self.gear_id, 1)
+        await self.cordia_service.insert_item(
+            self.discord_id, upgrade_item_cost[0], -upgrade_item_cost[1]
+        )
+        await self.cordia_service.increment_gold(interaction.user.id, -upgrade_cost)
+        await self.render(interaction)
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
     @only_command_invoker()
     async def back_button_callback(self, interaction: discord.Interaction):

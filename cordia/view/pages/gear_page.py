@@ -5,7 +5,6 @@ from cordia.service.cordia_service import CordiaService
 from cordia.util.decorators import only_command_invoker
 from cordia.util.text_format_util import snake_case_to_capital
 from cordia.view.pages.page import Page
-from cordia.data.gear import gear_data
 import discord
 from discord.ui import Button, View, Select
 
@@ -35,10 +34,7 @@ class GearPage(Page):
 
     async def render(self, interaction: discord.Interaction):
         view = self._create_view()
-        embed = discord.Embed(
-            title=f"Equipped Gear",
-            color=discord.Color.blue()
-        )
+        embed = discord.Embed(title=f"Equipped Gear", color=discord.Color.blue())
 
         # Fetch the player's gear
         player_gear: List[GearInstance] = await self.cordia_service.get_player_gear(

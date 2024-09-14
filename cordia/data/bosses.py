@@ -86,7 +86,7 @@ boss_data = {
             ("shadow_pendant", 0.30),
             ("shadow_hunter_bow", 0.20),
         ],
-        item_loot=[("shadow_master_soul", 0.5), ("shadow_master_soul", 0.5)],
+        item_loot=[("shadow_master_soul", 0.3), ("shadow_master_soul", 0.3)],
         type=MonsterType.BOSS,
     ),
     "ice_queen": Monster(
@@ -104,7 +104,7 @@ boss_data = {
             ("frost_gloves", 0.30),
             ("frost_veil_cloak", 0.30),
         ],
-        item_loot=[("ice_queen_soul", 0.5), ("ice_queen_soul", 0.5)],
+        item_loot=[("ice_queen_soul", 0.3), ("ice_queen_soul", 0.3)],
         type=MonsterType.BOSS,
     ),
 }

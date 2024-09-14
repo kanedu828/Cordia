@@ -2,8 +2,6 @@ from cordia.model.gear import GearType
 from cordia.model.gear_instance import GearInstance
 from cordia.util.decorators import only_command_invoker
 from cordia.util.gear_util import get_weapon_from_player_gear
-from cordia.view.pages.fight_boss_page import FightBossPage
-from cordia.view.pages.inventory_page import InventoryPage
 from cordia.view.pages.page import Page
 import discord
 from discord.ui import Button, View
@@ -15,13 +13,14 @@ class HomePage(Page):
 
     def _get_embed(self):
         embed = discord.Embed(
-            title=f"Welcome to Cordia",
-            color=discord.Color.dark_orange()
+            title=f"Welcome to Cordia", color=discord.Color.dark_orange()
         )
         image_path = "https://kanedu828.github.io/cordia-assets/assets/home_page.png"
         embed.set_image(url=image_path)
         embed.add_field(
-            name="📜Quests📜", value="You currently have no quests", inline=False,
+            name="📜Quests📜",
+            value="You currently have no quests",
+            inline=False,
         )
         navigation_text = (
             "**Fight**: Fight monsters\n"
@@ -41,8 +40,7 @@ class HomePage(Page):
 
     async def init_render(self, interaction: discord.Interaction):
         embed = discord.Embed(
-            title=f"Welcome to Cordia",
-            color=discord.Color.dark_orange()
+            title=f"Welcome to Cordia", color=discord.Color.dark_orange()
         )
         image_path = "https://kanedu828.github.io/cordia-assets/assets/home_page.png"
         embed.set_image(url=image_path)
@@ -143,14 +141,18 @@ class HomePage(Page):
         )
         inventory_button.callback = self.inventory_button_callback
 
+        shop_button = Button(label="Shop", style=discord.ButtonStyle.blurple, row=1)
+        shop_button.callback = self.shop_button_callback
+
         # Add buttons to the view
         view.add_item(fight_button)
         view.add_item(fight_boss_button)
         view.add_item(stats_button)
         view.add_item(gear_button)
         view.add_item(inventory_button)
+        view.add_item(shop_button)
         view.add_item(leaderboard_button)
-        
+
         return view
 
     @only_command_invoker()
@@ -173,7 +175,7 @@ class HomePage(Page):
 
     @only_command_invoker()
     async def fight_boss_button_callback(self, interaction: discord.Interaction):
-        from cordia.view.pages.fight_page import FightPage
+        from cordia.view.pages.fight_boss_page import FightBossPage
 
         await FightBossPage(self.cordia_service, self.discord_id).render(interaction)
 
@@ -199,7 +201,14 @@ class HomePage(Page):
 
     @only_command_invoker()
     async def inventory_button_callback(self, interaction: discord.Interaction):
-        from cordia.view.pages.leaderboard_page import LeaderboardPage
+        from cordia.view.pages.inventory_page import InventoryPage
 
         inventory_page = InventoryPage(self.cordia_service, self.discord_id)
         await inventory_page.render(interaction)
+
+    @only_command_invoker()
+    async def shop_button_callback(self, interaction: discord.Interaction):
+        from cordia.view.pages.shop_page import ShopPage
+
+        shop_page = ShopPage(self.cordia_service, self.discord_id)
+        await shop_page.render(interaction)

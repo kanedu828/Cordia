@@ -21,7 +21,7 @@ pendant_data = {
         type=GearType.PENDANT,
         level=40,
         gold_value=45,
-        strength=10
+        strength=10,
     ),
     "shadow_pendant": Gear(
         name="Shadow Pendant",
@@ -41,6 +41,6 @@ pendant_data = {
         intelligence=30,
         boss_damage=10,
         gear_set="ice_queen",
-        upgrade_item="ice_queen_soul"
-    )
+        upgrade_item="ice_queen_soul",
+    ),
 }

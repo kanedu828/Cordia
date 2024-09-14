@@ -49,6 +49,6 @@ pants_data = {
         efficiency=30,
         luck=30,
         gear_set="shadow_master",
-        upgrade_item="shadow_master_soul"
+        upgrade_item="shadow_master_soul",
     ),
 }
