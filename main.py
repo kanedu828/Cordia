@@ -3,6 +3,7 @@ import asyncio
 import discord
 from cordia.cordia_client import CordiaClient
 from dotenv import load_dotenv
+from discord.ext import commands
 
 load_dotenv()
 # Set intents
@@ -16,7 +17,9 @@ psql_connection_string = os.getenv("CORDIA_DB_CONNECTION_STRING")
 
 
 async def start():
-    client = CordiaClient(psql_connection_string, intents=intents, command_prefix=";")
+    client = CordiaClient(
+        psql_connection_string, intents=intents, command_prefix=commands.when_mentioned
+    )
     await client.start(token)
 
 

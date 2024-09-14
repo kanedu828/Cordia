@@ -149,5 +149,6 @@ def calculate_weighted_monster_mean(monster_tuples):
     return weighted_means
 
 
-def get_rebirth_points(level: int):
-    return int(max(((level - 50) / 2) ** 1.2 + 10, 0))
+def get_rebirth_points(level: int) -> int:
+    rebirth_points = ((max(level - 50, 0) / 2) ** 1.2) + 10
+    return int(max(rebirth_points, 0))
