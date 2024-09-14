@@ -48,6 +48,7 @@ weapon_data = {
         intelligence=10,
         crit_chance=5,
         attack_cooldown=20,
+        strike_radius=1,
         spell=Spell(
             spell_type=SpellType.DAMAGE,
             name="Fireball",
