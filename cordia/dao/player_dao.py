@@ -10,7 +10,7 @@ class PlayerDao:
     async def get_by_discord_id(self, discord_id: int) -> Player | None:
         query = """
         SELECT discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location, last_idle_claim,
-               last_boss_killed, created_at, updated_at, rebirth_points
+               last_boss_killed, created_at, updated_at, rebirth_points, trophies
         FROM player
         WHERE discord_id = $1
         """
@@ -25,7 +25,7 @@ class PlayerDao:
         INSERT INTO player (discord_id)
         VALUES ($1)
         RETURNING discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location, last_idle_claim,
-                  last_boss_killed, created_at, updated_at, rebirth_points
+                  last_boss_killed, created_at, updated_at, rebirth_points, trophies
         """
         async with self.pool.acquire() as connection:
             record = await connection.fetchrow(query, discord_id)
@@ -63,6 +63,15 @@ class PlayerDao:
         """
         async with self.pool.acquire() as connection:
             await connection.execute(query, gold, discord_id)
+
+    async def increment_trophies(self, discord_id: int):
+        query = """
+        UPDATE player
+        SET trophies = trophies + 1, updated_at = NOW()
+        WHERE discord_id = $1
+        """
+        async with self.pool.acquire() as connection:
+            await connection.execute(query, discord_id)
 
     async def update_rebirth_points(self, discord_id: int, rebirth_points: int):
         query = """
@@ -112,23 +121,29 @@ class PlayerDao:
             count = await connection.fetchval(query, location)
             return count
 
-    async def get_top_100_players_by_exp(self) -> list[Player]:
-        query = """
+    async def get_top_100_players_by_column(self, column: str) -> list[Player]:
+        if column not in {"exp", "gold", "rebirth_points", "trophies"}:
+            raise ValueError(f"Invalid column for ranking: {column}")
+
+        query = f"""
         SELECT discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location, last_idle_claim,
-            last_boss_killed, created_at, updated_at, rebirth_points
+            last_boss_killed, created_at, updated_at, rebirth_points, trophies
         FROM player
-        ORDER BY exp DESC
+        ORDER BY {column} DESC
         LIMIT 100
         """
         async with self.pool.acquire() as connection:
             records = await connection.fetch(query)
             return [Player(**record) for record in records]
 
-    async def get_player_rank_by_exp(self, discord_id: int) -> int:
-        query = """
+    async def get_player_rank_by_column(self, discord_id: int, column: str) -> int:
+        if column not in {"exp", "gold", "rebirth_points", "trophies"}:
+            raise ValueError(f"Invalid column for ranking: {column}")
+
+        query = f"""
         SELECT COUNT(*)
         FROM player
-        WHERE exp > (SELECT exp FROM player WHERE discord_id = $1)
+        WHERE {column} > (SELECT {column} FROM player WHERE discord_id = $1)
         """
         async with self.pool.acquire() as connection:
             rank = await connection.fetchval(query, discord_id)

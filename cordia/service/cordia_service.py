@@ -4,6 +4,7 @@ from typing import List, Literal, Optional
 from cordia.model.attack_result import AttackResult
 from cordia.model.boos_fight_result import BossFightResult
 from cordia.model.boss_instance import BossInstance
+from cordia.model.daily_leaderboard import DailyLeaderboard
 from cordia.model.gear_instance import GearInstance
 from cordia.model.item_instance import ItemInstance
 from cordia.model.player import Player
@@ -41,12 +42,7 @@ class CordiaService:
         return await self.player_service.insert_player(discord_id)
 
     async def get_or_insert_player(self, discord_id: int) -> Player:
-        player = await self.get_player_by_discord_id(discord_id)
-        if player:
-            return player
-        else:
-            player = await self.insert_player(discord_id)
-            return player
+        return await self.player_service.get_or_insert_player(discord_id)
 
     async def increment_stat(self, discord_id: int, stat_name: str, increment_by: int):
         await self.player_service.increment_stat(discord_id, stat_name, increment_by)
@@ -109,14 +105,22 @@ class CordiaService:
         return await self.item_service.get_cores_for_user(discord_id)
 
     # Leaderboard
-    async def get_top_100_players_by_exp(self) -> list[Player]:
-        return await self.leaderboard_service.get_top_100_players_by_exp()
+    async def get_top_100_players_by_column(self, column: str) -> list[Player]:
+        return await self.leaderboard_service.get_top_100_players_by_column(column)
 
-    async def get_player_rank_by_exp(self, discord_id) -> int:
-        return await self.leaderboard_service.get_player_rank_by_exp(discord_id)
+    async def get_player_rank_by_column(self, discord_id, column: str) -> int:
+        return await self.leaderboard_service.get_player_rank_by_column(
+            discord_id, column
+        )
 
     async def get_leaderboard_user(self, discord_id: int) -> str:
         return await self.leaderboard_service.get_leaderboard_user(discord_id)
+    
+    async def get_top_100_daily_players_by_column(self, column: str) -> list[DailyLeaderboard]:
+        return await self.leaderboard_service.get_top_100_daily_players_by_column(column)
+
+    async def get_player_daily_rank_by_column(self, discord_id: int, column: str) -> int:
+        return await self.leaderboard_service.get_player_daily_rank_by_column(discord_id, column)
 
     # Boss Instance
     async def get_boss_by_discord_id(self, discord_id: int) -> BossInstance:

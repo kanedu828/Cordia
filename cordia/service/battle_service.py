@@ -7,6 +7,7 @@ from cordia.model.player import Player
 from cordia.service.boss_service import BossService
 from cordia.service.cooldown_service import CooldownService
 from cordia.service.gear_service import GearService
+from cordia.service.leaderboard_service import LeaderboardService
 from cordia.service.loot_service import LootService
 from cordia.service.player_service import PlayerService
 from cordia.util.battle_util import (
@@ -34,12 +35,14 @@ class BattleService:
         boss_service: BossService,
         cooldown_service: CooldownService,
         loot_service: LootService,
+        leaderboard_service: LeaderboardService
     ):
         self.player_service = player_service
         self.gear_service = gear_service
         self.boss_service = boss_service
         self.cooldown_service = cooldown_service
         self.loot_service = loot_service
+        self.leaderboard_service = leaderboard_service
 
     async def boss_fight(
         self, discord_id: int, action: Literal["attack", "cast_spell"] = "attack"
@@ -268,6 +271,8 @@ class BattleService:
             )
         )
 
+        await self.leaderboard_service.upsert_daily_leaderboard(discord_id, exp_gained, gold_gained, kills)
+        
         attack_result = AttackResult(
             kills=kills,
             exp=exp_gained,

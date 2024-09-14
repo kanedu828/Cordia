@@ -3,7 +3,7 @@ import re
 from cordia.model.gear import GearType
 from cordia.model.spells import (
     Spell,
-)  # Assuming Spell class exists and contains spell-related attributes
+)
 from cordia.data.gear_types.weapons import weapon_data
 from cordia.data.gear_types.cape import cape_data
 from cordia.data.gear_types.hats import hat_data
@@ -164,6 +164,16 @@ class TestGearData(unittest.TestCase):
                         f"{gear.upgrade_item} is missing from gear_set_data for gear {gear.name}",
                     )
 
+
+    def test_cast_text_ends_with_period(self):
+        for key, gear in gear_data.items():
+            with self.subTest(gear=key):
+                if gear.spell:
+                    self.assertEqual(
+                        gear.spell.cast_text[-1],
+                        ".",
+                        f"{gear.name} cast text does not end with \".\""
+                    )
 
 if __name__ == "__main__":
     unittest.main()

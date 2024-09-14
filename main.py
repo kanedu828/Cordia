@@ -1,16 +1,11 @@
-from dotenv import load_dotenv
 import os
 import asyncio
-from typing import List
 import discord
 from cordia.cordia_client import CordiaClient
 
-# Load env variables
-load_dotenv()
-
 # Set intents
 intents = discord.Intents.default()
-intents.message_content = True
+intents.message_content = False
 intents.members = True
 
 # Env variables

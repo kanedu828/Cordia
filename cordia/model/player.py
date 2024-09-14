@@ -13,6 +13,7 @@ class Player:
     exp: int
     gold: int
     rebirth_points: int
+    trophies: int
     location: str
     last_idle_claim: datetime
     last_boss_killed: datetime

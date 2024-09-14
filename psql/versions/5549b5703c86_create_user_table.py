@@ -32,6 +32,7 @@ def upgrade() -> None:
         sa.Column("gold", sa.Integer, nullable=False, server_default="0"),
         sa.Column("location", sa.String(256), server_default="the_plains_i"),
         sa.Column("rebirth_points", sa.Integer, nullable=False, server_default="0"),
+        sa.Column("trophies", sa.Integer, nullable=False, server_default="0"),
         sa.Column(
             "last_boss_killed",
             sa.TIMESTAMP(timezone=True),
@@ -172,10 +173,39 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("discord_id", "name"),  # Composite primary key
     )
 
+    op.create_table(
+        "daily_leaderboard",
+        sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
+        sa.Column(
+            "discord_id",
+            sa.BigInteger,
+            sa.ForeignKey("player.discord_id", ondelete="CASCADE"),
+            nullable=False,
+        ),
+        sa.Column("exp", sa.Integer, nullable=False, server_default="0"),
+        sa.Column("gold", sa.Integer, nullable=False, server_default="0"),
+        sa.Column("monsters_killed", sa.Integer, nullable=False, server_default="0"),
+        sa.Column(
+            "created_at",
+            sa.TIMESTAMP(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        ),
+        sa.Column(
+            "date",
+            sa.Date,
+            nullable=False,
+            server_default=func.current_date()
+        ),
+        sa.UniqueConstraint("discord_id", "date", name="uq_discord_id_date")
+    )
+
 
 def downgrade() -> None:
     op.drop_table("player_gear")
     op.drop_table("gear")
-    op.drop_table("player")
+    op.drop_table("daily_leaderboard")
     op.drop_table("boss_instance")
     op.drop_table("item")
+    op.drop_table("player")
+    

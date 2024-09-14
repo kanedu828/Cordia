@@ -166,7 +166,7 @@ class FightPage(Page):
         # Fight monster
         battle_text = f"You strike the enemy with your **{attack_results.weapon.name}**. You deal **{attack_results.damage}** damage.\n"
         if action == "cast_spell":
-            battle_text = f"You cast **{attack_results.weapon.spell.name}** with your **{attack_results.weapon.name}**! {attack_results.weapon.spell.cast_text}. You deal **{attack_results.damage}** damage.\n"
+            battle_text = f"You cast **{attack_results.weapon.spell.name}** with your **{attack_results.weapon.name}**! {attack_results.weapon.spell.cast_text} You deal **{attack_results.damage}** damage.\n"
         if attack_results.is_crit:
             battle_text = "🎯Critical strike! " + battle_text
 
