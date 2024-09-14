@@ -1,36 +1,35 @@
 import os
 import asyncio
 import discord
-from discord.ext import commands
+from cordia.cordia_client import CordiaClient
 from dotenv import load_dotenv
 
 load_dotenv()
-
-TOKEN = os.getenv("CORDIA_TOKEN")
-
-# Intents for bot (you don't need to specify message_content here if just syncing)
+# Set intents
 intents = discord.Intents.default()
+intents.message_content = False
+intents.members = True
 
-# Create bot instance
-bot = commands.Bot(command_prefix="!", intents=intents)
+# Env variables
+token = os.getenv("CORDIA_TOKEN")
+psql_connection_string = os.getenv("CORDIA_DB_CONNECTION_STRING")
+
 
 async def sync_commands():
-    async with bot:
-        print("Logging in and syncing commands...")
-        # Login to Discord using the bot token
-        await bot.login(TOKEN)
-        
-        # Sync the bot's slash commands globally
-        synced_commands = await bot.tree.sync()
+    # Create an instance of your custom CordiaClient
+    client = CordiaClient(psql_connection_string, intents=intents, command_prefix=";")
 
-        # You can also sync commands for a specific guild
-        # guild = discord.Object(id=your_guild_id)
-        # synced_commands = await bot.tree.sync(guild=guild)
+    # Login to Discord
+    await client.login(token)
 
-        print(f"Successfully synced {len(synced_commands)} commands.")
-        
-        # Close the bot after syncing
-        await bot.close()
+    # Sync global slash commands
+    synced_commands = await client.tree.sync()
 
-# Run the sync in an asyncio event loop
-asyncio.run(sync_commands())
+    print(f"Successfully synced {len(synced_commands)} commands.")
+
+    # Close the bot after syncing
+    await client.close()
+
+
+if __name__ == "__main__":
+    asyncio.run(sync_commands())
