@@ -10,7 +10,7 @@ class PlayerDao:
     async def get_by_discord_id(self, discord_id: int) -> Player | None:
         query = """
         SELECT discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location, last_idle_claim,
-               last_boss_killed, created_at, updated_at
+               last_boss_killed, created_at, updated_at, rebirth_points
         FROM player
         WHERE discord_id = $1
         """
@@ -25,7 +25,7 @@ class PlayerDao:
         INSERT INTO player (discord_id)
         VALUES ($1)
         RETURNING discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location, last_idle_claim,
-                  last_boss_killed, created_at, updated_at
+                  last_boss_killed, created_at, updated_at, rebirth_points
         """
         async with self.pool.acquire() as connection:
             record = await connection.fetchrow(query, discord_id)
@@ -63,6 +63,15 @@ class PlayerDao:
         """
         async with self.pool.acquire() as connection:
             await connection.execute(query, gold, discord_id)
+
+    async def update_rebirth_points(self, discord_id: int, rebirth_points: int):
+        query = """
+        UPDATE player
+        SET rebirth_points = $1, updated_at = NOW()
+        WHERE discord_id = $2
+        """
+        async with self.pool.acquire() as connection:
+            await connection.execute(query, rebirth_points, discord_id)
 
     async def update_location(self, discord_id: int, location: str):
         query = """
@@ -106,7 +115,7 @@ class PlayerDao:
     async def get_top_100_players_by_exp(self) -> list[Player]:
         query = """
         SELECT discord_id, strength, persistence, intelligence, efficiency, luck, exp, gold, location, last_idle_claim,
-            last_boss_killed, created_at, updated_at
+            last_boss_killed, created_at, updated_at, rebirth_points
         FROM player
         ORDER BY exp DESC
         LIMIT 100
@@ -126,3 +135,19 @@ class PlayerDao:
             return (
                 rank + 1
             )  # The rank is +1 because the player is behind 'rank' players
+
+    async def reset_player_stats(self, discord_id: int):
+        query = """
+        UPDATE player
+        SET strength = 1, 
+            persistence = 1, 
+            intelligence = 1, 
+            luck = 1, 
+            efficiency = 1, 
+            exp = 0, 
+            location = 'the_plains_i',
+            updated_at = NOW()
+        WHERE discord_id = $1
+        """
+        async with self.pool.acquire() as connection:
+            await connection.execute(query, discord_id)

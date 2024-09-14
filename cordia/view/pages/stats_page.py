@@ -1,14 +1,17 @@
+from cordia.model.gear import GearType
 from cordia.model.gear_instance import GearInstance
 from cordia.model.player import Player
 from cordia.util.decorators import only_command_invoker
+from cordia.util.exp_util import exp_to_level
 from cordia.util.gear_util import get_weapon_from_player_gear
-from cordia.util.stats_util import get_upgrade_points
+from cordia.util.stats_util import get_rebirth_points, get_upgrade_points
 from cordia.util.text_format_util import (
     display_gold,
     exp_bar,
     get_player_stats_string,
     get_stat_emoji,
 )
+from cordia.view.confirmation_modal import ConfirmationModal
 from cordia.view.pages.page import Page
 from cordia.view.upgrade_stats_modal import UpgradeStatsModal
 from discord.ui import View, Button
@@ -53,13 +56,29 @@ class StatsPage(Page):
 
         stats_embed = self._create_embed(player, player_gear)
 
-        await interaction.response.edit_message(embed=stats_embed, view=view)
+        # Check if the interaction has already been responded to
+        if interaction.response.is_done():
+            # If the interaction has been responded to, use followup to edit the message
+            message = await interaction.original_response()
+            await interaction.followup.edit_message(
+                message_id=message.id, embed=stats_embed, view=view
+            )
+        else:
+            # Otherwise, respond to the interaction by editing the message
+            await interaction.response.edit_message(embed=stats_embed, view=view)
 
     def _create_view(self):
         view = View(timeout=None)
 
-        back_button = Button(label="Back", style=discord.ButtonStyle.grey, row=2)
+        rebirth_button = Button(
+            label="Rebirth", style=discord.ButtonStyle.blurple, row=2
+        )
+        rebirth_button.callback = self.rebirth_button_callback
+
+        back_button = Button(label="Back", style=discord.ButtonStyle.grey, row=3)
         back_button.callback = self.back_button_callback
+
+        view.add_item(rebirth_button)
         view.add_item(back_button)
 
         return view
@@ -93,6 +112,10 @@ class StatsPage(Page):
             )
 
         embed.add_field(name="Gold", value=display_gold(player.gold), inline=False)
+        embed.add_field(
+            name="Rebirth",
+            value=f"You will be reset to **0** exp and gain **{get_rebirth_points(exp_to_level(player.exp))}** upgrade points if you rebirth.",
+        )
         return embed
 
     @only_command_invoker()
@@ -100,3 +123,34 @@ class StatsPage(Page):
         from cordia.view.pages.home_page import HomePage
 
         await HomePage(self.cordia_service, self.discord_id).render(interaction)
+
+    @only_command_invoker()
+    async def rebirth_button_callback(self, interaction: discord.Interaction):
+        async def confirmation_callback():
+            player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
+            rebirth_points = get_rebirth_points(exp_to_level(player.exp))
+            await self.cordia_service.increment_rebirth_points(
+                self.discord_id, rebirth_points
+            )
+            await self.cordia_service.rebirth_player(self.discord_id)
+            await self.cordia_service.remove_all_gear(self.discord_id)
+            armory = await self.cordia_service.get_armory(self.discord_id)
+            level_one_weapon = next(
+                (
+                    x
+                    for x in armory
+                    if x.get_gear_data().level == 1
+                    and x.get_gear_data().type == GearType.WEAPON
+                )
+            )
+            await self.cordia_service.equip_gear(
+                self.discord_id, level_one_weapon.id, "weapon"
+            )
+            # Render the stats page after the followup
+            await self.render(interaction)
+
+        modal = ConfirmationModal(
+            f"You have successfully rebirthed! You have been reset to 0 exp.",
+            confirmation_callback,
+        )
+        await interaction.response.send_modal(modal)

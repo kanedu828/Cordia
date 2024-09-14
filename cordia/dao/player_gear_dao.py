@@ -40,13 +40,13 @@ class PlayerGearDao:
         async with self.pool.acquire() as connection:
             await connection.fetchrow(query, discord_id, gear_id, slot)
 
-    async def remove_gear(self, discord_id: int, slot: str):
+    async def remove_all_gear(self, discord_id: int):
         query = """
         DELETE FROM player_gear
-        WHERE discord_id = $1 AND slot = $2
+        WHERE discord_id = $1
         """
         async with self.pool.acquire() as connection:
-            await connection.execute(query, discord_id, slot)
+            await connection.execute(query, discord_id)
 
     async def get_by_gear_id(self, gear_id: int) -> GearInstance:
         query = """

@@ -1,6 +1,7 @@
 from cordia.model.item import Item
 from cordia.service.cordia_service import CordiaService
 from cordia.util.decorators import only_command_invoker
+from cordia.util.exp_util import exp_to_level
 from cordia.util.text_format_util import display_gold, get_stars_string
 from cordia.view.pages.page import Page
 from cordia.data.gear import gear_data
@@ -91,6 +92,14 @@ class ViewGearPage(Page):
             your_resources_text += f"\nYou have no cores"
         embed.add_field(name="Your Resources", value=your_resources_text, inline=False)
 
+        can_equip = exp_to_level(player.exp) >= gd.level
+        if not can_equip:
+            embed.add_field(
+                name="You are not high enough level to equip this gear.",
+                value="",
+                inline=False,
+            )
+
         player_upgrade_item_count = 0
         if player_upgrade_item:
             player_upgrade_item_count = player_upgrade_item.count
@@ -100,6 +109,7 @@ class ViewGearPage(Page):
         )
         view = self._create_view(
             bool(pg),
+            can_equip,
             gi.stars >= gd.get_max_stars(),
             has_upgrade_cost,
         )
@@ -125,6 +135,7 @@ class ViewGearPage(Page):
     def _create_view(
         self,
         equipped: bool,
+        equippable_level: bool,
         max_stars: bool = False,
         has_upgrade_gold=False,
     ):
@@ -132,7 +143,7 @@ class ViewGearPage(Page):
 
         equip_button = Button(label="Equip", style=discord.ButtonStyle.blurple, row=1)
         equip_button.callback = self.equip_button_callback
-        equip_button.disabled = equipped
+        equip_button.disabled = equipped or not equippable_level
 
         upgrade_button = Button(
             label="Upgrade", style=discord.ButtonStyle.blurple, row=1

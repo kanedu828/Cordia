@@ -77,7 +77,13 @@ def get_upgrade_points(player: Player) -> int:
         + player.luck
     )
     level = exp_to_level(player.exp)
-    return max(level * points_per_level - base_stat_sum + init_base_stat_sum, 0)
+    return max(
+        level * points_per_level
+        + player.rebirth_points
+        - base_stat_sum
+        + init_base_stat_sum,
+        0,
+    )
 
 
 def random_within_range(base_value) -> int:
@@ -141,3 +147,7 @@ def calculate_weighted_monster_mean(monster_tuples):
         }
 
     return weighted_means
+
+
+def get_rebirth_points(level: int):
+    return int(max(((level - 50) / 2) + 10, 0))

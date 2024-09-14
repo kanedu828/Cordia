@@ -60,6 +60,12 @@ class CordiaService:
     async def count_players_in_location(self, location: str) -> int:
         return await self.player_service.count_players_in_location(location)
 
+    async def increment_rebirth_points(self, discord_id: int, increment_by: int):
+        await self.player_service.increment_rebirth_points(discord_id, increment_by)
+
+    async def rebirth_player(self, discord_id: int):
+        await self.player_service.rebirth_player(discord_id)
+
     # Gear
     async def insert_gear(self, discord_id: int, name: str):
         return await self.gear_service.insert_gear(discord_id, name)
@@ -83,8 +89,8 @@ class CordiaService:
     async def equip_gear(self, discord_id: int, gear_id: int, slot: str):
         return await self.gear_service.equip_gear(discord_id, gear_id, slot)
 
-    async def remove_gear(self, discord_id: int, slot: str):
-        await self.gear_service.remove_gear(discord_id, slot)
+    async def remove_all_gear(self, discord_id: int):
+        await self.gear_service.remove_all_gear(discord_id)
 
     async def get_player_gear_by_gear_id(self, gear_id: int) -> GearInstance:
         return await self.gear_service.get_player_gear_by_gear_id(gear_id)

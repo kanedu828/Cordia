@@ -44,6 +44,11 @@ class PlayerService:
         new_gold = max(player.gold + increment_by, 0)  # Ensure gold doesn't go below 0
         await self.player_dao.update_gold(discord_id, new_gold)
 
+    async def increment_rebirth_points(self, discord_id: int, increment_by: int):
+        player = await self.player_dao.get_by_discord_id(discord_id)
+        new_rebirth_points = player.rebirth_points + increment_by
+        await self.player_dao.update_rebirth_points(discord_id, new_rebirth_points)
+
     async def update_location(self, discord_id: int, location: str):
         if not location in location_data:
             raise ValueError(f"{location} is not a valid locatin")
@@ -55,6 +60,9 @@ class PlayerService:
     async def count_players_in_location(self, location: str) -> int:
         return await self.player_dao.count_players_in_location(location)
 
-    async def update_last_boss_killed(self, discord_id):
+    async def update_last_boss_killed(self, discord_id: int):
         current_time = datetime.datetime.now(datetime.timezone.utc)
         await self.player_dao.update_last_boss_killed(discord_id, current_time)
+
+    async def rebirth_player(self, discord_id: int):
+        await self.player_dao.reset_player_stats(discord_id)

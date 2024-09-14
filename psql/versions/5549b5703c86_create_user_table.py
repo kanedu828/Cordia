@@ -31,6 +31,7 @@ def upgrade() -> None:
         sa.Column("exp", sa.Integer, nullable=False, server_default="0"),
         sa.Column("gold", sa.Integer, nullable=False, server_default="0"),
         sa.Column("location", sa.String(256), server_default="the_plains_i"),
+        sa.Column("rebirth_points", sa.Integer, nullable=False, server_default="0"),
         sa.Column(
             "last_boss_killed",
             sa.TIMESTAMP(timezone=True),

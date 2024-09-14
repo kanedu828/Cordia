@@ -28,6 +28,7 @@ class HomePage(Page):
             "**Stats**: View and upgrade your stats\n"
             "**Gear**: View and upgrade your gear\n"
             "**Inventory**: View your inventory items\n"
+            "**Shop**: Purchase items with gold or resources\n"
             "**Leaderboard**: View the leaderboard\n"
         )
         embed.add_field(name="🧭Navigation🧭", value=navigation_text, inline=False)

@@ -12,6 +12,7 @@ class Player:
     luck: int
     exp: int
     gold: int
+    rebirth_points: int
     location: str
     last_idle_claim: datetime
     last_boss_killed: datetime

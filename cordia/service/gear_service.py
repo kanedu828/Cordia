@@ -34,11 +34,10 @@ class GearService:
         return await self.player_gear_dao.get_player_gear(discord_id)
 
     async def equip_gear(self, discord_id: int, gear_id: int, slot: str):
-        gi = await self.get_gear_by_id(gear_id)
         return await self.player_gear_dao.equip_gear(discord_id, gear_id, slot)
 
-    async def remove_gear(self, discord_id: int, slot: str):
-        await self.player_gear_dao.remove_gear(discord_id, slot)
+    async def remove_all_gear(self, discord_id: int):
+        await self.player_gear_dao.remove_all_gear(discord_id)
 
     def get_weapon(self, player_gear: List[GearInstance]) -> GearInstance:
         return next((x for x in player_gear if x.slot == GearType.WEAPON.value), None)
