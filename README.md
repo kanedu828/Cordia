@@ -7,7 +7,7 @@
 3. Run `poetry shell`
 
 ## Setup env file
-1. Add the env varibles from the template in `.env~` to your bash profile.
+1. Add the env varibles from the template in `.env~` to your `.env` file.
 2. Visit Discord's developer platform to retrieve a bot token for `CORDIA_TOKEN`.
 
 ## Start local DB
@@ -25,3 +25,9 @@
 ## Running the bot
 1. Ensure you are in a venv (`poetry shell`)
 2. Run `python3 main.py`
+
+## Running tests
+1. `python3 -m unittest discover -s tests/`
+
+## Logging
+1. https://my.papertrailapp.com/events
