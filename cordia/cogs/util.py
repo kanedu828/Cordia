@@ -14,7 +14,7 @@ class Util(commands.Cog):
         message: str = "Pong! {0}".format(round(self.bot.latency * 1000, 1))
         await interaction.response.send_message(message, ephemeral=True)
 
-    @commands.hybrid_command(name="sync")
+    @commands.command(name="sync")
     @commands.guild_only()
     @commands.is_owner()
     async def sync(
