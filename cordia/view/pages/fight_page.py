@@ -75,6 +75,7 @@ class FightPage(Page):
         location_player_count = await self.cordia_service.count_players_in_location(
             location.get_key_name()
         )
+
         embed.set_footer(
             text=f"{location_player_count} players are slaying monsters in this location."
         )
@@ -163,6 +164,17 @@ class FightPage(Page):
             )
             return
 
+        # If buff is casted
+        if attack_results.is_buff:
+            embed.add_field(
+                name=f"🔺You casted {attack_results.weapon.spell.name}!🔺",
+                value=f"{attack_results.weapon.spell.cast_text}. This buff expires {discord.utils.format_dt(attack_results.buff_expiration, style='R')}.\nYou can cast this spell again {discord.utils.format_dt(attack_results.cooldown_expiration, style='R')}.",
+            )
+            await interaction.response.edit_message(
+                embed=embed, view=await self._create_view()
+            )
+            return
+
         # Fight monster
         battle_text = f"You strike the enemy with your **{attack_results.weapon.name}**. You deal **{attack_results.damage}** damage.\n"
         if action == "cast_spell":
@@ -176,6 +188,12 @@ class FightPage(Page):
         battle_text += get_random_battle_text(
             attack_results.kills, attack_results.monster
         )
+
+        if attack_results.buff:
+            battle_text = (
+                f"You are buffed by **{attack_results.weapon.spell.name}**.\n"
+                + battle_text
+            )
 
         embed.add_field(name="⚔️Battle⚔️", value=battle_text, inline=False)
 

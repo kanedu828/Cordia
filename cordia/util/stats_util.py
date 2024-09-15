@@ -5,11 +5,12 @@ from cordia.model.gear_instance import GearInstance
 from cordia.model.gear import Gear
 from cordia.model.player import Player
 from cordia.model.player_gear import PlayerGear
+from cordia.model.player_stats import PlayerStats
 from cordia.util.exp_util import exp_to_level
 from cordia.data.gear_sets import gear_set_data
 
 
-def get_player_stats(player: Player, player_gear: List[GearInstance]):
+def get_player_stats(player: Player, player_gear: List[GearInstance]) -> PlayerStats:
     base_stats = {
         "strength": player.strength,
         "persistence": player.persistence,
@@ -51,7 +52,9 @@ def get_player_stats(player: Player, player_gear: List[GearInstance]):
         stats["attack_cooldown"] += gd.attack_cooldown
         stats["spell_damage"] += upgrade_stats["spell_damage"]
 
-    return stats
+    player_stats = PlayerStats(**stats)
+
+    return player_stats
 
 
 def get_total_gear_set_stats(player_gear: list[PlayerGear]):

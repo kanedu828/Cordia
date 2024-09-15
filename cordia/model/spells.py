@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
+from cordia.model.player_stats import PlayerStats
 from cordia.util.stat_mapping import get_stat_emoji, get_stat_modifier
 
 
@@ -10,17 +11,23 @@ class SpellType(Enum):
 
 
 @dataclass(frozen=True)
+class Buff:
+    stat_bonus: PlayerStats
+    duration: int
+
+
+@dataclass(frozen=True)
 class Spell:
     spell_type: SpellType
     name: str
     description: str
-    damage: int
     spell_cooldown: int
     cast_text: str
+    damage: int = 0
     scaling_stat: str = "intelligence"
     strike_radius: int = 1
     magic_penetration: int = 0
-    buff: str = ""
+    buff: Buff = None
     scaling_multiplier: float = 1
 
     def get_spell_stats_string(self):

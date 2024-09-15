@@ -199,6 +199,17 @@ class FightBossPage(Page):
             )
             return
 
+        # If buff is casted
+        if boss_fight_results.is_buff:
+            embed.add_field(
+                name=f"🔺You casted {boss_fight_results.weapon.spell.name}!🔺",
+                value=f"{boss_fight_results.weapon.spell.cast_text}. This buff expires {discord.utils.format_dt(boss_fight_results.buff_expiration, style='R')}.\nYou can cast this spell again {discord.utils.format_dt(boss_fight_results.cooldown_expiration, style='R')}.",
+            )
+            await interaction.response.edit_message(
+                embed=embed, view=await self._create_view()
+            )
+            return
+
         # Fight monster
         battle_text = f"You strike the enemy with your **{boss_fight_results.weapon.name}**. You deal **{boss_fight_results.damage}** damage.\n"
         if action == "cast_spell":
@@ -209,6 +220,11 @@ class FightBossPage(Page):
         if boss_fight_results.is_combo:
             battle_text = "🥊Combo! " + battle_text
 
+        if boss_fight_results.buff:
+            battle_text = (
+                f"You are buffed by **{boss_fight_results.weapon.spell.name}**.\n"
+                + battle_text
+            )
         embed.add_field(name="⚔️Battle⚔️", value=battle_text, inline=False)
 
         if boss_fight_results.killed:

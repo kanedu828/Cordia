@@ -3,6 +3,7 @@ from typing import List, Literal, Tuple
 from cordia.model.gear_instance import GearInstance
 from cordia.model.monster import Monster, MonsterType
 from cordia.model.player import Player
+from cordia.model.player_stats import PlayerStats
 from cordia.util.exp_util import exp_to_level
 from cordia.util.gear_util import get_weapon_from_player_gear
 from cordia.util.stats_util import (
@@ -55,11 +56,11 @@ def get_diminished_stat(damage: int, stat: int):
 
 def calculate_attack_damage(
     monster: Monster,
+    player_stats: PlayerStats,
     player: Player,
     player_gear: List[GearInstance],
     action: Literal["attack", "cast_spell"] = "attack",
 ) -> Tuple[int, bool]:
-    player_stats = get_player_stats(player, player_gear)
     # Multiplier depending on player's level compared to monster's
     level_damage_multiplier = level_difference_multiplier(
         exp_to_level(player.exp), monster.level
@@ -69,27 +70,27 @@ def calculate_attack_damage(
 
     if action == "cast_spell" and spell:
         scaled_stat = get_diminished_stat(
-            player_stats["spell_damage"], player_stats[spell.scaling_stat]
+            player_stats.spell_damage, player_stats.__dict__[spell.scaling_stat]
         )
-        damage = player_stats["spell_damage"] + (scaled_stat * spell.scaling_multiplier)
+        damage = player_stats.spell_damage + (scaled_stat * spell.scaling_multiplier)
     else:
         scaled_strength = get_diminished_stat(
-            player_stats["damage"], player_stats["strength"]
+            player_stats.damage, player_stats.strength
         )
-        damage = player_stats["damage"] + scaled_strength
+        damage = player_stats.damage + scaled_strength
 
     damage = random_within_range(damage)
     damage *= level_damage_multiplier
 
     # Calculate crit
     CRIT_MULTIPLIER = 1.5
-    is_crit = random.random() < player_stats["crit_chance"] / 100
+    is_crit = random.random() < player_stats.crit_chance / 100
     if is_crit:
         damage *= CRIT_MULTIPLIER
 
     # Boss damage multiplier
     if monster.type == MonsterType.BOSS:
-        damage += damage * (player_stats["boss_damage"] / 100)
+        damage += damage * (player_stats.boss_damage / 100)
 
     if action == "cast_spell" and spell and spell.scaling_stat == "intelligence":
         monster_resistance_percentage = monster.resistance / 100
@@ -101,7 +102,7 @@ def calculate_attack_damage(
         # Penetration multiplier. Cant be over 100%
         monster_defense_percentage = monster.defense / 100
         monster_defense_percentage -= monster_defense_percentage * (
-            min(player_stats["penetration"], 100) / 100
+            min(player_stats.penetration, 100) / 100
         )
         damage -= damage * monster_defense_percentage
 
@@ -109,18 +110,18 @@ def calculate_attack_damage(
 
 
 def simulate_idle_damage(
-    stat_value: float, monster_mean, player_stats, player_level
+    stat_value: float, monster_mean, player_stats: PlayerStats, player_level
 ) -> float:
     stat_value = random_within_range(stat_value)
     stat_value *= level_difference_multiplier(player_level, monster_mean["level"])
 
     # Calculate crit
-    stat_value += (stat_value * 1.5 - stat_value) * (player_stats["crit_chance"] / 100)
+    stat_value += (stat_value * 1.5 - stat_value) * (player_stats.crit_chance / 100)
 
     # Penetration
     monster_defense_percentage = monster_mean["defense"] / 100
     monster_defense_percentage -= monster_defense_percentage * (
-        min(player_stats["penetration"], 100) / 100
+        min(player_stats.penetration, 100) / 100
     )
     stat_value -= stat_value * monster_defense_percentage
 

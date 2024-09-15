@@ -4,6 +4,8 @@ from typing import Literal
 from cordia.model.attack_result import AttackResult
 from cordia.model.boos_fight_result import BossFightResult
 from cordia.model.player import Player
+from cordia.model.player_stats import PlayerStats
+from cordia.model.spells import Buff, SpellType
 from cordia.service.boss_service import BossService
 from cordia.service.cooldown_service import CooldownService
 from cordia.service.gear_service import GearService
@@ -44,6 +46,18 @@ class BattleService:
         self.loot_service = loot_service
         self.leaderboard_service = leaderboard_service
 
+        self.active_buffs: dict[int, tuple[Buff, datetime.datetime]] = {}
+
+    def get_active_buff(self, discord_id: int) -> Buff:
+        current_time = datetime.datetime.now(datetime.timezone.utc)
+        if (
+            discord_id not in self.active_buffs
+            or self.active_buffs[discord_id][1] < current_time
+        ):
+            return None
+        else:
+            return self.active_buffs[discord_id][0]
+
     async def boss_fight(
         self, discord_id: int, action: Literal["attack", "cast_spell"] = "attack"
     ) -> BossFightResult:
@@ -69,13 +83,19 @@ class BattleService:
 
         player = await self.player_service.get_player_by_discord_id(discord_id)
         player_gear = await self.gear_service.get_player_gear(discord_id)
+
+        active_buff = self.get_active_buff(discord_id)
         player_stats = get_player_stats(player, player_gear)
+        if active_buff:
+            player_stats += active_buff.stat_bonus
         weapon = get_weapon_from_player_gear(player_gear)
         weapon_data = weapon.get_gear_data()
         boss = boss_data[boss_instance.name]
 
         # Deal damage
-        damage, is_crit = calculate_attack_damage(boss, player, player_gear, action)
+        damage, is_crit = calculate_attack_damage(
+            boss, player_stats, player, player_gear, action
+        )
         await self.boss_service.update_boss_hp(
             discord_id, boss_instance.current_hp - damage
         )
@@ -106,11 +126,26 @@ class BattleService:
                 seconds=weapon_data.spell.spell_cooldown
             )
 
-        is_combo = random.random() < player_stats["combo_chance"] / 100
+        is_combo = random.random() < player_stats.combo_chance / 100
         if is_combo:
             cooldown_expiration = current_time + datetime.timedelta(seconds=1)
 
         self.cooldown_service.set_cooldown(discord_id, action, cooldown_expiration)
+
+        if action == "cast_spell" and weapon_data.spell.buff:
+            buff_expiration = current_time + datetime.timedelta(
+                seconds=weapon_data.spell.buff.duration
+            )
+            self.active_buffs[discord_id] = (weapon_data.spell.buff, buff_expiration)
+            return BossFightResult(
+                boss_expiration=boss_instance.expiration_time,
+                boss_instance=boss_instance,
+                is_buff=True,
+                buff=weapon_data.spell.buff,
+                cooldown_expiration=cooldown_expiration,
+                buff_expiration=buff_expiration,
+                weapon=weapon_data,
+            )
 
         boss_fight_result = BossFightResult(
             boss_instance=boss_instance,
@@ -129,12 +164,9 @@ class BattleService:
             player_exp=player.exp + exp_gained,
             weapon=weapon_data,
             item_loot=item_loot,
+            buff=active_buff,
         )
 
-        if action == "cast_spell" and weapon_data.spell:
-            boss_fight_result.cooldown_expiration = current_time + datetime.timedelta(
-                seconds=weapon_data.spell.spell_cooldown
-            )
         return boss_fight_result
 
     async def idle_fight(self, discord_id: int):
@@ -164,13 +196,13 @@ class BattleService:
         times_attacked = int(time_passed.total_seconds() / idle_frequency)
 
         gold_gained = monster_mean["gold"] + min(
-            monster_mean["gold"], player_stats["luck"]
+            monster_mean["gold"], player_stats.luck
         )
         exp_gained = monster_mean["exp"] + min(
-            monster_mean["exp"], player_stats["efficiency"]
+            monster_mean["exp"], player_stats.efficiency
         )
-        damage = player_stats["damage"] + get_diminished_stat(
-            player_stats["damage"], player_stats["persistence"]
+        damage = player_stats.damage + get_diminished_stat(
+            player_stats.damage, player_stats.persistence
         )
 
         player_level = exp_to_level(player.exp)
@@ -220,7 +252,11 @@ class BattleService:
     ) -> AttackResult:
         player = await self.player_service.get_or_insert_player(discord_id)
         player_gear = await self.gear_service.get_player_gear(discord_id)
+
+        active_buff = self.get_active_buff(discord_id)
         player_stats = get_player_stats(player, player_gear)
+        if active_buff:
+            player_stats += active_buff.stat_bonus
         location = location_data[player.location]
         if self.cooldown_service.is_on_cooldown(discord_id, action):
             return AttackResult(
@@ -236,18 +272,21 @@ class BattleService:
 
         current_time = datetime.datetime.now(datetime.timezone.utc)
 
-        damage, is_crit = calculate_attack_damage(monster, player, player_gear, action)
-        kill_rate = float(damage) / monster.hp
-
         weapon = get_weapon_from_player_gear(player_gear)
         weapon_data = weapon.get_gear_data()
+
+        damage, is_crit = calculate_attack_damage(
+            monster, player_stats, player, player_gear, action
+        )
+        kill_rate = float(damage) / monster.hp
+
         # If kill rate < 1, then that is the chance of successfully killing an enemy.
         # If kill rate >= 1, then that is the number of monsters slain
         if kill_rate < 1:
             r = random.random()
             kills = 1 if r < kill_rate else 0
         else:
-            kills = min(int(kill_rate), player_stats["strike_radius"])
+            kills = min(int(kill_rate), player_stats.strike_radius)
             if action == "cast_spell" and weapon_data.spell:
                 kills = min(int(kill_rate), weapon_data.spell.strike_radius)
 
@@ -259,7 +298,7 @@ class BattleService:
                 seconds=weapon_data.spell.spell_cooldown
             )
 
-        is_combo = random.random() < player_stats["combo_chance"] / 100
+        is_combo = random.random() < player_stats.combo_chance / 100
         if is_combo:
             cooldown_expiration = current_time + datetime.timedelta(seconds=1)
 
@@ -274,6 +313,22 @@ class BattleService:
         await self.leaderboard_service.upsert_daily_leaderboard(
             discord_id, exp_gained, gold_gained, kills
         )
+
+        # Casting a buff
+        if action == "cast_spell" and weapon_data.spell.buff:
+            buff_expiration = current_time + datetime.timedelta(
+                seconds=weapon_data.spell.buff.duration
+            )
+            self.active_buffs[discord_id] = (weapon_data.spell.buff, buff_expiration)
+            return AttackResult(
+                location=location,
+                is_buff=True,
+                cooldown_expiration=cooldown_expiration,
+                buff_expiration=buff_expiration,
+                buff=weapon_data.spell.buff,
+                weapon=weapon_data,
+                player_exp=player.exp,
+            )
 
         attack_result = AttackResult(
             kills=kills,
@@ -291,6 +346,7 @@ class BattleService:
             sold_gear_amount=sold_gear_amount,
             weapon=weapon_data,
             item_loot=item_loot,
+            buff=active_buff,
         )
 
         return attack_result

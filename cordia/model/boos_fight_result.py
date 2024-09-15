@@ -5,6 +5,7 @@ from typing import List, Tuple
 from cordia.model.boss_instance import BossInstance
 from cordia.model.gear import Gear
 from cordia.model.item import Item
+from cordia.model.spells import Buff
 
 
 @dataclass
@@ -26,3 +27,6 @@ class BossFightResult:
     boss_expiration: datetime = datetime.now(timezone.utc)
     is_expired: bool = False
     player_exp: int = 0
+    is_buff: bool = False
+    buff: Buff = None
+    buff_expiration: datetime = None

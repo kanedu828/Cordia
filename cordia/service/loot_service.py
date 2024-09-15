@@ -2,6 +2,7 @@ from typing import List, Tuple
 from cordia.model.gear_instance import GearInstance
 from cordia.model.item import Item
 from cordia.model.monster import Monster
+from cordia.model.player_stats import PlayerStats
 from cordia.service.gear_service import GearService
 from cordia.service.item_service import ItemService
 from cordia.service.player_service import PlayerService
@@ -22,14 +23,14 @@ class LootService:
         self.item_service = item_service
 
     async def handle_loot(
-        self, discord_id: int, monster: Monster, player_stats: dict, kills: int
+        self, discord_id: int, monster: Monster, player_stats: PlayerStats, kills: int
     ) -> Tuple[int, int, List[GearInstance], int, Tuple[Item, int]]:
         # Calculate EXP and gold
         exp_gained = random_within_range(
-            int((monster.exp + min(player_stats["efficiency"], monster.exp)) * kills)
+            int((monster.exp + min(player_stats.efficiency, monster.exp)) * kills)
         )
         gold_gained = random_within_range(
-            int((monster.gold + min(player_stats["luck"], monster.gold)) * kills)
+            int((monster.gold + min(player_stats.luck, monster.gold)) * kills)
         )
 
         # Handle gear drops

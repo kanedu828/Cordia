@@ -1,5 +1,6 @@
 from cordia.model.gear import Gear, GearType
-from cordia.model.spells import Spell, SpellType
+from cordia.model.player_stats import PlayerStats
+from cordia.model.spells import Buff, Spell, SpellType
 
 weapon_data = {
     "basic_sword": Gear(

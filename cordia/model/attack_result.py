@@ -5,6 +5,7 @@ from typing import List, Tuple
 from cordia.model.gear import Gear
 from cordia.model.item import Item
 from cordia.model.location import Location
+from cordia.model.spells import Buff
 
 
 @dataclass
@@ -25,3 +26,6 @@ class AttackResult:
     damage: int = 0
     is_combo: bool = False
     weapon: Gear = None
+    is_buff: bool = False
+    buff: Buff = None
+    buff_expiration: datetime = None
