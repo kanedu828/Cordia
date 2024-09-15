@@ -13,6 +13,7 @@ from discord.ext import commands
 from typing import List
 import asyncpg
 import logging
+import logging.handlers
 
 from cordia.dao.player_dao import PlayerDao
 from cordia.service.cordia_service import CordiaService
@@ -25,31 +26,31 @@ class CordiaClient(commands.Bot):
     # Extensions
     extensions: List[str] = ["cordia.cogs.util", "cordia.cogs.cordia"]
 
-    def __init__(self, db_connection_string: str, *args, **kwargs):
+    def __init__(self, db_connection_string: str, papertrail_address_number:int = 0, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.pool: asyncpg.Pool = None
         self.db_connection_string: str = db_connection_string
-        self.logger = self.setup_logger()
+        self.logger = self.setup_logger(papertrail_address_number)
+        
 
-    def setup_logger(self) -> logging.Logger:
+    def setup_logger(self, papertrail_address_number: int) -> logging.Logger:
         logger = logging.getLogger("discord")
         logger.setLevel(logging.INFO)
 
-        # File handler
-        file_handler = logging.FileHandler(
-            filename="discord.log", encoding="utf-8", mode="w"
-        )
-        file_handler.setFormatter(
-            logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s")
-        )
-        logger.addHandler(file_handler)
-
-        # Console handler
+        # Console handler (optional for local debugging)
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(
             logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s")
         )
         logger.addHandler(console_handler)
+
+        # Syslog handler for Papertrail
+        papertrail_address = ('logs6.papertrailapp.com', papertrail_address_number)
+        syslog_handler = logging.handlers.SysLogHandler(address=papertrail_address)
+        syslog_handler.setFormatter(
+            logging.Formatter('%(asctime)s %(message)s', datefmt='%b %d %H:%M:%S')
+        )
+        logger.addHandler(syslog_handler)
 
         return logger
 
