@@ -15,7 +15,7 @@ class GuidePage(Page):
             inline=False,
         )
 
-        await interaction.response.send_message(embed=embed, view=self._create_view())
+        await interaction.response.edit_message(embed=embed, view=self._create_view())
 
     async def render_stats(self, interaction: discord.Interaction):
         embed = discord.Embed(title=f"Stats Guide", color=discord.Color.dark_orange())
@@ -92,7 +92,7 @@ class GuidePage(Page):
             inline=False,
         )
 
-        await interaction.response.send_message(embed=embed, view=self._create_view())
+        await interaction.response.edit_message(embed=embed, view=self._create_view())
 
     async def render_leaderboard(self, interaction: discord.Interaction):
         embed = discord.Embed(title=f"Stats Guide", color=discord.Color.dark_orange())
