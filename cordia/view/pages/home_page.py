@@ -145,6 +145,9 @@ class HomePage(Page):
         shop_button = Button(label="Shop", style=discord.ButtonStyle.blurple, row=1)
         shop_button.callback = self.shop_button_callback
 
+        guide_button = Button(label="Guide", style=discord.ButtonStyle.gray, row=2)
+        guide_button.callback = self.guide_button_callback
+
         # Add buttons to the view
         view.add_item(fight_button)
         view.add_item(fight_boss_button)
@@ -153,6 +156,7 @@ class HomePage(Page):
         view.add_item(inventory_button)
         view.add_item(shop_button)
         view.add_item(leaderboard_button)
+        view.add_item(guide_button)
 
         return view
 
@@ -213,3 +217,10 @@ class HomePage(Page):
 
         shop_page = ShopPage(self.cordia_service, self.discord_id)
         await shop_page.render(interaction)
+
+    @only_command_invoker()
+    async def guide_button_callback(self, interaction: discord.Interaction):
+        from cordia.view.pages.guide_page import GuidePage
+
+        guide_page = GuidePage(self.cordia_service, self.discord_id)
+        await guide_page.render(interaction)
