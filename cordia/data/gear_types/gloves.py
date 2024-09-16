@@ -43,7 +43,7 @@ glove_data = {
         gold_value=70,
     ),
     "royal_crystal_gloves": Gear(
-        name="Royal Crystal gloves",
+        name="Royal Crystal Gloves",
         type=GearType.GLOVES,
         level=70,
         intelligence=40,
