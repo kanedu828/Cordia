@@ -30,4 +30,8 @@ item_data = {
         name="Shadow Master Soul",
         description="Used to purchase and upgrade certain gear",
     ),
+    "royal_crystal_guard_soul": Item(
+        name="Royal Crystal Guard Soul",
+        description="Used to purchase and upgrade certain gear",
+    ),
 }

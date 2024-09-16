@@ -42,4 +42,12 @@ cape_data = {
         level=50,
         gold_value=50,
     ),
+    "crystal_weave_cape": Gear(
+        name="Crystal Weave Cape",
+        type=GearType.CAPE,
+        efficiency=25,
+        intelligence=25,
+        level=70,
+        gold_value=70,
+    )
 }

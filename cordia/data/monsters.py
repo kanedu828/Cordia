@@ -265,4 +265,30 @@ monster_data = {
             ("ice_crystal_chestplate", 0.02),
         ],
     ),
+    "crystal_reptile": Monster(
+        name="Crystal Reptile",
+        level=86,
+        hp=1100,
+        gold=350,
+        exp=870,
+        defense=15,
+        resistance=15,
+        gear_loot=[
+            ("crystal_boots", 0.02),
+            ("crystal_weave_gloves", 0.02),
+        ],
+    ),
+    "crystal_warrior": Monster(
+        name="Crystal Warrior",
+        level=90,
+        hp=1250,
+        gold=400,
+        exp=1000,
+        defense=35,
+        resistance=35,
+        gear_loot=[
+            ("crystal_weave_cape", 0.02),
+            ("crystal_helmet", 0.02),
+        ],
+    ),
 }

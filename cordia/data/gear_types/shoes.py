@@ -25,4 +25,12 @@ shoes_data = {
         efficiency=6,
         gold_value=50,
     ),
+    "crystal_boots": Gear(
+        name="Crystal Boots",
+        type=GearType.SHOES,
+        level=70,
+        efficiency=25,
+        strength=25,
+        gold_value=50,
+    ),
 }

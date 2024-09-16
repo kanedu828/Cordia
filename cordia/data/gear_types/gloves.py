@@ -30,8 +30,26 @@ glove_data = {
         name="Shadow Gloves",
         type=GearType.GLOVES,
         persistence=15,
-        efficiency=7,
+        luck=7,
         level=50,
         gold_value=50,
     ),
+    "crystal_weave_gloves": Gear(
+        name="Crystal Weave Gloves",
+        type=GearType.GLOVES,
+        intelligence=25,
+        efficiency=25,
+        level=70,
+        gold_value=70,
+    ),
+    "royal_crystal_gloves": Gear(
+        name="Royal Crystal gloves",
+        type=GearType.GLOVES,
+        level=70,
+        intelligence=40,
+        efficiency=40,
+        strength=40,
+        persistence=40,
+        gold_value=100,
+    )
 }

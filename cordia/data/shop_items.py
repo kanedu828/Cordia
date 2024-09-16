@@ -48,4 +48,14 @@ shop_item_data: dict[str, ShopItem] = {
         type=ShopItemType.GEAR,
         item_cost=("ice_queen_soul", 5),
     ),
+    "royal_crystal_helmet": ShopItem(
+        item_name="royal_crystal_helmet",
+        type=ShopItemType.GEAR,
+        item_cost=("royal_crystal_guard_soul", 5),
+    ),
+    "royal_crystal_gloves": ShopItem(
+        item_name="royal_crystal_gloves",
+        type=ShopItemType.GEAR,
+        item_cost=("royal_crystal_guard_soul", 5),
+    ),
 }

@@ -48,4 +48,22 @@ hat_data = {
         persistence=6,
         gold_value=50,
     ),
+    "crystal_helmet": Gear(
+        name="Crystal Helmet",
+        type=GearType.HAT,
+        level=70,
+        intelligence=25,
+        efficiency=25,
+        gold_value=70,
+    ),
+    "royal_crystal_helmet": Gear(
+        name="Royal Crystal Helmet",
+        type=GearType.HAT,
+        level=70,
+        intelligence=35,
+        efficiency=35,
+        strength=35,
+        persistence=35,
+        gold_value=100,
+    )
 }

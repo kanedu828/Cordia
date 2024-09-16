@@ -107,4 +107,22 @@ boss_data = {
         item_loot=[("ice_queen_soul", 0.3), ("ice_queen_soul", 0.3)],
         type=MonsterType.BOSS,
     ),
+    "royal_crystal_guard": Monster(
+        name="Royal Crystal Guard",
+        level=90,
+        hp=12500,
+        gold=1500,
+        exp=6000,
+        resistance=50,
+        defense=50,
+        gear_loot=[
+            ("crystal_soul_spear", 0.20),
+            ("crystal_boots", 0.30),
+            ("crystal_weave_gloves", 0.30),
+            ("crystal_weave_cape", 0.30),
+            ("crystal_helmet", 0.30),
+        ],
+        item_loot=[("royal_crystal_guard_soul", 0.3), ("royal_crystal_guard_soul", 0.3)],
+        type=MonsterType.BOSS,
+    ),
 }

@@ -61,4 +61,12 @@ location_data = {
             ("frost_elemental", 0.1),
         ],
     ),
+    "crystal_lake": Location(
+        name="Crystal Lake",
+        level_unlock=80,
+        monsters=[
+            ("crystal_warrior", 0.3),
+            ("crystal_reptile", 0.7),
+        ],
+    ),
 }

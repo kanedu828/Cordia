@@ -8,6 +8,7 @@ def get_stat_modifier(stat: str):
         "attack_cooldown": "s",
         "spell_cooldown": "s",
         "magic_penetration": "%",
+        "duration": "s"
     }
     return stat_type_mapping.get(stat, "")
 
@@ -35,5 +36,6 @@ def get_stat_emoji(stat: str):
         "magic_penetration": "🌠",
         "spell_strike_radius": "🎆",
         "scaling_stat": "📊",
+        "duration": "🕒"
     }
     return emoji_mapping.get(stat, "")

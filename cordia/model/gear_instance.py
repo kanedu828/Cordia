@@ -4,6 +4,7 @@ import math
 from cordia.data.gear import gear_data
 from cordia.data.items import item_data
 from cordia.model.gear import Gear
+from cordia.model.spells import SpellType
 from cordia.util.stat_mapping import get_stat_emoji, get_stat_modifier
 
 
@@ -155,6 +156,8 @@ class GearInstance:
 
     def get_spell_stats_string(self, split_spell_damage=False):
         wd = self.get_gear_data()
+        if wd.spell.spell_type == SpellType.BUFF and wd.spell.buff:
+            return wd.spell.get_spell_stats_string()
         split_text = f" ({wd.spell.damage} + {self.get_upgraded_stats()['spell_damage'] - wd.spell.damage})"
         spell_stats = {
             "spell_damage": f"{self.get_upgraded_stats()['spell_damage']}",
@@ -173,5 +176,5 @@ class GearInstance:
             f"{get_stat_emoji(stat)}{stat.replace('_', ' ').capitalize().ljust(max_stat_length_extra)} {value}{get_stat_modifier(stat)}"
             for stat, value in spell_stats.items()
         )
-
+        spell_stats_string = f"🔍{'Type'.ljust(max_stat_length_extra)} {wd.spell.spell_type.value.title()}\n" + spell_stats_string
         return f"```{spell_stats_string}```"
