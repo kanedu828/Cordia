@@ -471,7 +471,7 @@ weapon_data = {
         name="Crystal Soul Spear",
         type=GearType.WEAPON,
         level=70,
-        damage=20,
+        damage=60,
         efficiency=30,
         persistence=30,
         attack_cooldown=20,
@@ -485,7 +485,7 @@ weapon_data = {
             cast_text="The essence of the crystals flows into you spear. Your damage is greatly boosted.",
             buff=Buff(
                 stat_bonus=PlayerStats(
-                    damage=80
+                    damage=100
                 ),
                 duration=60
             )
