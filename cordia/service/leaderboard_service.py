@@ -1,3 +1,4 @@
+import pytz
 from cordia.dao.daily_leaderboard_dao import DailyLeaderboardDao
 from cordia.dao.player_dao import PlayerDao
 from cordia.model.daily_leaderboard import DailyLeaderboard
@@ -14,12 +15,14 @@ class LeaderboardService:
 
         self.bot = bot
 
+        est = pytz.timezone('America/New_York')
+        
         self.leaderboard_user_cache = {}
         self.scheduler = AsyncIOScheduler()
 
         # # Schedule the trophy awarding task to run 5 minutes before midnight every day
         self.scheduler.add_job(
-            self.award_trophies_to_top_players, "cron", hour=23, minute=55
+            self.award_trophies_to_top_players, "cron", hour=23, minute=55, timezone=est
         )
         self.scheduler.start()
 

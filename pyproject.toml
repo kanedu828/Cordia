@@ -10,6 +10,7 @@ sqlalchemy = {extras = ["asyncpg"], version = "^2.0.32"}
 alembic = "^1.13.2"
 psycopg2 = "^2.9.9"
 apscheduler = "^3.10.4"
+pytz = "^2024.2"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^7.1.1"

@@ -14,7 +14,7 @@ class DailyLeaderboardDao:
     ) -> DailyLeaderboard:
         query = """
         INSERT INTO daily_leaderboard (discord_id, exp, gold, monsters_killed, date)
-        VALUES ($1, $2, $3, $4, CURRENT_DATE)
+        VALUES ($1, $2, $3, $4, (CURRENT_DATE AT TIME ZONE 'EST')::date)
         ON CONFLICT (discord_id, date) DO UPDATE
         SET exp = daily_leaderboard.exp + EXCLUDED.exp,
             gold = daily_leaderboard.gold + EXCLUDED.gold,
@@ -33,14 +33,14 @@ class DailyLeaderboardDao:
         # Ensure the column is valid to prevent SQL injection
         if column not in self.VALID_COLUMNS:
             raise ValueError(
-                f"Invalid column for ranking: {column}. Must be one of {self.VALID_COLUMNS}"
+                f"Invalid column for ranking: {column}. Must be one of {self.VALID_COLUMNS}."
             )
 
         # Use the safe column and query for top players, with current date (CURRENT_DATE) as the date filter
         query = f"""
         SELECT discord_id, exp, gold, monsters_killed, date
         FROM daily_leaderboard
-        WHERE date = CURRENT_DATE
+        WHERE date = (CURRENT_DATE AT TIME ZONE 'EST')::date
         ORDER BY {column} DESC
         LIMIT 100
         """
@@ -54,15 +54,17 @@ class DailyLeaderboardDao:
         # Ensure the column is valid to prevent SQL injection
         if column not in self.VALID_COLUMNS:
             raise ValueError(
-                f"Invalid column for ranking: {column}. Must be one of {self.VALID_COLUMNS}"
+                f"Invalid column for ranking: {column}. Must be one of {self.VALID_COLUMNS}."
             )
 
         # Query to get the rank of the player based on the specified column
         query = f"""
         SELECT COUNT(*) + 1 AS rank
         FROM daily_leaderboard
-        WHERE date = CURRENT_DATE
-        AND {column} > (SELECT {column} FROM daily_leaderboard WHERE discord_id = $1 AND date = CURRENT_DATE)
+        WHERE date = (CURRENT_DATE AT TIME ZONE 'EST')::date
+        AND {column} > (SELECT {column} 
+                        FROM daily_leaderboard 
+                        WHERE discord_id = $1 AND date = (CURRENT_DATE AT TIME ZONE 'EST')::date)
         """
         async with self.pool.acquire() as connection:
             rank = await connection.fetchval(query, discord_id)
