@@ -9,12 +9,16 @@ class DailyLeaderboardDao:
     def __init__(self, pool: asyncpg.Pool):
         self.pool = pool
 
+    async def set_timezone(self, connection):
+        # Set timezone to 'America/New_York' to handle EST/EDT automatically
+        await connection.execute("SET TIMEZONE = 'America/New_York';")
+
     async def upsert_daily_leaderboard(
         self, discord_id: int, exp: int, gold: int, monsters_killed: int
     ) -> DailyLeaderboard:
         query = """
         INSERT INTO daily_leaderboard (discord_id, exp, gold, monsters_killed, date)
-        VALUES ($1, $2, $3, $4, (CURRENT_DATE AT TIME ZONE 'EST')::date)
+        VALUES ($1, $2, $3, $4, CURRENT_DATE)
         ON CONFLICT (discord_id, date) DO UPDATE
         SET exp = daily_leaderboard.exp + EXCLUDED.exp,
             gold = daily_leaderboard.gold + EXCLUDED.gold,
@@ -22,9 +26,8 @@ class DailyLeaderboardDao:
         RETURNING discord_id, exp, gold, monsters_killed, date
         """
         async with self.pool.acquire() as connection:
-            record = await connection.fetchrow(
-                query, discord_id, exp, gold, monsters_killed
-            )
+            await self.set_timezone(connection)
+            record = await connection.fetchrow(query, discord_id, exp, gold, monsters_killed)
             return DailyLeaderboard(**record)
 
     async def get_top_100_daily_players_by_column(
@@ -40,11 +43,12 @@ class DailyLeaderboardDao:
         query = f"""
         SELECT discord_id, exp, gold, monsters_killed, date
         FROM daily_leaderboard
-        WHERE date = (CURRENT_DATE AT TIME ZONE 'EST')::date
+        WHERE date = CURRENT_DATE
         ORDER BY {column} DESC
         LIMIT 100
         """
         async with self.pool.acquire() as connection:
+            await self.set_timezone(connection)
             records = await connection.fetch(query)
             return [DailyLeaderboard(**record) for record in records]
 
@@ -61,12 +65,13 @@ class DailyLeaderboardDao:
         query = f"""
         SELECT COUNT(*) + 1 AS rank
         FROM daily_leaderboard
-        WHERE date = (CURRENT_DATE AT TIME ZONE 'EST')::date
+        WHERE date = CURRENT_DATE
         AND {column} > (SELECT {column} 
                         FROM daily_leaderboard 
-                        WHERE discord_id = $1 AND date = (CURRENT_DATE AT TIME ZONE 'EST')::date)
+                        WHERE discord_id = $1 AND date = CURRENT_DATE)
         """
         async with self.pool.acquire() as connection:
+            await self.set_timezone(connection)
             rank = await connection.fetchval(query, discord_id)
             if rank is None:
                 raise ValueError(
@@ -80,6 +85,7 @@ class DailyLeaderboardDao:
         WHERE date < $1
         """
         async with self.pool.acquire() as connection:
+            await self.set_timezone(connection)
             await connection.execute(query, cutoff_date)
 
     async def reset_leaderboard_for_date(self, leaderboard_date: date):
@@ -88,4 +94,5 @@ class DailyLeaderboardDao:
         WHERE date = $1
         """
         async with self.pool.acquire() as connection:
+            await self.set_timezone(connection)
             await connection.execute(query, leaderboard_date)
