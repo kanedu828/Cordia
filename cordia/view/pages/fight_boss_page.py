@@ -14,14 +14,17 @@ import discord
 
 
 class FightBossPage(Page):
+
+    BOSS_COOLDOWN_HOURS = 6
+
     async def render(self, interaction: discord.Interaction):
         bi = await self.cordia_service.get_boss_by_discord_id(self.discord_id)
         player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
         current_time = datetime.now(timezone.utc)
-        boss_cd_expiration = player.last_boss_killed + timedelta(hours=8)
+        boss_cd_expiration = player.last_boss_killed + timedelta(hours=FightBossPage.BOSS_COOLDOWN_HOURS)
         if boss_cd_expiration > current_time:
             discord_time = discord.utils.format_dt(
-                player.last_boss_killed + timedelta(hours=8),
+                player.last_boss_killed + timedelta(hours=FightBossPage.BOSS_COOLDOWN_HOURS),
                 style="R",
             )
             embed = discord.Embed(
@@ -99,7 +102,7 @@ class FightBossPage(Page):
                 "You will have 1 hour to defeat a boss. "
                 "You will not be able to fight monsters while a boss fight is active. "
                 "If you leave the fight early, you will forfeit any rewards. "
-                "You may only fight a boss every 8 hours. "
+                "You may only fight a boss every 6 hours. "
                 "Select a boss to get started! (First boss is unlocked at level 15.)"
             ),
         )
