@@ -291,4 +291,15 @@ monster_data = {
             ("crystal_helmet", 0.02),
         ],
     ),
+    "volcanic_salamander": Monster(
+        name="Volcanic Salamander",
+        level=95,
+        hp=1400,
+        gold=420,
+        exp=1100,
+        defense=20,
+        item_loot=[
+            ("volcanic_salamander_tail", 0.05),
+        ],
+    ),
 }

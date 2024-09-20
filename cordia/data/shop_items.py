@@ -58,4 +58,16 @@ shop_item_data: dict[str, ShopItem] = {
         type=ShopItemType.GEAR,
         item_cost=("royal_crystal_guard_soul", 5),
     ),
+    "volcanic_top": ShopItem(
+        item_name="volcanic_top",
+        type=ShopItemType.GEAR,
+        item_cost=("volcanic_salamander_tail", 5),
+        gold_cost=20000
+    ),
+    "volcanic_pants": ShopItem(
+        item_name="volcanic_pants",
+        type=ShopItemType.GEAR,
+        item_cost=("volcanic_salamander_tail", 5),
+        gold_cost=20000
+    )
 }

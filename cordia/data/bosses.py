@@ -124,5 +124,5 @@ boss_data = {
         ],
         item_loot=[("royal_crystal_guard_soul", 1.0), ("royal_crystal_guard_soul", 0.3), ("royal_crystal_guard_soul", 0.3)],
         type=MonsterType.BOSS,
-    ),
+    )
 }

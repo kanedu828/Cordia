@@ -34,4 +34,8 @@ item_data = {
         name="Royal Crystal Guard Soul",
         description="Used to purchase and upgrade certain gear",
     ),
+    "volcanic_salamander_tail": Item(
+        name="Volcanic Salamander Tail",
+        description="Used to purchase and upgrade certain gear"
+    )
 }

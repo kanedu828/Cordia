@@ -41,10 +41,12 @@ class ShopPage(Page):
         for i in items_on_page:
             si = shop_item_data[i]
             cost_text = "Cost: "
+            cost_arr = []
             if si.gold_cost:
-                cost_text += f"{display_gold(si.gold_cost)}\n"
+                cost_arr.append(f"{display_gold(si.gold_cost)}")
             if si.item_cost:
-                cost_text += f"{si.display_item_cost()}"
+                cost_arr.append(f"{si.display_item_cost()}")
+            cost_text += ", ".join(cost_arr)
             embed.add_field(
                 name=si.get_item_data().display_item(), value=cost_text, inline=False
             )

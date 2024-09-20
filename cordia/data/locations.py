@@ -69,4 +69,11 @@ location_data = {
             ("crystal_reptile", 0.7),
         ],
     ),
+    "volcanic_wasteland": Location(
+        name="Volcanic Wasteland",
+        level_unlock=90,
+        monsters=[
+            ("volcanic_salamander", 1.0),
+        ],
+    )
 }

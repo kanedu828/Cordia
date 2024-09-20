@@ -61,10 +61,10 @@ hat_data = {
         name="Royal Crystal Helmet",
         type=GearType.HAT,
         level=70,
-        intelligence=40,
-        efficiency=40,
-        strength=40,
-        persistence=40,
+        intelligence=20,
+        efficiency=20,
+        strength=50,
+        persistence=20,
         gold_value=100,
     )
 }

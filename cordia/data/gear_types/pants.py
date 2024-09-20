@@ -52,4 +52,12 @@ pants_data = {
         gear_set="shadow_master",
         upgrade_item="shadow_master_soul",
     ),
+    "volcanic_pants": Gear(
+        name="Volcanic Pants",
+        type=GearType.PANTS,
+        level=80,
+        gold_value=100,
+        strength=90,
+        upgrade_item="volcanic_salamander_tail",
+    ),
 }
