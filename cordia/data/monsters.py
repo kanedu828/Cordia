@@ -179,9 +179,9 @@ monster_data = {
     "cave_stalker": Monster(
         name="Cave Stalker",
         level=63,
-        hp=550,
-        gold=210,
-        exp=520,
+        hp=190,
+        gold=85,
+        exp=180,
         defense=10,
         resistance=10,
         gear_loot=[
@@ -194,9 +194,9 @@ monster_data = {
     "cave_phantom": Monster(
         name="Cave Phantom",
         level=67,
-        hp=520,
-        gold=170,
-        exp=500,
+        hp=180,
+        gold=70,
+        exp=170,
         resistance=40,
         gear_loot=[
             ("shadow_cloak", 0.025),
@@ -209,9 +209,9 @@ monster_data = {
     "shadewalker": Monster(
         name="Shadewalker",
         level=74,
-        hp=850,
-        gold=360,
-        exp=740,
+        hp=250,
+        gold=120,
+        exp=225,
         defense=15,
         resistance=50,
         gear_loot=[
@@ -224,9 +224,9 @@ monster_data = {
     "snowstalker_wolf": Monster(
         name="Snowstalker Wolf",
         level=75,
-        hp=650,
-        gold=240,
-        exp=500,
+        hp=230,
+        gold=110,
+        exp=220,
         defense=15,
         gear_loot=[
             ("frostblade_dagger", 0.025),
@@ -239,9 +239,9 @@ monster_data = {
     "glacial_wraith": Monster(
         name="Glacial Wraith",
         level=78,
-        hp=580,
-        gold=210,
-        exp=500,
+        hp=260,
+        gold=120,
+        exp=240,
         resistance=30,
         gear_loot=[
             ("ice_shard_staff", 0.025),
@@ -254,9 +254,9 @@ monster_data = {
     "frost_elemental": Monster(
         name="Frost Elemental",
         level=85,
-        hp=800,
-        gold=300,
-        exp=720,
+        hp=300,
+        gold=140,
+        exp=275,
         defense=50,
         gear_loot=[
             ("frozen_spell_blade", 0.02),
@@ -268,9 +268,9 @@ monster_data = {
     "crystal_reptile": Monster(
         name="Crystal Reptile",
         level=86,
-        hp=1100,
-        gold=350,
-        exp=870,
+        hp=370,
+        gold=130,
+        exp=340,
         defense=15,
         resistance=15,
         gear_loot=[
@@ -281,9 +281,9 @@ monster_data = {
     "crystal_warrior": Monster(
         name="Crystal Warrior",
         level=90,
-        hp=1250,
-        gold=400,
-        exp=1000,
+        hp=450,
+        gold=200,
+        exp=420,
         defense=35,
         resistance=35,
         gear_loot=[
@@ -294,9 +294,9 @@ monster_data = {
     "volcanic_salamander": Monster(
         name="Volcanic Salamander",
         level=95,
-        hp=1400,
-        gold=420,
-        exp=1100,
+        hp=550,
+        gold=240,
+        exp=500,
         defense=20,
         item_loot=[
             ("volcanic_salamander_tail", 0.05),
