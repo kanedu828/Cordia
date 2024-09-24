@@ -4,6 +4,7 @@ from cordia.model.player import Player
 from cordia.util.decorators import only_command_invoker
 from cordia.util.exp_util import exp_to_level
 from cordia.util.gear_util import get_weapon_from_player_gear
+from cordia.util.interaction_util import edit_message_with_done
 from cordia.util.stats_util import get_rebirth_points, get_upgrade_points
 from cordia.util.text_format_util import (
     display_gold,
@@ -56,16 +57,7 @@ class StatsPage(Page):
 
         stats_embed = self._create_embed(player, player_gear)
 
-        # Check if the interaction has already been responded to
-        if interaction.response.is_done():
-            # If the interaction has been responded to, use followup to edit the message
-            message = await interaction.original_response()
-            await interaction.followup.edit_message(
-                message_id=message.id, embed=stats_embed, view=view
-            )
-        else:
-            # Otherwise, respond to the interaction by editing the message
-            await interaction.response.edit_message(embed=stats_embed, view=view)
+        await edit_message_with_done(interaction, stats_embed, view)
 
     def _create_view(self):
         view = View(timeout=None)

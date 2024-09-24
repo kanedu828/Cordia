@@ -4,7 +4,9 @@ from cordia.model.boos_fight_result import BossFightResult
 from cordia.util.decorators import only_command_invoker
 from cordia.util.exp_util import exp_to_level
 from cordia.util.gear_util import get_weapon_from_player_gear
+from cordia.util.interaction_util import edit_message_with_done
 from cordia.util.text_format_util import display_exp, display_gold, hp_bar
+from cordia.view.confirmation_modal import ConfirmationModal
 from cordia.view.embeds.level_up_embed import get_level_up_embed
 from cordia.view.pages.page import Page
 from cordia.data.bosses import boss_data
@@ -107,9 +109,7 @@ class FightBossPage(Page):
             ),
         )
 
-        await interaction.response.edit_message(
-            embed=embed, view=await self._create_boss_select_view()
-        )
+        await edit_message_with_done(interaction, embed, await self._create_boss_select_view())
 
     @only_command_invoker()
     async def cast_spell(self, interaction: discord.Interaction):
@@ -351,5 +351,11 @@ class FightBossPage(Page):
 
     @only_command_invoker()
     async def forfeit_boss_fight_callback(self, interaction: discord.Interaction):
-        await self.cordia_service.delete_boss(self.discord_id)
-        await self.render(interaction)
+        async def confirmation_callback():
+            await self.cordia_service.delete_boss(self.discord_id)
+            await self.render(interaction)
+        modal = ConfirmationModal(
+            f"You have forfeited the boss fight.",
+            confirmation_callback,
+        )
+        await interaction.response.send_modal(modal)
