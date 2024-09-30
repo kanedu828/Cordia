@@ -14,32 +14,10 @@ class LeaderboardPage(Page):
         self.top_100_players = []  # This will be populated when render is called
         self.type = "exp"
 
-    async def render(self, interaction: discord.Interaction):
-        # Fetch top 100 players and player rank
-        self.top_100_players = await self.cordia_service.get_top_100_players_by_column(
-            self.type
-        )
-        player_rank = await self.cordia_service.get_player_rank_by_column(
-            self.discord_id, self.type
-        )
-
-        # Create embed to show players on the current page
-        embed = await self._create_leaderboard_embed(player_rank)
-
-        # Create view with navigation buttons
-        view = self._create_view()
-
-        await interaction.response.edit_message(embed=embed, view=view)
-
-    async def render_daily_leaderboard(self, interaction: discord.Interaction):
-        # Fetch top 100 players and player rank
-        self.top_100_players = (
-            await self.cordia_service.get_top_100_daily_players_by_column(self.type)
-        )
+    async def render_leaderboard(self, interaction: discord.Interaction):
         player_rank = await self.cordia_service.get_player_daily_rank_by_column(
             self.discord_id, self.type
         )
-
         # Create embed to show players on the current page
         embed = await self._create_leaderboard_embed(player_rank, True)
 
@@ -47,6 +25,22 @@ class LeaderboardPage(Page):
         view = self._create_view(daily=True)
 
         await interaction.response.edit_message(embed=embed, view=view)
+
+    async def render(self, interaction: discord.Interaction):
+        # Fetch top 100 players and player rank
+        self.top_100_players = await self.cordia_service.get_top_100_players_by_column(
+            self.type
+        )
+
+        await self.render_leaderboard(interaction)
+
+    async def render_daily_leaderboard(self, interaction: discord.Interaction):
+        # Fetch top 100 players and player rank
+        self.top_100_players = (
+            await self.cordia_service.get_top_100_daily_players_by_column(self.type)
+        )
+
+        await self.render_leaderboard(interaction)
 
     def _create_view(self, daily: bool = False):
         view = View(timeout=None)
@@ -170,13 +164,13 @@ class LeaderboardPage(Page):
     async def previous_page_callback(self, interaction: discord.Interaction):
         # Decrease the page number and re-render the page
         self.page_number -= 1
-        await self.render(interaction)
+        await self.render_leaderboard(interaction)
 
     @only_command_invoker()
     async def next_page_callback(self, interaction: discord.Interaction):
         # Increase the page number and re-render the page
         self.page_number += 1
-        await self.render(interaction)
+        await self.render_leaderboard(interaction)
 
     @only_command_invoker()
     async def leaderboard_type_select_callback(self, interaction: discord.Interaction):
