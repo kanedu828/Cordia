@@ -13,19 +13,20 @@ class LeaderboardPage(Page):
         self.players_per_page = 10  # Define how many players per page
         self.top_100_players = []  # This will be populated when render is called
         self.type = "exp"
+        self.daily = False
 
-    async def render_leaderboard(self, interaction: discord.Interaction, daily: bool):
-        if daily:
+    async def render_leaderboard(self, interaction: discord.Interaction):
+        if self.daily:
             player_rank = await self.cordia_service.get_player_daily_rank_by_column(
                 self.discord_id, self.type
             )
         else:
             player_rank = await self.cordia_service.get_player_rank_by_column(self.discord_id, self.type)
         # Create embed to show players on the current page
-        embed = await self._create_leaderboard_embed(player_rank, daily)
+        embed = await self._create_leaderboard_embed(player_rank)
 
         # Create view with navigation buttons
-        view = self._create_view(daily)
+        view = self._create_view()
 
         await interaction.response.edit_message(embed=embed, view=view)
 
@@ -34,18 +35,18 @@ class LeaderboardPage(Page):
         self.top_100_players = await self.cordia_service.get_top_100_players_by_column(
             self.type
         )
-
-        await self.render_leaderboard(interaction, daily=False)
+        self.daily = False
+        await self.render_leaderboard(interaction)
 
     async def render_daily_leaderboard(self, interaction: discord.Interaction):
         # Fetch top 100 players and player rank
         self.top_100_players = (
             await self.cordia_service.get_top_100_daily_players_by_column(self.type)
         )
+        self.daily = True
+        await self.render_leaderboard(interaction)
 
-        await self.render_leaderboard(interaction, daily=True)
-
-    def _create_view(self, daily: bool = False):
+    def _create_view(self):
         view = View(timeout=None)
 
         leaderboard_select_options = [
@@ -55,7 +56,7 @@ class LeaderboardPage(Page):
             discord.SelectOption(label="Trophies", value="trophies"),
         ]
 
-        if daily:
+        if self.daily:
             leaderboard_select_options = [
                 discord.SelectOption(label="Exp", value="exp"),
                 discord.SelectOption(label="Monsters Killed", value="monsters_killed"),
@@ -71,7 +72,7 @@ class LeaderboardPage(Page):
         )
         leaderboard_type_select.callback = (
             self.daily_leaderboard_type_select_callback
-            if daily
+            if self.daily
             else self.leaderboard_type_select_callback
         )
         view.add_item(leaderboard_type_select)
@@ -109,9 +110,9 @@ class LeaderboardPage(Page):
 
         return view
 
-    async def _create_leaderboard_embed(self, player_rank, daily=False):
+    async def _create_leaderboard_embed(self, player_rank):
         embed = discord.Embed(
-            title=f"{'Daily ' if daily else ''}Leaderboard",
+            title=f"{'Daily ' if self.daily else ''}Leaderboard",
             description=f"Top 100 Players by {self.type.replace('_', ' ').title()}",
             color=discord.Color.blue(),
         )
