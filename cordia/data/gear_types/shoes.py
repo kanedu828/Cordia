@@ -34,4 +34,12 @@ shoes_data = {
         strength=35,
         gold_value=50,
     ),
+    "souless_boots": Gear(
+        name="Souless Boots",
+        type=GearType.SHOES,
+        level=90,
+        persistence=30,
+        strength=60,
+        gold_value=50,
+    ),
 }

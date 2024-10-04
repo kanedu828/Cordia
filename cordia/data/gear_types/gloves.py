@@ -52,5 +52,5 @@ glove_data = {
         strength=30,
         persistence=30,
         gold_value=100,
-    )
+    ),
 }

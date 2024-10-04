@@ -30,7 +30,7 @@ ring_data = {
         level=50,
         gold_value=50,
         intelligence=20,
-        luck=5
+        luck=5,
     ),
     "ice_queen_ring": Gear(
         name="Ice Queen Ring",

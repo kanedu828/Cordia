@@ -66,5 +66,5 @@ hat_data = {
         strength=50,
         persistence=20,
         gold_value=100,
-    )
+    ),
 }

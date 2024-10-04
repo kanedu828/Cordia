@@ -27,7 +27,9 @@ class DailyLeaderboardDao:
         """
         async with self.pool.acquire() as connection:
             await self.set_timezone(connection)
-            record = await connection.fetchrow(query, discord_id, exp, gold, monsters_killed)
+            record = await connection.fetchrow(
+                query, discord_id, exp, gold, monsters_killed
+            )
             return DailyLeaderboard(**record)
 
     async def get_top_100_daily_players_by_column(

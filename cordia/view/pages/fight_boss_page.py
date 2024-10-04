@@ -23,10 +23,13 @@ class FightBossPage(Page):
         bi = await self.cordia_service.get_boss_by_discord_id(self.discord_id)
         player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
         current_time = datetime.now(timezone.utc)
-        boss_cd_expiration = player.last_boss_killed + timedelta(hours=FightBossPage.BOSS_COOLDOWN_HOURS)
+        boss_cd_expiration = player.last_boss_killed + timedelta(
+            hours=FightBossPage.BOSS_COOLDOWN_HOURS
+        )
         if boss_cd_expiration > current_time:
             discord_time = discord.utils.format_dt(
-                player.last_boss_killed + timedelta(hours=FightBossPage.BOSS_COOLDOWN_HOURS),
+                player.last_boss_killed
+                + timedelta(hours=FightBossPage.BOSS_COOLDOWN_HOURS),
                 style="R",
             )
             embed = discord.Embed(
@@ -109,7 +112,9 @@ class FightBossPage(Page):
             ),
         )
 
-        await edit_message_with_done(interaction, embed, await self._create_boss_select_view())
+        await edit_message_with_done(
+            interaction, embed, await self._create_boss_select_view()
+        )
 
     @only_command_invoker()
     async def cast_spell(self, interaction: discord.Interaction):
@@ -354,6 +359,7 @@ class FightBossPage(Page):
         async def confirmation_callback():
             await self.cordia_service.delete_boss(self.discord_id)
             await self.render(interaction)
+
         modal = ConfirmationModal(
             f"You have forfeited the boss fight.",
             confirmation_callback,

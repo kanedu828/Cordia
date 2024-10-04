@@ -86,7 +86,11 @@ boss_data = {
             ("shadow_pendant", 0.30),
             ("shadow_hunter_bow", 0.20),
         ],
-        item_loot=[("shadow_master_soul", 1.0), ("shadow_master_soul", 0.3), ("shadow_master_soul", 0.3)],
+        item_loot=[
+            ("shadow_master_soul", 1.0),
+            ("shadow_master_soul", 0.3),
+            ("shadow_master_soul", 0.3),
+        ],
         type=MonsterType.BOSS,
     ),
     "ice_queen": Monster(
@@ -104,7 +108,11 @@ boss_data = {
             ("frost_gloves", 0.30),
             ("frost_veil_cloak", 0.30),
         ],
-        item_loot=[("ice_queen_soul", 1.0), ("ice_queen_soul", 0.3), ("ice_queen_soul", 0.3)],
+        item_loot=[
+            ("ice_queen_soul", 1.0),
+            ("ice_queen_soul", 0.3),
+            ("ice_queen_soul", 0.3),
+        ],
         type=MonsterType.BOSS,
     ),
     "royal_crystal_guard": Monster(
@@ -122,7 +130,31 @@ boss_data = {
             ("crystal_weave_cape", 0.30),
             ("crystal_helmet", 0.30),
         ],
-        item_loot=[("royal_crystal_guard_soul", 1.0), ("royal_crystal_guard_soul", 0.3), ("royal_crystal_guard_soul", 0.3)],
+        item_loot=[
+            ("royal_crystal_guard_soul", 1.0),
+            ("royal_crystal_guard_soul", 0.3),
+            ("royal_crystal_guard_soul", 0.3),
+        ],
         type=MonsterType.BOSS,
-    )
+    ),
+    "soul_stealer": Monster(
+        name="Soul Stealer",
+        level=130,
+        hp=35000,
+        gold=1500,
+        exp=6000,
+        resistance=80,
+        defense=60,
+        gear_loot=[
+            ("souless_cape", 0.10),
+            ("souless_boots", 0.10),
+            ("soul_crusher_blade", 0.05),
+        ],
+        item_loot=[
+            ("soul_stealer_soul", 1.0),
+            ("soul_stealer_soul", 0.3),
+            ("soul_stealer_soul", 0.3),
+        ],
+        type=MonsterType.BOSS,
+    ),
 }

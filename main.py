@@ -16,9 +16,13 @@ token = os.getenv("CORDIA_TOKEN")
 psql_connection_string = os.getenv("CORDIA_DB_CONNECTION_STRING")
 papertrail_address_number = os.getenv("CORDIA_PAPER_TRAIL_ADDRESS")
 
+
 async def start():
     client = CordiaClient(
-        psql_connection_string, int(papertrail_address_number), intents=intents, command_prefix=commands.when_mentioned
+        psql_connection_string,
+        int(papertrail_address_number),
+        intents=intents,
+        command_prefix=commands.when_mentioned,
     )
     await client.start(token)
 

@@ -15,8 +15,8 @@ class LeaderboardService:
 
         self.bot = bot
 
-        est = pytz.timezone('America/New_York')
-        
+        est = pytz.timezone("America/New_York")
+
         self.leaderboard_user_cache = {}
         self.scheduler = AsyncIOScheduler()
 

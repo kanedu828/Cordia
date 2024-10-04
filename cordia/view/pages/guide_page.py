@@ -114,7 +114,9 @@ class GuidePage(Page):
         await interaction.response.edit_message(embed=embed, view=self._create_view())
 
     async def render_upgrade(self, interaction: discord.Interaction):
-        embed = discord.Embed(title=f"Upgrading Gear Guide", color=discord.Color.dark_orange())
+        embed = discord.Embed(
+            title=f"Upgrading Gear Guide", color=discord.Color.dark_orange()
+        )
         image_path = "https://kanedu828.github.io/cordia-assets/assets/guide_page.png"
         embed.set_image(url=image_path)
         cores_text = (

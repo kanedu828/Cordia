@@ -302,4 +302,27 @@ monster_data = {
             ("volcanic_salamander_tail", 0.05),
         ],
     ),
+    "souless_scorpion": Monster(
+        name="Souless Scorpion",
+        level=115,
+        hp=680,
+        gold=300,
+        exp=650,
+        defense=20,
+        item_loot=[
+            ("souless_boots", 0.01),
+        ],
+    ),
+    "souless_wanderer": Monster(
+        name="Souless Wanderer",
+        level=120,
+        hp=790,
+        gold=350,
+        exp=740,
+        defense=20,
+        resistance=10,
+        gear_loot=[
+            ("souless_cape", 0.01),
+        ],
+    ),
 }

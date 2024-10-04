@@ -44,7 +44,10 @@ class Spell:
             spell_stats = [
                 "spell_cooldown",
             ]
-            max_stat_length_extra = max(len(stat) for stat in spell_stats + list(self.buff.stat_bonus.__dict__.keys()))
+            max_stat_length_extra = max(
+                len(stat)
+                for stat in spell_stats + list(self.buff.stat_bonus.__dict__.keys())
+            )
             for s, v in self.buff.stat_bonus.__dict__.items():
                 if not v:
                     continue
@@ -54,5 +57,8 @@ class Spell:
         for s in spell_stats:
             if self.__dict__[s]:
                 spell_stats_string += f"\n{get_stat_emoji(s)}{s.replace('_', ' ').capitalize().ljust(max_stat_length_extra)} {self.__dict__[s]}{get_stat_modifier(s)}"
-        spell_stats_string = f"\n🔍{'Type'.ljust(max_stat_length_extra)} {self.spell_type.value.title()}" + spell_stats_string
+        spell_stats_string = (
+            f"\n🔍{'Type'.ljust(max_stat_length_extra)} {self.spell_type.value.title()}"
+            + spell_stats_string
+        )
         return f"```{spell_stats_string}```"

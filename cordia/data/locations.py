@@ -75,5 +75,10 @@ location_data = {
         monsters=[
             ("volcanic_salamander", 1.0),
         ],
-    )
+    ),
+    "desolate_plains": Location(
+        name="Desolate Plains",
+        level_unlock=100,
+        monsters=[("souless_wanderer", 0.4), ("souless_scorpion", 0.6)],
+    ),
 }

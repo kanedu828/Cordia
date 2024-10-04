@@ -36,6 +36,10 @@ item_data = {
     ),
     "volcanic_salamander_tail": Item(
         name="Volcanic Salamander Tail",
-        description="Used to purchase and upgrade certain gear"
-    )
+        description="Used to purchase and upgrade certain gear",
+    ),
+    "soul_stealer_soul": Item(
+        name="Soul Stealer Soul",
+        description="Used to purchase and upgrade certain gear",
+    ),
 }

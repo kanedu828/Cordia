@@ -45,4 +45,17 @@ pendant_data = {
         gear_set="ice_queen",
         upgrade_item="ice_queen_soul",
     ),
+    "soul_stealer_pendant": Gear(
+        name="Soul Stealer Pendant",
+        type=GearType.PENDANT,
+        level=100,
+        gold_value=100,
+        persistence=40,
+        strength=40,
+        intelligence=40,
+        boss_damage=10,
+        crit_chance=10,
+        damage=10,
+        upgrade_item="soul_stealer_soul",
+    ),
 }

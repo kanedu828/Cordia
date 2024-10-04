@@ -26,12 +26,17 @@ class CordiaClient(commands.Bot):
     # Extensions
     extensions: List[str] = ["cordia.cogs.util", "cordia.cogs.cordia"]
 
-    def __init__(self, db_connection_string: str, papertrail_address_number:int = 0, *args, **kwargs):
+    def __init__(
+        self,
+        db_connection_string: str,
+        papertrail_address_number: int = 0,
+        *args,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
         self.pool: asyncpg.Pool = None
         self.db_connection_string: str = db_connection_string
         self.logger = self.setup_logger(papertrail_address_number)
-        
 
     def setup_logger(self, papertrail_address_number: int) -> logging.Logger:
         logger = logging.getLogger("discord")
@@ -45,10 +50,10 @@ class CordiaClient(commands.Bot):
         logger.addHandler(console_handler)
 
         # Syslog handler for Papertrail
-        papertrail_address = ('logs6.papertrailapp.com', papertrail_address_number)
+        papertrail_address = ("logs6.papertrailapp.com", papertrail_address_number)
         syslog_handler = logging.handlers.SysLogHandler(address=papertrail_address)
         syslog_handler.setFormatter(
-            logging.Formatter('%(asctime)s %(message)s', datefmt='%b %d %H:%M:%S')
+            logging.Formatter("%(asctime)s %(message)s", datefmt="%b %d %H:%M:%S")
         )
         logger.addHandler(syslog_handler)
 

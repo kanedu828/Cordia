@@ -49,5 +49,15 @@ cape_data = {
         intelligence=30,
         level=70,
         gold_value=70,
-    )
+    ),
+    "souless_cape": Gear(
+        name="Souless Cape",
+        type=GearType.CAPE,
+        efficiency=10,
+        luck=10,
+        persistence=10,
+        strength=25,
+        level=90,
+        gold_value=70,
+    ),
 }

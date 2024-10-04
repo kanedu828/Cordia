@@ -100,7 +100,9 @@ class StatsPage(Page):
         spell = weapon.get_gear_data().spell
         if spell:
             embed.add_field(
-                name="Spell Stats", value=weapon.get_spell_stats_string(False), inline=False
+                name="Spell Stats",
+                value=weapon.get_spell_stats_string(False),
+                inline=False,
             )
 
         embed.add_field(name="Gold", value=display_gold(player.gold), inline=False)

@@ -62,12 +62,30 @@ shop_item_data: dict[str, ShopItem] = {
         item_name="volcanic_top",
         type=ShopItemType.GEAR,
         item_cost=("volcanic_salamander_tail", 5),
-        gold_cost=20000
+        gold_cost=20000,
     ),
     "volcanic_pants": ShopItem(
         item_name="volcanic_pants",
         type=ShopItemType.GEAR,
         item_cost=("volcanic_salamander_tail", 5),
-        gold_cost=20000
-    )
+        gold_cost=20000,
+    ),
+    "soul_stealer_katana": ShopItem(
+        item_name="soul_stealer_katana",
+        type=ShopItemType.GEAR,
+        item_cost=("soul_stealer_soul", 5),
+        gold_cost=50000,
+    ),
+    "soul_stealer_scepter": ShopItem(
+        item_name="soul_stealer_scepter",
+        type=ShopItemType.GEAR,
+        item_cost=("soul_stealer_soul", 5),
+        gold_cost=50000,
+    ),
+    "soul_stealer_pendant": ShopItem(
+        item_name="soul_stealer_pendant",
+        type=ShopItemType.GEAR,
+        item_cost=("soul_stealer_soul", 5),
+        gold_cost=50000,
+    ),
 }

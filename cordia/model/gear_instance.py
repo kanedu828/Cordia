@@ -24,7 +24,9 @@ class GearInstance:
         gd = self.get_gear_data()
         base_cost = gd.level * 100
         gold_cost = int(base_cost + (self.stars * base_cost / 4))
-        upgrade_item_cost = max(math.floor((self.stars - 10) / 5), -1) + 1
+        upgrade_item_cost = (
+            (max(math.floor((self.stars - 10) / 5), -1) + 1) * gd.level % 25
+        )
         cost = {"gold": gold_cost, "item": (gd.upgrade_item, upgrade_item_cost)}
 
         return cost
@@ -176,5 +178,8 @@ class GearInstance:
             f"{get_stat_emoji(stat)}{stat.replace('_', ' ').capitalize().ljust(max_stat_length_extra)} {value}{get_stat_modifier(stat)}"
             for stat, value in spell_stats.items()
         )
-        spell_stats_string = f"🔍{'Type'.ljust(max_stat_length_extra)} {wd.spell.spell_type.value.title()}\n" + spell_stats_string
+        spell_stats_string = (
+            f"🔍{'Type'.ljust(max_stat_length_extra)} {wd.spell.spell_type.value.title()}\n"
+            + spell_stats_string
+        )
         return f"```{spell_stats_string}```"

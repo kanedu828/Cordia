@@ -21,7 +21,9 @@ class LeaderboardPage(Page):
                 self.discord_id, self.type
             )
         else:
-            player_rank = await self.cordia_service.get_player_rank_by_column(self.discord_id, self.type)
+            player_rank = await self.cordia_service.get_player_rank_by_column(
+                self.discord_id, self.type
+            )
         # Create embed to show players on the current page
         embed = await self._create_leaderboard_embed(player_rank)
 
