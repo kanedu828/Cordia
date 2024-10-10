@@ -11,7 +11,8 @@ class GuidePage(Page):
         embed.set_image(url=image_path)
         guide_text = (
             "Naviage the different pages to learn more about the game. If you need more help, feel free to reach out on Discord! "
-            "\nView our wiki for further information: https://github.com/kanedu828/Cordia-Wiki"
+            "\nView our wiki for further information: https://github.com/kanedu828/Cordia-Wiki "
+            "\nVisit the official discord server as well: https://discord.gg/dt9ntuD2nc"
         )
         embed.add_field(
             name="Guide Menu",
@@ -121,8 +122,8 @@ class GuidePage(Page):
         embed.set_image(url=image_path)
         cores_text = (
             "Stars increase that stats of your gear. For every star, the cost the upgrade your gear increases. "
-            "Every 5 stars, the stats gained from each star also increases. After you reach 10 stars, you will need fragments"
-            " to continue upgrading your gear. Fragments can be found from monsters and bosses."
+            "Every 5 stars, the stats gained from each star also increases. After you reach 10 stars, you will need shards"
+            " to continue upgrading your gear. Shards can be found from monsters and bosses."
         )
         embed.add_field(
             name="Stars",
