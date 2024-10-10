@@ -28,10 +28,16 @@ class LootService:
     ) -> Tuple[int, int, List[GearInstance], int, Tuple[Item, int]]:
         # Calculate EXP and gold
         exp_gained = random_within_range(
-            int(get_diminished_stat(monster.exp, player_stats.efficiency, 0.6) * kills)
+            int(
+                monster.exp
+                + get_diminished_stat(monster.exp, player_stats.efficiency, 0.6) * kills
+            )
         )
         gold_gained = random_within_range(
-            int(get_diminished_stat(monster.gold, player_stats.luck, 0.6) * kills)
+            int(
+                monster.gold
+                + get_diminished_stat(monster.gold, player_stats.luck, 0.6) * kills
+            )
         )
 
         # Handle gear drops

@@ -195,8 +195,10 @@ class BattleService:
 
         times_attacked = int(time_passed.total_seconds() / idle_frequency)
 
-        gold_gained = get_diminished_stat(monster_mean["gold"], player_stats.luck, 0.6)
-        exp_gained = get_diminished_stat(
+        gold_gained = monster_mean["gold"] + get_diminished_stat(
+            monster_mean["gold"], player_stats.luck, 0.6
+        )
+        exp_gained = monster_mean["exp"] + get_diminished_stat(
             monster_mean["exp"], player_stats.efficiency, 0.6
         )
 
