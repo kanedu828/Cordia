@@ -6,6 +6,7 @@ from cordia.model.player_stats import PlayerStats
 from cordia.service.gear_service import GearService
 from cordia.service.item_service import ItemService
 from cordia.service.player_service import PlayerService
+from cordia.util.battle_util import get_diminished_stat
 from cordia.util.stats_util import random_within_range
 from cordia.data.gear import gear_data
 from cordia.data.items import item_data
@@ -27,10 +28,10 @@ class LootService:
     ) -> Tuple[int, int, List[GearInstance], int, Tuple[Item, int]]:
         # Calculate EXP and gold
         exp_gained = random_within_range(
-            int((monster.exp + min(player_stats.efficiency, monster.exp)) * kills)
+            int(get_diminished_stat(monster.exp, player_stats.efficiency, 0.6) * kills)
         )
         gold_gained = random_within_range(
-            int((monster.gold + min(player_stats.luck, monster.gold)) * kills)
+            int(get_diminished_stat(monster.gold, player_stats.luck, 0.6) * kills)
         )
 
         # Handle gear drops

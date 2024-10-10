@@ -45,12 +45,11 @@ def get_random_battle_text(kills: int, monster: str) -> str:
     return random.choice(multi_kill_text)
 
 
-def get_diminished_stat(damage: int, stat: int):
+def get_diminished_stat(base: int, stat: int, diminishing_scale_factor=0.8):
     # Any stat above base damage gives diminishing returns
-    DIMINISHING_SCALING_FACTOR = 0.8
     scaled_stat = stat
-    if stat > damage:
-        scaled_stat = damage + (scaled_stat - damage) ** DIMINISHING_SCALING_FACTOR
+    if stat > base:
+        scaled_stat = base + (scaled_stat - base) ** diminishing_scale_factor
     return scaled_stat
 
 
