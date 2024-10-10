@@ -24,8 +24,9 @@ class GearInstance:
         gd = self.get_gear_data()
         base_cost = gd.level * 100
         gold_cost = int(base_cost + (self.stars * base_cost / 4))
-        upgrade_item_cost = (
-            (max(math.floor((self.stars - 10) / 5), -1) + 1) * gd.level % 25
+
+        upgrade_item_cost = max(math.floor((self.stars - 10) / 5), -1) + (
+            1 * ceil(gd.level / 10)
         )
         cost = {"gold": gold_cost, "item": (gd.upgrade_item, upgrade_item_cost)}
 
