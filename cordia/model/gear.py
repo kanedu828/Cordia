@@ -59,6 +59,8 @@ class Gear:
             return 20
         elif self.level < 100:
             return 25
+        else:
+            return 30
 
     def get_bonus_string(
         self, core: Literal["basic_core", "quality_core", "supreme_core", "chaos_core"]
