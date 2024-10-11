@@ -28,11 +28,11 @@ class GearInstance:
         upgrade_item_cost = 0
         if self.stars >= 10:
             if gd.upgrade_item == "shard":
-                upgrade_item_cost = max(math.floor((self.stars - 10) / 5), -1) + 1
-            else:
                 upgrade_item_cost = max(math.floor((self.stars - 10) / 5), -1) + (
                     1 * ceil(gd.level / 25)
                 )
+            else:
+                upgrade_item_cost = max(math.floor((self.stars - 10) / 5), -1) + 1
                 
         cost = {"gold": gold_cost, "item": (gd.upgrade_item, upgrade_item_cost)}
 
