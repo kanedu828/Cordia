@@ -138,10 +138,10 @@ def snake_case_to_capital(snake_str):
 
 def get_stars_string(stars, max_stars):
     # Create the filled stars
-    filled_stars = ["<:cordia_star:1281789019826557029>" for _ in range(stars)]
+    filled_stars = ["<:cs:1281789019826557029>" for _ in range(stars)]
     # Create the empty stars
     empty_stars = [
-        "<:cordia_empty_star:1281789033386741824>" for _ in range(max_stars - stars)
+        "<:ces:1281789033386741824>" for _ in range(max_stars - stars)
     ]
 
     # Combine both parts
