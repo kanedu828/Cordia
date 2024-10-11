@@ -309,7 +309,7 @@ monster_data = {
         gold=300,
         exp=650,
         defense=20,
-        item_loot=[
+        gear_loot=[
             ("souless_boots", 0.01),
         ],
     ),

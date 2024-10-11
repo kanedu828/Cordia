@@ -31,13 +31,14 @@ class LootService:
             int(
                 monster.exp
                 + get_diminished_stat(monster.exp, player_stats.efficiency, 0.6)
-            ) * kills
+            )
+            * kills
         )
         gold_gained = random_within_range(
             int(
-                monster.gold
-                + get_diminished_stat(monster.gold, player_stats.luck, 0.6)
-            ) * kills
+                monster.gold + get_diminished_stat(monster.gold, player_stats.luck, 0.6)
+            )
+            * kills
         )
 
         # Handle gear drops
