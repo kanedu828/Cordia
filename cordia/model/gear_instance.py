@@ -33,7 +33,7 @@ class GearInstance:
                 )
             else:
                 upgrade_item_cost = max(math.floor((self.stars - 10) / 5), -1) + 1
-                
+
         cost = {"gold": gold_cost, "item": (gd.upgrade_item, upgrade_item_cost)}
 
         return cost
@@ -167,9 +167,15 @@ class GearInstance:
         wd = self.get_gear_data()
         if wd.spell.spell_type == SpellType.BUFF and wd.spell.buff:
             return wd.spell.get_spell_stats_string()
+        bonus_stats = self.get_bonus_stats()
+        total_stats = (
+            self.get_upgraded_stats()["spell_damage"] + bonus_stats["+"]["spell_damage"]
+        )
+        # Bonus stats is excludeed from split text because split text is shown in gear menu, and bonus stats isnt
+        # included in in split text there. (Since bonus text shown sep)
         split_text = f" ({wd.spell.damage} + {self.get_upgraded_stats()['spell_damage'] - wd.spell.damage})"
         spell_stats = {
-            "spell_damage": f"{self.get_upgraded_stats()['spell_damage']}",
+            "spell_damage": f"{total_stats}",
             "magic_penetration": wd.spell.magic_penetration,
             "spell_strike_radius": wd.spell.strike_radius,
             "spell_cooldown": wd.spell.spell_cooldown,

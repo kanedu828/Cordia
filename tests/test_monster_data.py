@@ -19,6 +19,7 @@ class TestMonsterData(unittest.TestCase):
                         gear_data,
                         f"{gear_item} from {monster_key} is missing in gear_data",
                     )
+
     def test_item_loot_is_valid(self):
         """Test that all item_loot items exist in item_data."""
         for monster_key, monster in {**monster_data, **boss_data}.items():
