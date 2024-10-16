@@ -15,6 +15,7 @@ from cordia.service.gear_service import GearService
 from cordia.service.item_service import ItemService
 from cordia.service.leaderboard_service import LeaderboardService
 from cordia.service.player_service import PlayerService
+from cordia.util.exp_util import exp_to_level
 
 
 class CordiaService:
@@ -77,6 +78,12 @@ class CordiaService:
 
     async def update_gear_bonus(self, gear_id: int, bonus: str):
         await self.gear_service.update_gear_bonus(gear_id, bonus)
+
+    async def equip_highest_level_gear(self, discord_id: int) -> list[str]:
+        player = await self.get_player_by_discord_id(discord_id)
+        return await self.gear_service.equip_highest_level_gear(
+            discord_id, exp_to_level(player.exp)
+        )
 
     # Player Gear
     async def get_player_gear(self, discord_id: int):

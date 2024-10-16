@@ -29,6 +29,20 @@ class GearService:
     async def update_gear_bonus(self, gear_id: int, bonus: str):
         await self.gear_dao.update_bonus(gear_id, bonus)
 
+    async def equip_highest_level_gear(self, discord_id: int, level: int) -> list[str]:
+        armory = await self.get_armory(discord_id)
+        armory = [a for a in armory if a.get_gear_data().level <= level]
+        armory.sort(key=lambda x: x.get_gear_data().level, reverse=True)
+        equipped_types = set()
+        equipped_gear = []
+        for i in armory:
+            gd = i.get_gear_data()
+            if gd.type not in equipped_types:
+                await self.equip_gear(discord_id, i.id, gd.type.value)
+                equipped_types.add(gd.type)
+                equipped_gear.append(gd.name)
+        return equipped_gear
+
     # Player Gear
     async def get_player_gear(self, discord_id: int):
         return await self.player_gear_dao.get_player_gear(discord_id)

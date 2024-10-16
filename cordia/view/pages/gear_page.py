@@ -142,11 +142,19 @@ class GearPage(Page):
         armory_button = Button(label="Armory", style=discord.ButtonStyle.blurple, row=2)
         armory_button.callback = self.armory_button_callback
 
+        equip_highest_level_gear_button = Button(
+            label="Equip Highest Level Gear", style=discord.ButtonStyle.green, row=2
+        )
+        equip_highest_level_gear_button.callback = (
+            self.equip_highest_level_gear_button_callback
+        )
+
         back_button = Button(label="Back", style=discord.ButtonStyle.grey, row=3)
         back_button.callback = self.back_button_callback
 
         view.add_item(equipped_gear_button)
         view.add_item(armory_button)
+        view.add_item(equip_highest_level_gear_button)
         view.add_item(back_button)
 
         return view
@@ -187,6 +195,13 @@ class GearPage(Page):
         armory_button = Button(label="Armory", style=discord.ButtonStyle.blurple, row=3)
         armory_button.disabled = True
 
+        equip_highest_level_gear_button = Button(
+            label="Equip Highest Level Gear", style=discord.ButtonStyle.green, row=3
+        )
+        equip_highest_level_gear_button.callback = (
+            self.equip_highest_level_gear_button_callback
+        )
+
         back_button = Button(label="Back", style=discord.ButtonStyle.grey, row=4)
         back_button.callback = self.back_button_callback
 
@@ -196,6 +211,7 @@ class GearPage(Page):
         view.add_item(next_page_button)
         view.add_item(equipped_gear_button)
         view.add_item(armory_button)
+        view.add_item(equip_highest_level_gear_button)
         view.add_item(back_button)
 
         return view
@@ -244,6 +260,22 @@ class GearPage(Page):
     async def armory_button_callback(self, interaction: discord.Interaction):
         self.armory_page = 0
         await self.render_armory(interaction)
+
+    @only_command_invoker()
+    async def equip_highest_level_gear_button_callback(
+        self, interaction: discord.Interaction
+    ):
+        equipped_gear = await self.cordia_service.equip_highest_level_gear(
+            self.discord_id
+        )
+        await self.render(interaction)
+        embed = discord.Embed(
+            title=f"You equipped your highest level gear", color=discord.Color.green()
+        )
+        embed.add_field(
+            name="You equipped the following gear", value="\n".join(equipped_gear)
+        )
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
     @only_command_invoker()
     async def back_button_callback(self, interaction: discord.Interaction):
