@@ -176,7 +176,8 @@ class HomePage(Page):
                 inline=False,
             )
             await interaction.response.send_message(embed=in_boss_embed, ephemeral=True)
-        await FightPage(self.cordia_service, self.discord_id).render(interaction)
+        else:
+            await FightPage(self.cordia_service, self.discord_id).render(interaction)
 
     @only_command_invoker()
     async def fight_boss_button_callback(self, interaction: discord.Interaction):
