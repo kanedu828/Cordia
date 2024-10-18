@@ -169,8 +169,10 @@ class GearInstance:
             return wd.spell.get_spell_stats_string()
         bonus_stats = self.get_bonus_stats()
         total_stats = (
-            self.get_upgraded_stats()["spell_damage"] + bonus_stats["+"]["spell_damage"]
+            self.get_upgraded_stats()["spell_damage"]
         )
+        if not split_spell_damage:
+            total_stats += bonus_stats["+"]["spell_damage"]
         # Bonus stats is excludeed from split text because split text is shown in gear menu, and bonus stats isnt
         # included in in split text there. (Since bonus text shown sep)
         split_text = f" ({wd.spell.damage} + {self.get_upgraded_stats()['spell_damage'] - wd.spell.damage})"
