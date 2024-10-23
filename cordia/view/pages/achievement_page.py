@@ -64,7 +64,7 @@ class AchievementPage(Page):
             stat_bonus = ""
             if milestones > 0:
                 bonus_stat, bonus_value = (
-                    achievement.stat_bonus * milestones
+                    achievement.stat_bonus * min(milestones, 5)
                 ).get_one_non_zero_stat()
                 stat_bonus = f"Current Stat Bonus: `+{bonus_value}{'%' if achievement.stat_modifier == '%' else ''} {get_stat_emoji(bonus_stat)}{bonus_stat}`\n"
             if milestones >= 5:
