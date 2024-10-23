@@ -13,7 +13,7 @@ class AchievementPage(Page):
     def __init__(self, cordia_service, discord_id, page_number=0):
         super().__init__(cordia_service, discord_id)
         self.page_number = page_number
-        self.achievements_per_page = 5
+        self.achievements_per_page = 7
         self.achievements = []
 
     async def render(self, interaction: discord.Interaction):
@@ -75,7 +75,7 @@ class AchievementPage(Page):
             achievement_text = f"Next Milestone Progress: `{progress}`\n{stat_bonus}Next Milestone Bonus: {next_stat_bonus}"
 
             embed.add_field(
-                name=f"Slay {achievement.monster}s {get_stars_string(milestones, 5)}",
+                name=f"Slay {achievement.monster}s {get_stars_string(min(milestones, 5), 5)}",
                 value=achievement_text,
                 inline=False,
             )
