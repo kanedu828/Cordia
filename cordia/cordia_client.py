@@ -1,6 +1,8 @@
+from cordia.dao.achievement_dao import AchievementDao
 from cordia.dao.boss_instance_dao import BossInstanceDao
 from cordia.dao.daily_leaderboard_dao import DailyLeaderboardDao
 from cordia.dao.item_dao import ItemDao
+from cordia.service.achievement_service import AchievementService
 from cordia.service.battle_service import BattleService
 from cordia.service.boss_service import BossService
 from cordia.service.cooldown_service import CooldownService
@@ -80,6 +82,7 @@ class CordiaClient(commands.Bot):
         boss_instance_dao = BossInstanceDao(self.pool)
         item_dao = ItemDao(self.pool)
         daily_leaderboard_dao = DailyLeaderboardDao(self.pool)
+        achievement_dao = AchievementDao(self.pool)
 
         # SERVICES
         player_service = PlayerService(player_dao)
@@ -91,6 +94,7 @@ class CordiaClient(commands.Bot):
         leaderboard_service = LeaderboardService(
             player_dao, daily_leaderboard_dao, self
         )
+        achievement_service = AchievementService(achievement_dao)
         battle_service = BattleService(
             player_service,
             gear_service,
@@ -98,6 +102,7 @@ class CordiaClient(commands.Bot):
             cooldown_service,
             loot_service,
             leaderboard_service,
+            achievement_service,
         )
 
         self.cordia_service = CordiaService(
@@ -107,6 +112,7 @@ class CordiaClient(commands.Bot):
             battle_service,
             item_service,
             leaderboard_service,
+            achievement_service,
         )
 
     async def on_ready(self):

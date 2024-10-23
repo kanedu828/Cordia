@@ -1,6 +1,7 @@
 import datetime
 from typing import List, Literal, Optional
 
+from cordia.model.achievement_instance import AchievementInstance
 from cordia.model.attack_result import AttackResult
 from cordia.model.boos_fight_result import BossFightResult
 from cordia.model.boss_instance import BossInstance
@@ -9,6 +10,8 @@ from cordia.model.gear_instance import GearInstance
 from cordia.model.item_instance import ItemInstance
 from cordia.model.player import Player
 
+from cordia.model.player_stats import PlayerStats
+from cordia.service.achievement_service import AchievementService
 from cordia.service.battle_service import BattleService
 from cordia.service.boss_service import BossService
 from cordia.service.gear_service import GearService
@@ -27,6 +30,7 @@ class CordiaService:
         battle_service: BattleService,
         item_service: ItemService,
         leaderboard_service: LeaderboardService,
+        achievement_service: AchievementService,
     ):
         self.player_service = player_service
         self.gear_service = gear_service
@@ -34,6 +38,7 @@ class CordiaService:
         self.battle_service = battle_service
         self.item_service = item_service
         self.leaderboard_service = leaderboard_service
+        self.achievement_service = achievement_service
 
     # Player
     async def get_player_by_discord_id(self, discord_id: int) -> Player | None:
@@ -166,3 +171,19 @@ class CordiaService:
         self, discord_id: int, action: Literal["attack", "cast_spell"] = "attack"
     ) -> AttackResult:
         return await self.battle_service.attack(discord_id, action)
+
+    # Achievement
+    async def get_achievements_by_discord_id(
+        self, discord_id: int
+    ) -> list[AchievementInstance]:
+        return await self.achievement_service.get_achievements_by_discord_id(discord_id)
+
+    async def increment_achievement(
+        self, discord_id: int, monster: str, count: int = 1
+    ):
+        await self.achievement_service.increment_achievement(discord_id, monster, count)
+
+    async def get_achievement_stat_bonuses(
+        self, discord_id: int
+    ) -> tuple[PlayerStats, PlayerStats]:
+        return await self.achievement_service.get_achievement_stat_bonuses(discord_id)

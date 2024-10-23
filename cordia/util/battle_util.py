@@ -7,7 +7,6 @@ from cordia.model.player_stats import PlayerStats
 from cordia.util.exp_util import exp_to_level
 from cordia.util.gear_util import get_weapon_from_player_gear
 from cordia.util.stats_util import (
-    get_player_stats,
     level_difference_multiplier,
     random_within_range,
 )

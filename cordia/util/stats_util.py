@@ -10,7 +10,11 @@ from cordia.util.exp_util import exp_to_level
 from cordia.data.gear_sets import gear_set_data
 
 
-def get_player_stats(player: Player, player_gear: List[GearInstance]) -> PlayerStats:
+def get_player_stats(
+    player: Player,
+    player_gear: List[GearInstance],
+    achievement_stats: tuple[PlayerStats, PlayerStats],
+) -> PlayerStats:
     base_stats = {
         "strength": player.strength,
         "persistence": player.persistence,
@@ -28,6 +32,13 @@ def get_player_stats(player: Player, player_gear: List[GearInstance]) -> PlayerS
     }
 
     stats = base_stats.copy()
+
+    # Add calcualtion for achievement stats
+    additive_achievement, percentage_achievement = achievement_stats
+    for s in percentage_achievement.__dict__.keys():
+        stats[s] += int(base_stats[s] * (percentage_achievement.__dict__[s] / 100))
+    for s in additive_achievement.__dict__.keys():
+        stats[s] += additive_achievement.__dict__[s]
 
     for pg in player_gear:
         gd: Gear = pg.get_gear_data()

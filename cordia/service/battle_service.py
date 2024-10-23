@@ -6,6 +6,7 @@ from cordia.model.boos_fight_result import BossFightResult
 from cordia.model.player import Player
 from cordia.model.player_stats import PlayerStats
 from cordia.model.spells import Buff, SpellType
+from cordia.service.achievement_service import AchievementService
 from cordia.service.boss_service import BossService
 from cordia.service.cooldown_service import CooldownService
 from cordia.service.gear_service import GearService
@@ -38,6 +39,7 @@ class BattleService:
         cooldown_service: CooldownService,
         loot_service: LootService,
         leaderboard_service: LeaderboardService,
+        achievement_service: AchievementService,
     ):
         self.player_service = player_service
         self.gear_service = gear_service
@@ -45,6 +47,7 @@ class BattleService:
         self.cooldown_service = cooldown_service
         self.loot_service = loot_service
         self.leaderboard_service = leaderboard_service
+        self.achievement_service = achievement_service
 
         self.active_buffs: dict[int, tuple[Buff, datetime.datetime]] = {}
 
@@ -83,9 +86,12 @@ class BattleService:
 
         player = await self.player_service.get_player_by_discord_id(discord_id)
         player_gear = await self.gear_service.get_player_gear(discord_id)
+        achievement_stats = await self.achievement_service.get_achievement_stat_bonuses(
+            discord_id
+        )
 
         active_buff = self.get_active_buff(discord_id)
-        player_stats = get_player_stats(player, player_gear)
+        player_stats = get_player_stats(player, player_gear, achievement_stats)
         if active_buff:
             player_stats += active_buff.stat_bonus
         weapon = get_weapon_from_player_gear(player_gear)
@@ -147,9 +153,16 @@ class BattleService:
                 weapon=weapon_data,
             )
 
+        boss_killed = boss_instance.current_hp <= 0
+
+        if boss_killed:
+            await self.achievement_service.increment_achievement(
+                discord_id, boss_instance.name, 1
+            )
+
         boss_fight_result = BossFightResult(
             boss_instance=boss_instance,
-            killed=boss_instance.current_hp <= 0,
+            killed=boss_killed,
             exp=exp_gained,
             gold=gold_gained,
             gear_loot=new_gear_loot,
@@ -174,7 +187,10 @@ class BattleService:
         player_gear = await self.gear_service.get_player_gear(discord_id)
         weapon = get_weapon_from_player_gear(player_gear)
 
-        player_stats = get_player_stats(player, player_gear)
+        achievement_stats = await self.achievement_service.get_achievement_stat_bonuses(
+            discord_id
+        )
+        player_stats = get_player_stats(player, player_gear, achievement_stats)
         last_idle_claim = player.last_idle_claim
         time_passed = min(
             datetime.datetime.now(datetime.timezone.utc) - last_idle_claim,
@@ -255,7 +271,10 @@ class BattleService:
         player_gear = await self.gear_service.get_player_gear(discord_id)
 
         active_buff = self.get_active_buff(discord_id)
-        player_stats = get_player_stats(player, player_gear)
+        achievement_stats = await self.achievement_service.get_achievement_stat_bonuses(
+            discord_id
+        )
+        player_stats = get_player_stats(player, player_gear, achievement_stats)
         if active_buff:
             player_stats += active_buff.stat_bonus
         location = location_data[player.location]
@@ -330,6 +349,10 @@ class BattleService:
                 weapon=weapon_data,
                 player_exp=player.exp,
             )
+
+        await self.achievement_service.increment_achievement(
+            discord_id, monster_name, kills
+        )
 
         attack_result = AttackResult(
             kills=kills,

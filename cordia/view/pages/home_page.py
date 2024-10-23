@@ -132,11 +132,6 @@ class HomePage(Page):
         gear_button = Button(label="Gear", style=discord.ButtonStyle.blurple, row=1)
         gear_button.callback = self.gear_button_callback
 
-        leaderboard_button = Button(
-            label="Leaderboard", style=discord.ButtonStyle.blurple, row=1
-        )
-        leaderboard_button.callback = self.leaderboard_button_callback
-
         inventory_button = Button(
             label="Inventory", style=discord.ButtonStyle.blurple, row=1
         )
@@ -145,7 +140,17 @@ class HomePage(Page):
         shop_button = Button(label="Shop", style=discord.ButtonStyle.blurple, row=1)
         shop_button.callback = self.shop_button_callback
 
-        guide_button = Button(label="Guide", style=discord.ButtonStyle.gray, row=2)
+        achievement_button = Button(
+            label="Achievements", style=discord.ButtonStyle.blurple, row=2
+        )
+        achievement_button.callback = self.achievement_button_callback
+
+        leaderboard_button = Button(
+            label="Leaderboard", style=discord.ButtonStyle.blurple, row=2
+        )
+        leaderboard_button.callback = self.leaderboard_button_callback
+
+        guide_button = Button(label="Guide", style=discord.ButtonStyle.gray, row=3)
         guide_button.callback = self.guide_button_callback
 
         # Add buttons to the view
@@ -157,6 +162,7 @@ class HomePage(Page):
         view.add_item(shop_button)
         view.add_item(leaderboard_button)
         view.add_item(guide_button)
+        view.add_item(achievement_button)
 
         return view
 
@@ -225,3 +231,10 @@ class HomePage(Page):
 
         guide_page = GuidePage(self.cordia_service, self.discord_id)
         await guide_page.render(interaction)
+
+    @only_command_invoker()
+    async def achievement_button_callback(self, interaction: discord.Interaction):
+        from cordia.view.pages.achievement_page import AchievementPage
+
+        achievement_page = AchievementPage(self.cordia_service, self.discord_id)
+        await achievement_page.render(interaction)

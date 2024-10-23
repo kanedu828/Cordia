@@ -1,5 +1,6 @@
 from typing import Counter, List
 from cordia.model.gear_instance import GearInstance
+from cordia.model.player_stats import PlayerStats
 from cordia.util.exp_util import exp_to_level, level_to_exp
 from cordia.model.gear import Gear
 from cordia.model.player import Player
@@ -56,56 +57,38 @@ def hp_bar(current_health: int, max_health: int, bar_length=10):
     return f"**Boss HP**: ({max(0, current_health):,}/{max_health:,})\n{bar}\n"
 
 
-def get_player_stats_string(player: Player, player_gear: List[GearInstance]) -> tuple:
+def get_player_stats_string(player: Player, player_stats: PlayerStats) -> tuple:
     # Initialize the stats with base and gear_bonus for the first group of stats
     main_stats = {
-        "strength": {"base": player.strength, "gear_bonus": 0},
-        "persistence": {"base": player.persistence, "gear_bonus": 0},
-        "intelligence": {"base": player.intelligence, "gear_bonus": 0},
-        "efficiency": {"base": player.efficiency, "gear_bonus": 0},
-        "luck": {"base": player.luck, "gear_bonus": 0},
+        "strength": {
+            "base": player.strength,
+            "gear_bonus": player_stats.strength - player.strength,
+        },
+        "persistence": {
+            "base": player.persistence,
+            "gear_bonus": player_stats.persistence - player.persistence,
+        },
+        "intelligence": {
+            "base": player.intelligence,
+            "gear_bonus": player_stats.intelligence - player.persistence,
+        },
+        "efficiency": {
+            "base": player.efficiency,
+            "gear_bonus": player_stats.efficiency - player.efficiency,
+        },
+        "luck": {"base": player.luck, "gear_bonus": player_stats.luck - player.luck},
     }
 
     # Initialize separate stats for the second group (boss_damage, crit_chance, penetration)
     extra_stats = {
-        "damage": 0,
-        "boss_damage": 0,
-        "crit_chance": 0,
-        "penetration": 0,
-        "combo_chance": 0,
-        "strike_radius": 0,
-        "attack_cooldown": 0,
+        "damage": player_stats.damage,
+        "boss_damage": player_stats.boss_damage,
+        "crit_chance": player_stats.crit_chance,
+        "penetration": player_stats.penetration,
+        "combo_chance": player_stats.combo_chance,
+        "strike_radius": player_stats.strike_radius,
+        "attack_cooldown": player_stats.attack_cooldown,
     }
-
-    # Loop through player gear to accumulate bonuses
-    for pg in player_gear:
-        gd: Gear = pg.get_gear_data()
-        bonus_stats = pg.get_bonus_stats()
-        for s in bonus_stats["%"].keys():
-            if s in main_stats:
-                main_stats[s]["gear_bonus"] += int(
-                    main_stats[s]["base"] * (bonus_stats["%"][s] / 100)
-                )
-            if s in extra_stats:
-                extra_stats[s] += int(extra_stats[s] * (bonus_stats["%"][s] / 100))
-        for s in bonus_stats["+"].keys():
-            if s in main_stats:
-                main_stats[s]["gear_bonus"] += bonus_stats["+"][s]
-            if s in extra_stats:
-                extra_stats[s] += bonus_stats["+"][s]
-        upgrade_stats = pg.get_upgraded_stats()
-        main_stats["strength"]["gear_bonus"] += upgrade_stats["strength"]
-        main_stats["persistence"]["gear_bonus"] += upgrade_stats["persistence"]
-        main_stats["intelligence"]["gear_bonus"] += upgrade_stats["intelligence"]
-        main_stats["efficiency"]["gear_bonus"] += upgrade_stats["efficiency"]
-        main_stats["luck"]["gear_bonus"] += upgrade_stats["luck"]
-        extra_stats["damage"] += upgrade_stats["damage"]
-        extra_stats["crit_chance"] += gd.crit_chance
-        extra_stats["boss_damage"] += gd.boss_damage
-        extra_stats["penetration"] += gd.penetration
-        extra_stats["combo_chance"] += gd.combo_chance
-        extra_stats["strike_radius"] += gd.strike_radius
-        extra_stats["attack_cooldown"] += gd.attack_cooldown
 
     # Get the longest stat name for main stats to calculate uniform spacing
     max_stat_length_main = max(len(stat) for stat in main_stats)

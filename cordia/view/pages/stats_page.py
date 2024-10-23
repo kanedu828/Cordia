@@ -1,11 +1,16 @@
 from cordia.model.gear import GearType
 from cordia.model.gear_instance import GearInstance
 from cordia.model.player import Player
+from cordia.model.player_stats import PlayerStats
 from cordia.util.decorators import only_command_invoker
 from cordia.util.exp_util import exp_to_level
 from cordia.util.gear_util import get_weapon_from_player_gear
 from cordia.util.interaction_util import edit_message_with_done
-from cordia.util.stats_util import get_rebirth_points, get_upgrade_points
+from cordia.util.stats_util import (
+    get_player_stats,
+    get_rebirth_points,
+    get_upgrade_points,
+)
 from cordia.util.text_format_util import (
     display_gold,
     exp_bar,
@@ -55,7 +60,11 @@ class StatsPage(Page):
 
                 upgrade_stat_button.callback = create_callback(s)
 
-        stats_embed = self._create_embed(player, player_gear)
+        achievement_stat_bonuses = (
+            await self.cordia_service.get_achievement_stat_bonuses(self.discord_id)
+        )
+
+        stats_embed = self._create_embed(player, player_gear, achievement_stat_bonuses)
 
         await edit_message_with_done(interaction, stats_embed, view)
 
@@ -75,9 +84,15 @@ class StatsPage(Page):
 
         return view
 
-    def _create_embed(self, player: Player, player_gear: list[GearInstance]):
+    def _create_embed(
+        self,
+        player: Player,
+        player_gear: list[GearInstance],
+        achievement_stat_bonuses: tuple[PlayerStats, PlayerStats],
+    ):
         embed = discord.Embed(title=f"Your Stats", color=discord.Color.blue())
-        stats_text, special_stats_text = get_player_stats_string(player, player_gear)
+        player_stats = get_player_stats(player, player_gear, achievement_stat_bonuses)
+        stats_text, special_stats_text = get_player_stats_string(player, player_stats)
         upgrade_points = get_upgrade_points(player)
 
         exp_bar_text = f"{exp_bar(player.exp)}\n\n"

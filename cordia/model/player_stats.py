@@ -38,3 +38,39 @@ class PlayerStats:
             attack_cooldown=self.attack_cooldown + other.attack_cooldown,
             spell_damage=self.spell_damage + other.spell_damage,
         )
+
+    def get_one_non_zero_stat(self) -> tuple[str, int]:
+        """Return the name of the one non-zero stat. Raise an error if more than one exists."""
+        non_zero_stats = [name for name, value in self.__dict__.items() if value != 0]
+
+        if len(non_zero_stats) == 0:
+            raise ValueError("No non-zero stats found.")
+        elif len(non_zero_stats) > 1:
+            raise ValueError(
+                f"More than one non-zero stat found: {', '.join(non_zero_stats)}"
+            )
+
+        return non_zero_stats[0], self.__dict__[non_zero_stats[0]]
+
+    def __mul__(self, multiplier: int) -> "PlayerStats":
+        if not isinstance(multiplier, (int, float)):
+            return NotImplemented
+
+        return PlayerStats(
+            strength=self.strength * multiplier,
+            persistence=self.persistence * multiplier,
+            intelligence=self.intelligence * multiplier,
+            efficiency=self.efficiency * multiplier,
+            luck=self.luck * multiplier,
+            damage=self.damage * multiplier,
+            boss_damage=self.boss_damage * multiplier,
+            crit_chance=self.crit_chance * multiplier,
+            penetration=self.penetration * multiplier,
+            combo_chance=self.combo_chance * multiplier,
+            strike_radius=self.strike_radius * multiplier,
+            attack_cooldown=self.attack_cooldown * multiplier,
+            spell_damage=self.spell_damage * multiplier,
+        )
+
+    def __rmul__(self, multiplier: int) -> "PlayerStats":
+        return self.__mul__(multiplier)
