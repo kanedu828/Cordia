@@ -70,7 +70,7 @@ def get_player_stats_string(player: Player, player_stats: PlayerStats) -> tuple:
         },
         "intelligence": {
             "base": player.intelligence,
-            "gear_bonus": player_stats.intelligence - player.persistence,
+            "gear_bonus": player_stats.intelligence - player.intelligence,
         },
         "efficiency": {
             "base": player.efficiency,
