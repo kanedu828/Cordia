@@ -13,7 +13,7 @@ class AchievementPage(Page):
     def __init__(self, cordia_service, discord_id, page_number=0):
         super().__init__(cordia_service, discord_id)
         self.page_number = page_number
-        self.achievements_per_page = 10
+        self.achievements_per_page = 5
         self.achievements = []
 
     async def render(self, interaction: discord.Interaction):
