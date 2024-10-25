@@ -66,7 +66,7 @@ class GearInstance:
             for sb in split_bonus:
                 sb_split = sb.split(":")
                 stat, value, modifier = sb_split
-                bonus_stats[modifier][stat] = int(value)
+                bonus_stats[modifier][stat] += int(value)
         return bonus_stats
 
     def get_upgraded_stats(self):
