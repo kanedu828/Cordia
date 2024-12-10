@@ -9,6 +9,12 @@ achievement_data = {
         stat_bonus=PlayerStats(strength=2),
         stat_modifier="+",
     ),
+    "goblin_king": Achievement(
+        monster="Goblin King",
+        monster_killed_increment=5,
+        stat_bonus=PlayerStats(strength=2),
+        stat_modifier="%"
+    ),
     "giant_spider": Achievement(
         monster="Giant Spider",
         monster_killed_increment=100,
@@ -20,6 +26,12 @@ achievement_data = {
         monster_killed_increment=10,
         stat_bonus=PlayerStats(crit_chance=1),
         stat_modifier="+",
+    ),
+    "ancient_treant": Achievement(
+        monster="Ancient Treant",
+        monster_killed_increment=5,
+        stat_bonus=PlayerStats(intelligence=2),
+        stat_modifier="%",
     ),
     "mountain_troll": Achievement(
         monster="Mountain Troll",
@@ -33,10 +45,22 @@ achievement_data = {
         stat_bonus=PlayerStats(penetration=1),
         stat_modifier="+",
     ),
+    "mountain_behemoth": Achievement(
+        monster="Mountain Behemoth",
+        monster_killed_increment=5,
+        stat_bonus=PlayerStats(damage=5),
+        stat_modifier="+",
+    ),
     "brussel_sprout": Achievement(
         monster="Brussel Sprout",
         monster_killed_increment=100,
         stat_bonus=PlayerStats(spell_damage=1),
+        stat_modifier="+",
+    ),
+    "philpot": Achievement(
+        monster="Philpot",
+        monster_killed_increment=5,
+        stat_bonus=PlayerStats(spell_damage=5),
         stat_modifier="+",
     ),
     "shadewalker": Achievement(
@@ -45,10 +69,22 @@ achievement_data = {
         stat_bonus=PlayerStats(strength=1),
         stat_modifier="%",
     ),
+    "shadow_master": Achievement(
+        monster="Shadow Master",
+        monster_killed_increment=5,
+        stat_bonus=PlayerStats(crit_chance=1),
+        stat_modifier="+",
+    ),
     "frost_elemental": Achievement(
         monster="Frost Elemental",
         monster_killed_increment=25,
         stat_bonus=PlayerStats(intelligence=1),
+        stat_modifier="%",
+    ),
+    "ice_queen": Achievement(
+        monster="Ice Queen",
+        monster_killed_increment=5,
+        stat_bonus=PlayerStats(intelligence=5),
         stat_modifier="%",
     ),
     "crystal_warrior": Achievement(
@@ -56,6 +92,12 @@ achievement_data = {
         monster_killed_increment=100,
         stat_bonus=PlayerStats(efficiency=1),
         stat_modifier="%",
+    ),
+    "royal_crystal_guard": Achievement(
+        monster="Royal Crystal Guard",
+        monster_killed_increment=5,
+        stat_bonus=PlayerStats(penetration=1),
+        stat_modifier="+"
     ),
     "volcanic_salamander": Achievement(
         monster="Volcanic Salamander",
@@ -68,5 +110,11 @@ achievement_data = {
         monster_killed_increment=100,
         stat_bonus=PlayerStats(luck=1),
         stat_modifier="%",
+    ),
+    "soul_stealer": Achievement(
+        monster="Soul Stealer",
+        monster_killed_increment=5,
+        stat_bonus=PlayerStats(boss_damage=5),
+        stat_modifier="+",
     ),
 }
