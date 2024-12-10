@@ -66,12 +66,14 @@ class AchievementPage(Page):
                 bonus_stat, bonus_value = (
                     achievement.stat_bonus * min(milestones, 5)
                 ).get_one_non_zero_stat()
-                stat_bonus = f"Current Stat Bonus: `+{bonus_value}{'%' if achievement.stat_modifier == '%' else ''} {get_stat_emoji(bonus_stat)}{bonus_stat}`\n"
+                bonus_stat_fromatted = bonus_stat.replace("_", " ").title()
+                stat_bonus = f"Current Stat Bonus: `+{bonus_value}{'%' if achievement.stat_modifier == '%' else ''} {get_stat_emoji(bonus_stat)}{bonus_stat_fromatted}`\n"
             if milestones >= 5:
                 next_stat_bonus = "Achievement Finished"
             else:
                 bonus_stat, bonus_value = achievement.stat_bonus.get_one_non_zero_stat()
-                next_stat_bonus = f"`+{bonus_value}{'%' if achievement.stat_modifier == '%' else ''} {get_stat_emoji(bonus_stat)}{bonus_stat}`"
+                bonus_stat_fromatted = bonus_stat.replace("_", " ").title()
+                next_stat_bonus = f"`+{bonus_value}{'%' if achievement.stat_modifier == '%' else ''} {get_stat_emoji(bonus_stat)}{bonus_stat_fromatted}`"
             achievement_text = f"Next Milestone Progress: `{progress}`\n{stat_bonus}Next Milestone Bonus: {next_stat_bonus}"
 
             embed.add_field(
