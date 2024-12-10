@@ -63,20 +63,23 @@ def get_player_stats(
         stats["attack_cooldown"] += gd.attack_cooldown
         stats["spell_damage"] += upgrade_stats["spell_damage"]
 
-    player_stats = PlayerStats(**stats)
+    gear_set_stats = get_total_gear_set_stats(player_gear)
+    player_stats = PlayerStats(**stats) + gear_set_stats
 
     return player_stats
 
 
-def get_total_gear_set_stats(player_gear: list[PlayerGear]):
+def get_total_gear_set_stats(player_gear: list[PlayerGear]) -> PlayerStats:
     gear_sets = Counter()
-    total_stats = {}
+    total_stats = PlayerStats()
     for pg in player_gear:
         gd = pg.get_gear_data()
         if gd.gear_set:
             gear_sets[gd.gear_set] += 1
-            set_stats = gear_set_data[gd.gear_set].get(gear_sets[gd.gear_set], {})
-            total_stats = dict(Counter(total_stats) + Counter(set_stats))
+            set_stats = gear_set_data[gd.gear_set].get(
+                gear_sets[gd.gear_set], PlayerStats()
+            )
+            total_stats = total_stats + set_stats
     return total_stats
 
 

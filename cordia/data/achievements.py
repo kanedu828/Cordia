@@ -13,7 +13,7 @@ achievement_data = {
         monster="Goblin King",
         monster_killed_increment=5,
         stat_bonus=PlayerStats(strength=2),
-        stat_modifier="%"
+        stat_modifier="%",
     ),
     "giant_spider": Achievement(
         monster="Giant Spider",
@@ -97,7 +97,7 @@ achievement_data = {
         monster="Royal Crystal Guard",
         monster_killed_increment=5,
         stat_bonus=PlayerStats(penetration=1),
-        stat_modifier="+"
+        stat_modifier="+",
     ),
     "volcanic_salamander": Achievement(
         monster="Volcanic Salamander",

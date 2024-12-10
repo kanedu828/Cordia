@@ -230,6 +230,7 @@ class ViewGearPage(Page):
         )
         if self.page >= 0:
             gear_page.armory_page = self.page
+            gear_page.gear_type = gear.get_gear_data().type.name.lower()
             await gear_page.render_armory(interaction)
         else:
             await gear_page.render(interaction)

@@ -74,3 +74,10 @@ class PlayerStats:
 
     def __rmul__(self, multiplier: int) -> "PlayerStats":
         return self.__mul__(multiplier)
+
+    def __str__(self) -> str:
+        """String representation with each stat on a new line, formatted with spaces and title case."""
+        return "\n".join(
+            f"{name.replace('_', ' ').title()}: {value}"
+            for name, value in self.__dict__.items()
+        )

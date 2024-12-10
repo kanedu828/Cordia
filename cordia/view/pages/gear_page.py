@@ -3,6 +3,7 @@ from cordia.model.gear import GearType
 from cordia.model.gear_instance import GearInstance
 from cordia.service.cordia_service import CordiaService
 from cordia.util.decorators import only_command_invoker
+from cordia.util.gear_util import display_gear_set_stats_for_set, get_gear_set_count
 from cordia.util.text_format_util import snake_case_to_capital
 from cordia.view.pages.page import Page
 import discord
@@ -131,6 +132,25 @@ class GearPage(Page):
             view.add_item(gear_select)
         await interaction.response.edit_message(embed=embed, view=view)
 
+    async def render_gear_sets_view(self, interaction: discord.Interaction):
+        view = self._create_gear_sets_view()
+        embed = discord.Embed(title=f"Gear Set Bonuses", color=discord.Color.blue())
+
+        # Fetch the player's gear
+        player_gear: List[GearInstance] = await self.cordia_service.get_player_gear(
+            self.discord_id
+        )
+
+        gear_set_count = get_gear_set_count(player_gear)
+
+        for gs in gear_set_count.keys():
+            gear_stats_str = display_gear_set_stats_for_set(gs, gear_set_count[gs])
+
+            embed.add_field(name=gs.replace("_", " ").title(), value=gear_stats_str)
+
+        # Send the response
+        await interaction.response.edit_message(embed=embed, view=view)
+
     def _create_view(self):
         view = View(timeout=None)
 
@@ -141,6 +161,11 @@ class GearPage(Page):
 
         armory_button = Button(label="Armory", style=discord.ButtonStyle.blurple, row=2)
         armory_button.callback = self.armory_button_callback
+
+        gear_sets_button = Button(
+            label="Gear Sets", style=discord.ButtonStyle.blurple, row=2
+        )
+        gear_sets_button.callback = self.gear_sets_button_callback
 
         equip_highest_level_gear_button = Button(
             label="Equip Highest Level Gear", style=discord.ButtonStyle.green, row=2
@@ -154,6 +179,42 @@ class GearPage(Page):
 
         view.add_item(equipped_gear_button)
         view.add_item(armory_button)
+        view.add_item(gear_sets_button)
+        view.add_item(equip_highest_level_gear_button)
+        view.add_item(back_button)
+
+        return view
+
+    def _create_gear_sets_view(self):
+        view = View(timeout=None)
+
+        equipped_gear_button = Button(
+            label="Equipped Gear", style=discord.ButtonStyle.blurple, row=2
+        )
+        equipped_gear_button.callback = self.equipped_gear_button_callback
+
+        armory_button = Button(label="Armory", style=discord.ButtonStyle.blurple, row=2)
+        armory_button.callback = self.armory_button_callback
+
+        gear_sets_button = Button(
+            label="Gear Sets", style=discord.ButtonStyle.blurple, row=2
+        )
+        gear_sets_button.callback = self.gear_sets_button_callback
+        gear_sets_button.disabled = True
+
+        equip_highest_level_gear_button = Button(
+            label="Equip Highest Level Gear", style=discord.ButtonStyle.green, row=2
+        )
+        equip_highest_level_gear_button.callback = (
+            self.equip_highest_level_gear_button_callback
+        )
+
+        back_button = Button(label="Back", style=discord.ButtonStyle.grey, row=3)
+        back_button.callback = self.back_button_callback
+
+        view.add_item(equipped_gear_button)
+        view.add_item(armory_button)
+        view.add_item(gear_sets_button)
         view.add_item(equip_highest_level_gear_button)
         view.add_item(back_button)
 
@@ -195,6 +256,11 @@ class GearPage(Page):
         armory_button = Button(label="Armory", style=discord.ButtonStyle.blurple, row=3)
         armory_button.disabled = True
 
+        gear_sets_button = Button(
+            label="Gear Sets", style=discord.ButtonStyle.blurple, row=3
+        )
+        gear_sets_button.callback = self.gear_sets_button_callback
+
         equip_highest_level_gear_button = Button(
             label="Equip Highest Level Gear", style=discord.ButtonStyle.green, row=3
         )
@@ -211,6 +277,7 @@ class GearPage(Page):
         view.add_item(next_page_button)
         view.add_item(equipped_gear_button)
         view.add_item(armory_button)
+        view.add_item(gear_sets_button)
         view.add_item(equip_highest_level_gear_button)
         view.add_item(back_button)
 
@@ -260,6 +327,10 @@ class GearPage(Page):
     async def armory_button_callback(self, interaction: discord.Interaction):
         self.armory_page = 0
         await self.render_armory(interaction)
+
+    @only_command_invoker()
+    async def gear_sets_button_callback(self, interaction: discord.Interaction):
+        await self.render_gear_sets_view(interaction)
 
     @only_command_invoker()
     async def equip_highest_level_gear_button_callback(
