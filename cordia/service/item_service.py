@@ -10,7 +10,7 @@ class ItemService:
 
     async def insert_item(self, discord_id: int, name: str, count: int) -> None:
         item = await self.item_dao.get_item(discord_id, name)
-        if item.count + count < 0:
+        if item and item.count + count < 0:
             raise NotEnoughItemsError("Item count cannot be negative")
         inserted_item = await self.item_dao.insert_item(discord_id, name, count)
         if inserted_item.count == 0:
