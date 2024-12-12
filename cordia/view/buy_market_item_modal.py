@@ -41,7 +41,8 @@ class BuyMarketItemModal(Modal):
                 description=f"Sale Price: {display_gold(market_item.price)}\n Tax: -{display_gold(market_item.price * TAX_RATE)}\n You Gain: {display_gold(math.ceil(market_item.price - market_item.price * TAX_RATE))}",
                 color=discord.Color.green(),
             )
-            await interaction.user.send(embed=succeed_sell_embed)
+            seller = await self.cordia_service.bot.fetch_user(market_item.discord_id)
+            await seller.send(embed=succeed_sell_embed)
             await interaction.followup.send(embed=succeed_embed, ephemeral=True)
         except NotEnoughGoldError as e:
             fail_embed = discord.Embed(

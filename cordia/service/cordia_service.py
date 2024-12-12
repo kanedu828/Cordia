@@ -25,6 +25,7 @@ from cordia.util.exp_util import exp_to_level
 class CordiaService:
     def __init__(
         self,
+        bot,
         player_service: PlayerService,
         gear_service: GearService,
         boss_service: BossService,
@@ -34,6 +35,7 @@ class CordiaService:
         achievement_service: AchievementService,
         market_service: MarketService,
     ):
+        self.bot = bot
         self.player_service = player_service
         self.gear_service = gear_service
         self.boss_service = boss_service

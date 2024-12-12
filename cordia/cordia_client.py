@@ -110,6 +110,7 @@ class CordiaClient(commands.Bot):
         market_service = MarketService(market_item_dao, item_service, player_service)
 
         self.cordia_service = CordiaService(
+            self,
             player_service,
             gear_service,
             boss_service,
