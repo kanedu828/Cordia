@@ -34,6 +34,8 @@ class BuyMarketItemModal(Modal):
             from cordia.view.pages.market_page import MarketPage
 
             await MarketPage(self.cordia_service, self.discord_id).render(interaction)
+            
+            await interaction.followup.send(embed=succeed_embed, ephemeral=True)
 
             TAX_RATE = 0.05
             succeed_sell_embed = discord.Embed(
@@ -42,8 +44,9 @@ class BuyMarketItemModal(Modal):
                 color=discord.Color.green(),
             )
             seller = await self.cordia_service.bot.fetch_user(market_item.discord_id)
+            # Need to find a better way to get the seller user. This calls discord API
+            # which has rate limits
             await seller.send(embed=succeed_sell_embed)
-            await interaction.followup.send(embed=succeed_embed, ephemeral=True)
         except NotEnoughGoldError as e:
             fail_embed = discord.Embed(
                 title=f"❌You do not have enough gold to purchase this item",
