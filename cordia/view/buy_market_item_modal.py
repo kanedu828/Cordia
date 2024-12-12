@@ -27,20 +27,21 @@ class BuyMarketItemModal(Modal):
                 int(market_item_id), self.discord_id
             )
             succeed_embed = discord.Embed(
-                title=f"Successfully bought {market_item.display_item()} from the market for {display_gold(market_item.price)}",
+                title="Success",
+                description=f"Successfully bought {market_item.display_item()} from the market for {display_gold(market_item.price)}",
                 color=discord.Color.green(),
             )
 
             from cordia.view.pages.market_page import MarketPage
 
             await MarketPage(self.cordia_service, self.discord_id).render(interaction)
-            
+
             await interaction.followup.send(embed=succeed_embed, ephemeral=True)
 
             TAX_RATE = 0.05
             succeed_sell_embed = discord.Embed(
                 title=f"Successfully sold {market_item.display_item()} from the market",
-                description=f"Sale Price: {display_gold(market_item.price)}\n Tax: -{display_gold(market_item.price * TAX_RATE)}\n You Gain: {display_gold(math.ceil(market_item.price - market_item.price * TAX_RATE))}",
+                description=f"Sale Price: {display_gold(market_item.price)}\n Tax: -{display_gold(market_item.price * TAX_RATE)}\n Your Gain: {display_gold(math.ceil(market_item.price - market_item.price * TAX_RATE))}",
                 color=discord.Color.green(),
             )
             seller = await self.cordia_service.bot.fetch_user(market_item.discord_id)
@@ -49,14 +50,17 @@ class BuyMarketItemModal(Modal):
             await seller.send(embed=succeed_sell_embed)
         except NotEnoughGoldError as e:
             fail_embed = discord.Embed(
-                title=f"❌You do not have enough gold to purchase this item",
+                title="Error",
+                description=f"❌You do not have enough gold to purchase this item",
                 color=discord.Color.red(),
             )
             await interaction.response.send_message(embed=fail_embed, ephemeral=True)
             return
         except InvalidItemError as e:
             fail_embed = discord.Embed(
-                title=f"❌Please enter a valid market item", color=discord.Color.red()
+                title="Error",
+                description=f"❌Please enter a valid market item",
+                color=discord.Color.red(),
             )
             await interaction.response.send_message(embed=fail_embed, ephemeral=True)
             return

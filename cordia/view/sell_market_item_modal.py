@@ -47,7 +47,8 @@ class SellMarketItemModal(Modal):
             )
 
             succeed_embed = discord.Embed(
-                title=f"Successfully listed {market_item.display_item()} onto the market for {display_gold(item_price)}",
+                title=f"Success",
+                description=f"Successfully listed {market_item.display_item()} onto the market for {display_gold(item_price)}",
                 color=discord.Color.green(),
             )
 
@@ -57,7 +58,8 @@ class SellMarketItemModal(Modal):
             await interaction.followup.send(embed=succeed_embed, ephemeral=True)
         except NotEnoughItemsError as e:
             fail_embed = discord.Embed(
-                title=f"❌You do not have {item_count} {item_name.title()}(s).",
+                title="Error",
+                description=f"❌You do not have {item_count} {item_name.title()}(s).",
                 color=discord.Color.red(),
             )
             await interaction.response.send_message(embed=fail_embed, ephemeral=True)
@@ -65,7 +67,8 @@ class SellMarketItemModal(Modal):
         except Exception as e:
             print(e)
             fail_embed = discord.Embed(
-                title=f"❌Please enter a valid price or count.",
+                title="Error",
+                description=f"❌Please enter a valid price or count.",
                 color=discord.Color.red(),
             )
             await interaction.response.send_message(embed=fail_embed, ephemeral=True)

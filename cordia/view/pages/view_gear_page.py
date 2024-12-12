@@ -1,3 +1,4 @@
+import random
 from cordia.model.item import Item
 from cordia.service.cordia_service import CordiaService
 from cordia.util.decorators import only_command_invoker
@@ -76,7 +77,16 @@ class ViewGearPage(Page):
                 f"\n**{upgrade_cost['item'][1]}** {upgrade_item.display_item()}"
             )
         if gi.stars >= gd.get_max_stars():
-            upgrade_cost_text = "This gear is already fully upgraded!"
+            chaos_star_text = (
+                "This gear has reached its maximum star level. "
+                "You can further upgrade it using chaos stars:\n"
+                "- **30%** chance to **gain** a star\n"
+            )
+            if gi.stars > gd.get_max_stars():
+                chaos_star_text += "- **70%** chance to **lose** a star\n"
+
+            upgrade_cost_text = f"{chaos_star_text}{upgrade_cost_text}"
+
         embed.add_field(name="Upgrade Costs", value=upgrade_cost_text, inline=False)
         embed.add_field(
             name="Use Core Costs",
@@ -110,7 +120,6 @@ class ViewGearPage(Page):
         view = self._create_view(
             bool(pg),
             can_equip,
-            gi.stars >= gd.get_max_stars(),
             has_upgrade_cost,
         )
 
@@ -136,7 +145,6 @@ class ViewGearPage(Page):
         self,
         equipped: bool,
         equippable_level: bool,
-        max_stars: bool = False,
         has_upgrade_gold=False,
     ):
         view = View(timeout=None)
@@ -149,7 +157,7 @@ class ViewGearPage(Page):
             label="Upgrade", style=discord.ButtonStyle.blurple, row=1
         )
         upgrade_button.callback = self.upgrade_button_callback
-        upgrade_button.disabled = max_stars or not has_upgrade_gold
+        upgrade_button.disabled = not has_upgrade_gold
 
         back_button = Button(label="Back", style=discord.ButtonStyle.grey, row=2)
         back_button.callback = self.back_button_callback
@@ -205,16 +213,36 @@ class ViewGearPage(Page):
         upgrade_item_cost = gi.get_upgrade_cost()["item"]
         embed = discord.Embed(title=f"Upgrade Gear", color=discord.Color.green())
 
-        embed.add_field(
-            name="You successfully upgraded your gear!",
-            value=f"You have upgraded your **{gi.get_gear_data().name}** to **{gi.stars + 1} stars**!",
-            inline=False,
-        )
-        await self.cordia_service.increment_gear_stars(self.gear_id, 1)
+        # Deduct costs
         await self.cordia_service.insert_item(
             self.discord_id, upgrade_item_cost[0], -upgrade_item_cost[1]
         )
         await self.cordia_service.increment_gold(interaction.user.id, -upgrade_cost)
+
+        upgrade_field_name = "You successfully upgraded your gear!"
+        upgrade_field_value = f"You have upgraded your **{gi.get_gear_data().name}** to **{gi.stars + 1} stars**!"
+        # Chaos stars logic
+        if gi.stars >= gi.get_gear_data().get_max_stars():
+            chaos_star_succeed = random.random() < 0.3
+            if chaos_star_succeed:
+                await self.cordia_service.increment_gear_stars(self.gear_id, 1)
+            else:
+                embed.color = discord.Color.red()
+                if gi.stars > gi.get_gear_data().get_max_stars():
+                    await self.cordia_service.increment_gear_stars(self.gear_id, -1)
+                    upgrade_field_name = "Your chaos star shattered..."
+                    upgrade_field_value = f"Your **{gi.get_gear_data().name}** degraded to **{gi.stars - 1} stars**"
+                else:
+                    upgrade_field_name = "Your chaos upgrade failed..."
+                    upgrade_field_value = f"Your **{gi.get_gear_data().name}** remains at **{gi.stars} stars**"
+        else:
+            await self.cordia_service.increment_gear_stars(self.gear_id, 1)
+
+        embed.add_field(
+            name=upgrade_field_name,
+            value=upgrade_field_value,
+            inline=False,
+        )
         await self.render(interaction)
         await interaction.followup.send(embed=embed, ephemeral=True)
 

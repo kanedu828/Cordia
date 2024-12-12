@@ -121,12 +121,18 @@ def snake_case_to_capital(snake_str):
 
 def get_stars_string(stars, max_stars):
     # Create the filled stars
-    filled_stars = ["<:cs:1281789019826557029>" for _ in range(stars)]
+    filled_stars = ["<:cs:1281789019826557029>" for _ in range(min(stars, max_stars))]
     # Create the empty stars
-    empty_stars = ["<:ces:1281789033386741824>" for _ in range(max_stars - stars)]
+    empty_stars = [
+        "<:ces:1281789033386741824>" for _ in range(max_stars - len(filled_stars))
+    ]
+    # Create the chaos stars for stars beyond max_stars
+    chaos_stars = [
+        "<:ccs:1316684323856060476>" for _ in range(max(0, stars - max_stars))
+    ]
 
-    # Combine both parts
-    star_output = filled_stars + empty_stars
+    # Combine all parts
+    star_output = filled_stars + empty_stars + chaos_stars
 
     # Split into chunks of 5 emojis for readability
     star_chunks = [

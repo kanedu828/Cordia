@@ -34,6 +34,10 @@ class GearInstance:
             else:
                 upgrade_item_cost = max(math.floor((self.stars - 10) / 5), -1) + 1
 
+        if self.stars >= gd.get_max_stars():
+            gold_cost *= 2
+            upgrade_item_cost *= 2
+
         cost = {"gold": gold_cost, "item": (gd.upgrade_item, upgrade_item_cost)}
 
         return cost

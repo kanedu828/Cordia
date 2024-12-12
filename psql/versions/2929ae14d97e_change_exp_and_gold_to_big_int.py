@@ -5,6 +5,7 @@ Revises: 74666d0368c0
 Create Date: 2024-12-12 07:12:09.451019
 
 """
+
 from typing import Sequence, Union
 
 from alembic import op
@@ -12,10 +13,11 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '2929ae14d97e'
-down_revision: Union[str, None] = '74666d0368c0'
+revision: str = "2929ae14d97e"
+down_revision: Union[str, None] = "74666d0368c0"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
+
 
 def upgrade() -> None:
     op.alter_column(
@@ -34,6 +36,7 @@ def upgrade() -> None:
         existing_nullable=False,
         server_default="0",
     )
+
 
 def downgrade() -> None:
     op.alter_column(
