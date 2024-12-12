@@ -9,7 +9,9 @@ class ItemService:
 
     async def insert_item(self, discord_id: int, name: str, count: int) -> None:
         inserted_item = await self.item_dao.insert_item(discord_id, name, count)
-        if inserted_item.count <= 0:
+        if inserted_item.count < 0:
+            raise ValueError("Item count cannot be negative")
+        if inserted_item.count == 0:
             await self.item_dao.delete_item(discord_id, name)
 
     async def get_inventory(self, discord_id: int) -> list[ItemInstance]:

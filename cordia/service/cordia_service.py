@@ -17,6 +17,7 @@ from cordia.service.boss_service import BossService
 from cordia.service.gear_service import GearService
 from cordia.service.item_service import ItemService
 from cordia.service.leaderboard_service import LeaderboardService
+from cordia.service.market_service import MarketService
 from cordia.service.player_service import PlayerService
 from cordia.util.exp_util import exp_to_level
 
@@ -31,6 +32,7 @@ class CordiaService:
         item_service: ItemService,
         leaderboard_service: LeaderboardService,
         achievement_service: AchievementService,
+        market_service: MarketService
     ):
         self.player_service = player_service
         self.gear_service = gear_service
@@ -39,6 +41,7 @@ class CordiaService:
         self.item_service = item_service
         self.leaderboard_service = leaderboard_service
         self.achievement_service = achievement_service
+        self.market_service = market_service
 
     # Player
     async def get_player_by_discord_id(self, discord_id: int) -> Player | None:

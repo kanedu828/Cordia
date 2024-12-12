@@ -140,6 +140,9 @@ class HomePage(Page):
         shop_button = Button(label="Shop", style=discord.ButtonStyle.blurple, row=1)
         shop_button.callback = self.shop_button_callback
 
+        market_button = Button(label="Market", style=discord.ButtonStyle.blurple, row=1)
+        market_button.callback = self.market_button_callback
+
         achievement_button = Button(
             label="Achievements", style=discord.ButtonStyle.blurple, row=2
         )
@@ -160,6 +163,7 @@ class HomePage(Page):
         view.add_item(gear_button)
         view.add_item(inventory_button)
         view.add_item(shop_button)
+        view.add_item(market_button)
         view.add_item(leaderboard_button)
         view.add_item(guide_button)
         view.add_item(achievement_button)
@@ -224,6 +228,13 @@ class HomePage(Page):
 
         shop_page = ShopPage(self.cordia_service, self.discord_id)
         await shop_page.render(interaction)
+
+    @only_command_invoker()
+    async def market_button_callback(self, interaction: discord.Interaction):
+        from cordia.view.pages.market_page import MarketPage
+
+        market_page = MarketPage(self.cordia_service, self.discord_id)
+        await market_page.render(interaction)
 
     @only_command_invoker()
     async def guide_button_callback(self, interaction: discord.Interaction):
