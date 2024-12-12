@@ -32,7 +32,7 @@ class CordiaService:
         item_service: ItemService,
         leaderboard_service: LeaderboardService,
         achievement_service: AchievementService,
-        market_service: MarketService
+        market_service: MarketService,
     ):
         self.player_service = player_service
         self.gear_service = gear_service

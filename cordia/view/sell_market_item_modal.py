@@ -15,7 +15,9 @@ class SellMarketItemModal(Modal):
         self.add_item(self.item_name_input)
         self.item_count_input = TextInput(label=f"Item count")
         self.add_item(self.item_count_input)
-        self.item_price_input = TextInput(label=f"Price to sell (There will be a 5% tax)")
+        self.item_price_input = TextInput(
+            label=f"Price to sell (There will be a 5% tax)"
+        )
         self.add_item(self.item_price_input)
 
         self.discord_id = discord_id
@@ -23,7 +25,7 @@ class SellMarketItemModal(Modal):
 
     async def on_submit(self, interaction: discord.Interaction):
 
-        try:        
+        try:
             # Handle the form submission
             item_name: str = self.item_name_input.value
             item_count = int(self.item_count_input.value)
@@ -32,13 +34,18 @@ class SellMarketItemModal(Modal):
             item_name_key = item_name.lower().replace(" ", "_")
             if item_name_key not in item_data:
                 fail_embed = discord.Embed(
-                    title=f"❌{item_name} is not a valid item", color=discord.Color.red(),
-                    description="Make sure you use the singular name. e.g Ice Queen Soul instead of Ice Queen Souls"
+                    title=f"❌{item_name} is not a valid item",
+                    color=discord.Color.red(),
+                    description="Make sure you use the singular name. e.g Ice Queen Soul instead of Ice Queen Souls",
                 )
-                await interaction.response.send_message(embed=fail_embed, ephemeral=True)
+                await interaction.response.send_message(
+                    embed=fail_embed, ephemeral=True
+                )
                 return
-            market_item = await self.cordia_service.market_service.list_market_item(self.discord_id, item_name_key, item_price, item_count)
-            
+            market_item = await self.cordia_service.market_service.list_market_item(
+                self.discord_id, item_name_key, item_price, item_count
+            )
+
             succeed_embed = discord.Embed(
                 title=f"Successfully listed {market_item.display_item()} onto the market for {display_gold(item_price)}",
                 color=discord.Color.green(),
@@ -50,14 +57,16 @@ class SellMarketItemModal(Modal):
             await interaction.followup.send(embed=succeed_embed, ephemeral=True)
         except InvalidItemError as e:
             fail_embed = discord.Embed(
-            title=f"❌You do not have {item_count} {item_name.title()}.", color=discord.Color.red()
+                title=f"❌You do not have {item_count} {item_name.title()}.",
+                color=discord.Color.red(),
             )
             await interaction.response.send_message(embed=fail_embed, ephemeral=True)
             return
         except Exception as e:
             print(e)
             fail_embed = discord.Embed(
-                title=f"❌Please enter a valid price or count.", color=discord.Color.red()
+                title=f"❌Please enter a valid price or count.",
+                color=discord.Color.red(),
             )
             await interaction.response.send_message(embed=fail_embed, ephemeral=True)
             return

@@ -39,7 +39,9 @@ class MarketPage(Page):
 
         for i in items_on_page:
             embed.add_field(
-                name=f"ID: {i.id}\n{i.display_item()}", value=f"Price: {display_gold(i.price)}", inline=False
+                name=f"ID: {i.id}\n{i.display_item()}",
+                value=f"Price: {display_gold(i.price)}",
+                inline=False,
             )
 
         embed.set_footer(
@@ -70,16 +72,20 @@ class MarketPage(Page):
         if (self.page_number + 1) * self.items_per_page >= len(self.items):
             next_button.disabled = True
 
-        sell_item_button = Button(label="Sell Item", style=discord.ButtonStyle.primary, row=2)
+        sell_item_button = Button(
+            label="Sell Item", style=discord.ButtonStyle.primary, row=2
+        )
         sell_item_button.callback = self.sell_item_button_callback
         view.add_item(sell_item_button)
 
-        buy_item_button = Button(label="Buy Item", style=discord.ButtonStyle.primary, row=2)
+        buy_item_button = Button(
+            label="Buy Item", style=discord.ButtonStyle.primary, row=2
+        )
         buy_item_button.callback = self.buy_item_button_callback
         view.add_item(buy_item_button)
 
         return view
-    
+
     @only_command_invoker()
     async def back_button_callback(self, interaction: discord.Interaction):
         from cordia.view.pages.home_page import HomePage

@@ -12,7 +12,7 @@ class MarketItem:
     count: int
     created_at: datetime
     updated_at: datetime
-    
+
     def get_item_data(self):
         return item_data[self.item_name]
 

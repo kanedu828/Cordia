@@ -5,6 +5,7 @@ Revises: f22bd6cc0de9
 Create Date: 2024-12-12 02:30:16.652110
 
 """
+
 from typing import Sequence, Union
 
 from alembic import op
@@ -13,8 +14,8 @@ from sqlalchemy.sql import func
 
 
 # revision identifiers, used by Alembic.
-revision: str = '74666d0368c0'
-down_revision: Union[str, None] = 'f22bd6cc0de9'
+revision: str = "74666d0368c0"
+down_revision: Union[str, None] = "f22bd6cc0de9"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -50,6 +51,7 @@ def upgrade() -> None:
             nullable=False,
         ),
     )
+
 
 def downgrade() -> None:
     op.drop_table("market_item")

@@ -107,12 +107,7 @@ class CordiaClient(commands.Bot):
             leaderboard_service,
             achievement_service,
         )
-        market_service = MarketService(
-            market_item_dao, 
-            item_service,
-            player_service
-        )
-
+        market_service = MarketService(market_item_dao, item_service, player_service)
 
         self.cordia_service = CordiaService(
             player_service,
@@ -122,7 +117,7 @@ class CordiaClient(commands.Bot):
             item_service,
             leaderboard_service,
             achievement_service,
-            market_service
+            market_service,
         )
 
     async def on_ready(self):

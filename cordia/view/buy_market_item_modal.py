@@ -23,7 +23,9 @@ class BuyMarketItemModal(Modal):
         market_item_id: str = self.market_item_id_input.value
 
         try:
-            market_item = await self.cordia_service.market_service.buy_market_item(int(market_item_id), self.discord_id)
+            market_item = await self.cordia_service.market_service.buy_market_item(
+                int(market_item_id), self.discord_id
+            )
             succeed_embed = discord.Embed(
                 title=f"Successfully bought {market_item.display_item()} from the market for {display_gold(market_item.price)}",
                 color=discord.Color.green(),
@@ -32,7 +34,6 @@ class BuyMarketItemModal(Modal):
             from cordia.view.pages.market_page import MarketPage
 
             await MarketPage(self.cordia_service, self.discord_id).render(interaction)
-
 
             TAX_RATE = 0.05
             succeed_sell_embed = discord.Embed(
@@ -44,7 +45,8 @@ class BuyMarketItemModal(Modal):
             await interaction.followup.send(embed=succeed_embed, ephemeral=True)
         except NotEnoughGoldError as e:
             fail_embed = discord.Embed(
-            title=f"❌You do not have enough gold to purchase this item", color=discord.Color.red()
+                title=f"❌You do not have enough gold to purchase this item",
+                color=discord.Color.red(),
             )
             await interaction.response.send_message(embed=fail_embed, ephemeral=True)
             return

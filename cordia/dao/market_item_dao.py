@@ -24,7 +24,9 @@ class MarketItemDao:
         async with self.pool.acquire() as connection:
             await connection.execute(query, market_item_id)
 
-    async def insert_market_item(self, discord_id: int, item_name: str, price: int, count: int) -> MarketItem:
+    async def insert_market_item(
+        self, discord_id: int, item_name: str, price: int, count: int
+    ) -> MarketItem:
         query = """
         INSERT INTO market_item (discord_id, item_name, price, count, created_at, updated_at)
         VALUES ($1, $2, $3, $4, NOW(), NOW())
