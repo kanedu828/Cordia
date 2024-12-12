@@ -1,6 +1,7 @@
 from typing import Optional
 from cordia.dao.item_dao import ItemDao
 from cordia.model.item_instance import ItemInstance
+from cordia.util.errors import NotEnoughItemsError
 
 
 class ItemService:
@@ -10,7 +11,7 @@ class ItemService:
     async def insert_item(self, discord_id: int, name: str, count: int) -> None:
         inserted_item = await self.item_dao.insert_item(discord_id, name, count)
         if inserted_item.count < 0:
-            raise ValueError("Item count cannot be negative")
+            raise NotEnoughItemsError("Item count cannot be negative")
         if inserted_item.count == 0:
             await self.item_dao.delete_item(discord_id, name)
 

@@ -4,3 +4,7 @@ class InvalidItemError(Exception):
 
 class NotEnoughGoldError(Exception):
     pass
+
+
+class NotEnoughItemsError(Exception):
+    pass

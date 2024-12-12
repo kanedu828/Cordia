@@ -3,7 +3,7 @@ from cordia.dao.market_item_dao import MarketItemDao
 from cordia.model.market_item import MarketItem
 from cordia.service.item_service import ItemService
 from cordia.service.player_service import PlayerService
-from cordia.util.errors import InvalidItemError
+from cordia.util.errors import InvalidItemError, NotEnoughItemsError
 
 
 class MarketService:
@@ -46,7 +46,7 @@ class MarketService:
         """Add a new item to the market."""
         item = await self.item_service.get_item(discord_id, item_name)
         if not item:
-            raise InvalidItemError("Item is not found in player inventory")
+            raise NotEnoughItemsError("Item is not found in player inventory")
         await self.item_service.insert_item(
             discord_id, item_name, -count
         )  # Remove item from seller inventory
