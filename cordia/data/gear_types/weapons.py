@@ -511,6 +511,7 @@ weapon_data = {
             strike_radius=5,
         ),
         upgrade_item="soul_stealer_soul",
+        gear_set="soul_stealer",
     ),
     "soul_stealer_scepter": Gear(
         name="Soul Stealer Scepter",
@@ -533,6 +534,7 @@ weapon_data = {
             strike_radius=5,
         ),
         upgrade_item="soul_stealer_soul",
+        gear_set="soul_stealer",
     ),
     "soul_crusher_blade": Gear(
         name="Soul Crusher Blade",

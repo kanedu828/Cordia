@@ -88,4 +88,10 @@ shop_item_data: dict[str, ShopItem] = {
         item_cost=("soul_stealer_soul", 5),
         gold_cost=50000,
     ),
+    "soul_stealer_ring": ShopItem(
+        item_name="soul_stealer_ring",
+        type=ShopItemType.GEAR,
+        item_cost=("soul_stealer_soul", 5),
+        gold_cost=50000,
+    ),
 }

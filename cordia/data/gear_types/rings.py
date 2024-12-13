@@ -43,4 +43,17 @@ ring_data = {
         gear_set="ice_queen",
         upgrade_item="ice_queen_soul",
     ),
+    "soul_stealer_ring": Gear(
+        name="Soul Stealer Ring",
+        type=GearType.RING,
+        level=100,
+        gold_value=100,
+        persistence=40,
+        strength=40,
+        intelligence=40,
+        boss_damage=10,
+        damage=10,
+        upgrade_item="soul_stealer_soul",
+        gear_set="soul_stealer",
+    ),
 }

@@ -57,5 +57,6 @@ pendant_data = {
         crit_chance=10,
         damage=10,
         upgrade_item="soul_stealer_soul",
+        gear_set="soul_stealer",
     ),
 }
