@@ -46,6 +46,7 @@ class WebServer:
             item_instance = ItemInstance(0, reward_item, reward_count, None, None)
             self.cordia_client.logger.info(f"Vote received for user: {discord_id}")
 
+            print(discord_id)
             # Notify the User
             user = await self.cordia_client.fetch_user(discord_id)
             if user:
