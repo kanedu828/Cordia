@@ -23,6 +23,7 @@ from cordia.dao.player_dao import PlayerDao
 from cordia.service.cordia_service import CordiaService
 from cordia.dao.gear_dao import GearDao
 from cordia.dao.player_gear_dao import PlayerGearDao
+from cordia.service.vote_service import VoteService
 
 
 class CordiaClient(commands.Bot):
@@ -108,6 +109,7 @@ class CordiaClient(commands.Bot):
             achievement_service,
         )
         market_service = MarketService(market_item_dao, item_service, player_service)
+        vote_service = VoteService(item_service)
 
         self.cordia_service = CordiaService(
             self,
@@ -119,6 +121,7 @@ class CordiaClient(commands.Bot):
             leaderboard_service,
             achievement_service,
             market_service,
+            vote_service,
         )
 
     async def on_ready(self):

@@ -18,8 +18,8 @@ class HomePage(Page):
         image_path = "https://kanedu828.github.io/cordia-assets/assets/home_page.png"
         embed.set_image(url=image_path)
         embed.add_field(
-            name="📜Quests📜",
-            value="You currently have no quests",
+            name="🗳️ Vote for Cordia!",
+            value="Vote for Cordia for daily rewards! https://top.gg/bot/708417621334163537",
             inline=False,
         )
         navigation_text = (
@@ -29,7 +29,9 @@ class HomePage(Page):
             "**Gear**: View and upgrade your gear\n"
             "**Inventory**: View your inventory items\n"
             "**Shop**: Purchase items with gold or resources\n"
+            "**Market**: Buy and sell items from other players\n"
             "**Leaderboard**: View the leaderboard\n"
+            "**Achievements**: Track your achievements\n"
         )
         embed.add_field(name="🧭Navigation🧭", value=navigation_text, inline=False)
         return embed
@@ -49,16 +51,12 @@ class HomePage(Page):
         player_gear = await self.cordia_service.get_player_gear(self.discord_id)
         weapon = get_weapon_from_player_gear(player_gear)
         if not weapon:
-            welcome_text = (
-                "**Sword**: A slow, but hard hitting weapon that hits many monsters"
-            )
-            welcome_text += "\n**Dagger**: A quick weapon that allows you to deal a lot of damage quickly"
+            welcome_text = "**Sword (Recommended)**: An all arounder weapon!"
+            welcome_text += "\n**Dagger**: A low cooldown weapon that allows you to deal a lot of single target damage"
             welcome_text += (
-                "\n**Bow**: A weapon that is more efficient when fighting idle"
+                "\n**Bow**: A weapon that will allow to claim more idle rewards"
             )
-            welcome_text += (
-                "\n**Wand**: A weapon with access to powerful spells to deal damage"
-            )
+            welcome_text += "\n**Wand**: A high cooldown weapon with access to powerful spells to deal a large amount of damage"
             embed.add_field(
                 name="Welcome adventurer. Select a weapon to begin your journey...",
                 value=welcome_text,

@@ -19,6 +19,7 @@ from cordia.service.item_service import ItemService
 from cordia.service.leaderboard_service import LeaderboardService
 from cordia.service.market_service import MarketService
 from cordia.service.player_service import PlayerService
+from cordia.service.vote_service import VoteService
 from cordia.util.exp_util import exp_to_level
 
 
@@ -34,6 +35,7 @@ class CordiaService:
         leaderboard_service: LeaderboardService,
         achievement_service: AchievementService,
         market_service: MarketService,
+        vote_service: VoteService,
     ):
         self.bot = bot
         self.player_service = player_service
@@ -44,6 +46,7 @@ class CordiaService:
         self.leaderboard_service = leaderboard_service
         self.achievement_service = achievement_service
         self.market_service = market_service
+        self.vote_service = vote_service
 
     # Player
     async def get_player_by_discord_id(self, discord_id: int) -> Player | None:

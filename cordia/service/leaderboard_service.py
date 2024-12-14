@@ -4,11 +4,15 @@ from cordia.dao.player_dao import PlayerDao
 from cordia.model.daily_leaderboard import DailyLeaderboard
 from cordia.model.player import Player
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from discord.ext import commands
 
 
 class LeaderboardService:
     def __init__(
-        self, player_dao: PlayerDao, daily_leaderboard_dao: DailyLeaderboardDao, bot
+        self,
+        player_dao: PlayerDao,
+        daily_leaderboard_dao: DailyLeaderboardDao,
+        bot: commands.Bot,
     ):
         self.player_dao = player_dao
         self.daily_leaderboard_dao = daily_leaderboard_dao
