@@ -33,7 +33,6 @@ class WebServer:
         # Parse JSON Payload
         try:
             data = await request.json()
-            self.cordia_client.logger.info(data)
             discord_id = int(data.get("user"))
             if not discord_id:
                 return web.Response(status=400, text="Invalid data format")
@@ -48,24 +47,27 @@ class WebServer:
             self.cordia_client.logger.info(f"Vote received for user: {discord_id}")
 
             # Notify the User
-            user = await self.cordia_client.fetch_user(discord_id)
-            if user:
-                try:
-                    embed = Embed(
-                        title="🎉 Thank You for Voting!",
-                        description=f"You've been rewarded for supporting Cordia!",
-                        color=discord.Color.green(),  # Green color
-                    )
-                    embed.add_field(
-                        name="Reward", value=item_instance.display_item(), inline=False
-                    )
-                    embed.set_footer(text="Your support helps make Cordia even better!")
-                    await user.send(embed=embed)
-                except Exception as e:
-                    self.cordia_client.logger.warning(
-                        f"Failed to DM user {discord_id}: {e}"
-                    )
-
+            try:
+                user = await self.cordia_client.fetch_user(discord_id)
+                if user:
+                    try:
+                        embed = Embed(
+                            title="🎉 Thank You for Voting!",
+                            description=f"You've been rewarded for supporting Cordia!",
+                            color=discord.Color.green(),  # Green color
+                        )
+                        embed.add_field(
+                            name="Reward", value=item_instance.display_item(), inline=False
+                        )
+                        embed.set_footer(text="Your support helps make Cordia even better!")
+                        await user.send(embed=embed)
+                    except Exception as e:
+                        self.cordia_client.logger.warning(
+                            f"Failed to DM user {discord_id}: {e}"
+                        )
+            except:
+                # Prevent spam in logs for no user
+                pass
 
             return web.Response(status=200, text="Vote processed successfully")
 
