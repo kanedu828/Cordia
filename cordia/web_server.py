@@ -33,14 +33,14 @@ class WebServer:
         # Parse JSON Payload
         try:
             data = await request.json()
-            discord_id = int(data.get("user"))
+            discord_id = data.get("user")
             if not discord_id:
                 return web.Response(status=400, text="Invalid data format")
 
             # Process the Vote
             reward_item, reward_count = (
                 await self.cordia_client.cordia_service.vote_service.give_vote_reward(
-                    discord_id
+                    int(discord_id)
                 )
             )
             item_instance = ItemInstance(0, reward_item, reward_count, None, None)
@@ -64,6 +64,7 @@ class WebServer:
                     self.cordia_client.logger.warning(
                         f"Failed to DM user {discord_id}: {e}"
                     )
+
 
             return web.Response(status=200, text="Vote processed successfully")
 
