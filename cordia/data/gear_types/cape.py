@@ -60,4 +60,16 @@ cape_data = {
         level=90,
         gold_value=70,
     ),
+    "void_cape": Gear(
+        name="Void Cape",
+        type=GearType.CAPE,
+        boss_damage=25,
+        penetration=5,
+        crit_chance=5,
+        damage=50,
+        intelligence=200,
+        level=125,
+        gold_value=100,
+        gear_set="void",
+    ),
 }

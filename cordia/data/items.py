@@ -42,4 +42,12 @@ item_data = {
         name="Soul Stealer Soul",
         description="Used to purchase and upgrade certain gear",
     ),
+    "mystical_guardian_soul": Item(
+        name="Mystical Guardian Soul",
+        description="Used to purchase and upgrade certain gear",
+    ),
+    "ancient_ocean_guardian_soul": Item(
+        name="Ancient Ocean Guardian Soul",
+        description="Used to purchase and upgrade certain gear",
+    ),
 }

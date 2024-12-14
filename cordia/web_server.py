@@ -57,9 +57,13 @@ class WebServer:
                             color=discord.Color.green(),  # Green color
                         )
                         embed.add_field(
-                            name="Reward", value=item_instance.display_item(), inline=False
+                            name="Reward",
+                            value=item_instance.display_item(),
+                            inline=False,
                         )
-                        embed.set_footer(text="Your support helps make Cordia even better!")
+                        embed.set_footer(
+                            text="Your support helps make Cordia even better!"
+                        )
                         await user.send(embed=embed)
                     except Exception as e:
                         self.cordia_client.logger.warning(

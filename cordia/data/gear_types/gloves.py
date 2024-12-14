@@ -53,4 +53,16 @@ glove_data = {
         persistence=30,
         gold_value=100,
     ),
+    "void_gloves": Gear(
+        name="Void Gloves",
+        type=GearType.GLOVES,
+        boss_damage=25,
+        penetration=5,
+        crit_chance=5,
+        damage=50,
+        intelligence=200,
+        level=125,
+        gold_value=100,
+        gear_set="void",
+    ),
 }

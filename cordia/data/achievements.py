@@ -117,4 +117,34 @@ achievement_data = {
         stat_bonus=PlayerStats(boss_damage=5),
         stat_modifier="+",
     ),
+    "blossomthorn_fairy": Achievement(
+        monster="Blossomthorn Fairy",
+        monster_killed_increment=20,
+        stat_bonus=PlayerStats(intelligence=3),
+        stat_modifier="%",
+    ),
+    "mystical_guardian": Achievement(
+        monster="Mystical Guardian",
+        monster_killed_increment=5,
+        stat_bonus=PlayerStats(damage=10),
+        stat_modifier="+",
+    ),
+    "ancient_giant_squid": Achievement(
+        monster="Ancient Giant Squid",
+        monster_killed_increment=20,
+        stat_bonus=PlayerStats(strength=3),
+        stat_modifier="%",
+    ),
+    "ancient_ocean_guardian": Achievement(
+        monster="Ancient Ocean Guardian",
+        monster_killed_increment=5,
+        stat_bonus=PlayerStats(boss_damage=3),
+        stat_modifier="+",
+    ),
+    "void_entity": Achievement(
+        monster="Void Entity",
+        monster_killed_increment=200,
+        stat_bonus=PlayerStats(boss_damage=3),
+        stat_modifier="+",
+    ),
 }

@@ -56,4 +56,16 @@ ring_data = {
         upgrade_item="soul_stealer_soul",
         gear_set="soul_stealer",
     ),
+    "void_ring": Gear(
+        name="Void Ring",
+        type=GearType.RING,
+        boss_damage=25,
+        penetration=5,
+        crit_chance=5,
+        damage=50,
+        intelligence=100,
+        level=125,
+        gold_value=100,
+        gear_set="void",
+    ),
 }

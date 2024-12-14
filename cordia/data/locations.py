@@ -81,4 +81,17 @@ location_data = {
         level_unlock=100,
         monsters=[("souless_wanderer", 0.4), ("souless_scorpion", 0.6)],
     ),
+    "mystical_forest": Location(
+        name="Mystical Forest",
+        level_unlock=125,
+        monsters=[("eldergrove_spirit", 0.95), ("blossomthorn_fairy", 0.05)],
+    ),
+    "ancient_ocean_ruins": Location(
+        name="Ancient Ocean Ruins",
+        level_unlock=150,
+        monsters=[("ancient_shark", 0.95), ("ancient_giant_squid", 0.05)],
+    ),
+    "the_void": Location(
+        name="The Void", level_unlock=175, monsters=[("void_entity", 1.00)]
+    ),
 }

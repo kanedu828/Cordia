@@ -59,4 +59,16 @@ pendant_data = {
         upgrade_item="soul_stealer_soul",
         gear_set="soul_stealer",
     ),
+    "void_pendant": Gear(
+        name="Void Pendant",
+        type=GearType.PENDANT,
+        boss_damage=25,
+        penetration=5,
+        crit_chance=5,
+        damage=50,
+        intelligence=100,
+        level=125,
+        gold_value=100,
+        gear_set="void",
+    ),
 }
