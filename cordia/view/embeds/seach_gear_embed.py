@@ -10,8 +10,8 @@ def get_search_gear_embed(gear_name: str):
     if gear_name in gear_data:
         gd = gear_data[gear_name]
         embed = discord.Embed(
-                title=f"lv.{gd.level} {gd.name}", color=discord.Color.blue()
-            )
+            title=f"lv.{gd.level} {gd.name}", color=discord.Color.blue()
+        )
 
         embed.add_field(
             name="", value=get_stars_string(0, gd.get_max_stars()), inline=False
@@ -22,8 +22,8 @@ def get_search_gear_embed(gear_name: str):
 
         gi = GearInstance(0, 0, gear_name, 0, "", slot="")
 
-        embed.add_field(name="", value=gi.get_main_stats_string())
-        embed.add_field(name="", value=gi.get_secondary_stats_string())
+        embed.add_field(name="", value=gi.get_main_stats_string(), inline=False)
+        embed.add_field(name="", value=gi.get_secondary_stats_string(), inline=False)
 
         if gd.spell:
             embed.add_field(
@@ -42,5 +42,8 @@ def get_search_gear_embed(gear_name: str):
         return embed
     else:
         embed = discord.Embed(
-            title=f"Cannot find gear", description="Incorrect gear name. Is it spelled correctly?", color=discord.Color.red()
+            title=f"Cannot find gear",
+            description="Incorrect gear name. Is it spelled correctly?",
+            color=discord.Color.red(),
         )
+        return embed

@@ -353,7 +353,7 @@ monster_data = {
         item_loot=[
             ("supreme_core", 0.10),
             ("chaos_core", 0.05),
-        ]
+        ],
     ),
     "ancient_shark": Monster(
         name="Ancient Shark",
@@ -377,7 +377,7 @@ monster_data = {
         item_loot=[
             ("supreme_core", 0.10),
             ("chaos_core", 0.05),
-        ]
+        ],
     ),
     "void_entity": Monster(
         name="Void Entity",
@@ -396,6 +396,6 @@ monster_data = {
             ("void_cape", 0.005),
             ("void_pendant", 0.005),
             ("void_ring", 0.005),
-        ]
+        ],
     ),
 }
