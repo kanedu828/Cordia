@@ -392,10 +392,10 @@ monster_data = {
             ("chaos_core", 0.001),
         ],
         gear_loot=[
-            ("void_gloves", 0.005),
-            ("void_cape", 0.005),
-            ("void_pendant", 0.005),
-            ("void_ring", 0.005),
+            ("void_gloves", 0.001),
+            ("void_cape", 0.001),
+            ("void_pendant", 0.001),
+            ("void_ring", 0.001),
         ],
     ),
 }
