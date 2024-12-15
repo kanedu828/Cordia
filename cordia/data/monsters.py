@@ -350,6 +350,10 @@ monster_data = {
             ("gamblers_hat", 0.05),
             ("gamblers_shoes", 0.05),
         ],
+        item_loot=[
+            ("supreme_core", 0.10),
+            ("chaos_core", 0.05),
+        ]
     ),
     "ancient_shark": Monster(
         name="Ancient Shark",
@@ -370,6 +374,10 @@ monster_data = {
         defense=40,
         resistance=10,
         gear_loot=[],
+        item_loot=[
+            ("supreme_core", 0.10),
+            ("chaos_core", 0.05),
+        ]
     ),
     "void_entity": Monster(
         name="Void Entity",
@@ -379,6 +387,15 @@ monster_data = {
         exp=0,
         defense=50,
         resistance=50,
-        gear_loot=[],
+        item_loot=[
+            ("supreme_core", 0.005),
+            ("chaos_core", 0.001),
+        ],
+        gear_loot=[
+            ("void_gloves", 0.005),
+            ("void_cape", 0.005),
+            ("void_pendant", 0.005),
+            ("void_ring", 0.005),
+        ]
     ),
 }
