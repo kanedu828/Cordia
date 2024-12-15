@@ -181,7 +181,7 @@ boss_data = {
     ),
     "ancient_ocean_guardian": Monster(
         name="Ancient Ocean Guardian",
-        level=150,
+        level=175,
         hp=185000,
         gold=2000,
         exp=10000,
