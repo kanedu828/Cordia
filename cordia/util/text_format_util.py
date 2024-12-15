@@ -86,6 +86,7 @@ def get_player_stats_string(player: Player, player_stats: PlayerStats) -> tuple:
         "boss_damage": player_stats.boss_damage,
         "crit_chance": player_stats.crit_chance,
         "penetration": player_stats.penetration,
+        "spell_penetration": player_stats.spell_penetration,
         "combo_chance": player_stats.combo_chance,
         "strike_radius": player_stats.strike_radius,
         "attack_cooldown": player_stats.attack_cooldown,

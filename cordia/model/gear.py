@@ -59,14 +59,11 @@ class Gear:
         ex: intelligence:10:+;strength:21:%
         """
         stat_options = ["strength", "persistence", "intelligence", "efficiency", "luck"]
-        weapon_stat_options = ["damage", "boss_damage"]
-        spell_stat_options = ["spell_damage"]
+        weapon_stat_options = ["damage", "boss_damage", "spell_damage"]
 
         # Add weapon-specific stats if the gear is a weapon
         if self.type == GearType.WEAPON:
             stat_options += weapon_stat_options
-        if self.spell and self.spell.spell_type == SpellType.DAMAGE:
-            stat_options += spell_stat_options
 
         # Determine number of lines (number of bonuses)
         lines = random.randint(1, 3)
@@ -92,7 +89,11 @@ class Gear:
             rand_stat = random.choice(stat_options)
 
             # Boss damage and damage can't have a percentage modifier and its value is halved
-            if rand_stat == "boss_damage" or rand_stat == "damage":
+            if (
+                rand_stat == "boss_damage"
+                or rand_stat == "damage"
+                or rand_stat == "spell_damage"
+            ):
                 rand_modifier = "+"
                 random_val = random.randint(1, self.level)
                 random_val = max(

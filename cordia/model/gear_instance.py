@@ -161,6 +161,7 @@ class GearInstance:
             "attack_cooldown",
             "crit_chance",
             "penetration",
+            "spell_penetration",
             "combo_chance",
             "strike_radius",
         ]
