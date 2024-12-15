@@ -66,7 +66,7 @@ pendant_data = {
         level=125,
         gold_value=100,
         stats=PlayerStats(
-            boss_damage=15,
+            boss_damage=25,
             damage=30,
             spell_damage=30,
         ),

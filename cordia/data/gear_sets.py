@@ -5,7 +5,7 @@ gear_set_data = {
     "ice_queen": {
         1: PlayerStats(),
         2: PlayerStats(intelligence=30, strength=30, efficiency=30),
-        3: PlayerStats(spell_damage=30, crit_chance=10, penetration=10),
+        3: PlayerStats(spell_damage=30, crit_chance=10, spell_penetration=5),
     },
     "shadow_master": {
         1: PlayerStats(),
@@ -27,26 +27,25 @@ gear_set_data = {
     "mystical_guardian": {
         1: PlayerStats(),
         2: PlayerStats(intelligence=50, persistence=50),
-        3: PlayerStats(damage=50, boss_damage=10, spell_damage=50),
+        3: PlayerStats(boss_damage=10, spell_damage=50),
         4: PlayerStats(intelligence=50, persistence=50),
-        5: PlayerStats(damage=100, spell_damage=100, boss_damage=20),
+        5: PlayerStats(boss_damage=100, spell_damage=100, spell_penetration=5),
     },
     "ancient_ocean_guardian": {
         1: PlayerStats(),
         2: PlayerStats(strength=50, efficiency=50),
-        3: PlayerStats(damage=50, boss_damage=10, penetration=10),
+        3: PlayerStats(damage=50, boss_damage=10),
         4: PlayerStats(strength=50, efficiency=50),
-        5: PlayerStats(damage=100, boss_damage=20, penetration=10),
+        5: PlayerStats(damage=100, boss_damage=20, penetration=5),
     },
     "void": {
         1: PlayerStats(),
         2: PlayerStats(damage=30, spell_damage=30),
-        3: PlayerStats(boss_damage=25, penetration=5),
+        3: PlayerStats(boss_damage=25, penetration=5, spell_penetration=5),
         4: PlayerStats(
             damage=100,
             spell_damage=100,
             boss_damage=50,
-            penetration=5,
             strike_radius=1,
             combo_chance=5,
         ),

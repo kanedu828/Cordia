@@ -64,7 +64,8 @@ ring_data = {
         level=125,
         gold_value=100,
         stats=PlayerStats(
-            boss_damage=25,
+            boss_damage=15,
+            spell_penetration=5,
             damage=30,
             spell_damage=30,
         ),
