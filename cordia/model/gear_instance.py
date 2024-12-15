@@ -136,9 +136,15 @@ class GearInstance:
         main_stats_string = ""
 
         # Get spell damage attributed to the weapon
-        spell_damage_ratio = gd.stats.spell_damage / (
-            gd.stats.spell_damage + gd.spell.damage
+        damage_from_spell = gd.spell.damage if gd.spell else 0
+
+        # Calculate the spell damage ratio, handling potential division errors gracefully
+        spell_damage_ratio = (
+            gd.stats.spell_damage / (gd.stats.spell_damage + damage_from_spell)
+            if (gd.stats.spell_damage + damage_from_spell) > 0
+            else 1
         )
+
         upgraded_stats["spell_damage"] = int(
             upgraded_stats["spell_damage"] * spell_damage_ratio
         )
