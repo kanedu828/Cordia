@@ -24,7 +24,6 @@ from cordia.util.stats_util import (
     calculate_weighted_monster_mean,
     get_player_stats,
 )
-from cordia.data.gear import gear_data
 from cordia.data.bosses import boss_data
 from cordia.data.monsters import monster_data
 from cordia.data.locations import location_data
@@ -125,11 +124,11 @@ class BattleService:
         cooldown_expiration = current_time
         if action == "attack":
             cooldown_expiration = current_time + datetime.timedelta(
-                seconds=weapon_data.attack_cooldown
+                seconds=weapon_data.stats.attack_cooldown
             )
         elif action == "cast_spell" and weapon_data.spell:
             cooldown_expiration = current_time + datetime.timedelta(
-                seconds=weapon_data.spell.spell_cooldown
+                seconds=weapon_data.spell.cooldown
             )
 
         is_combo = random.random() < player_stats.combo_chance / 100
@@ -199,7 +198,9 @@ class BattleService:
 
         IDLE_FREQUENCY_MULTIPLIER = 20
         idle_frequency = (
-            get_weapon_from_player_gear(player_gear).get_gear_data().attack_cooldown
+            get_weapon_from_player_gear(player_gear)
+            .get_gear_data()
+            .stats.attack_cooldown
             * IDLE_FREQUENCY_MULTIPLIER
         )
 
@@ -227,7 +228,7 @@ class BattleService:
 
         # Kill rate, cannot exceed strike radius
         kill_rate = min(
-            (damage / monster_mean["hp"]), weapon.get_gear_data().strike_radius
+            (damage / monster_mean["hp"]), weapon.get_gear_data().stats.strike_radius
         )
         gold_gained *= kill_rate * times_attacked
         exp_gained *= kill_rate * times_attacked
@@ -311,11 +312,11 @@ class BattleService:
                 kills = min(int(kill_rate), weapon_data.spell.strike_radius)
 
         cooldown_expiration = current_time + datetime.timedelta(
-            seconds=weapon_data.attack_cooldown
+            seconds=weapon_data.stats.attack_cooldown
         )
         if action == "cast_spell" and weapon_data.spell:
             cooldown_expiration = current_time + datetime.timedelta(
-                seconds=weapon_data.spell.spell_cooldown
+                seconds=weapon_data.spell.cooldown
             )
 
         is_combo = random.random() < player_stats.combo_chance / 100

@@ -18,6 +18,7 @@ class PlayerStats:
     strike_radius: int = 0
     attack_cooldown: int = 0
     spell_damage: int = 0
+    spell_penetration: int = 0
 
     def __add__(self, other: "PlayerStats") -> "PlayerStats":
         if not isinstance(other, PlayerStats):

@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from math import ceil
 import math
 from cordia.data.gear import gear_data
-from cordia.data.items import item_data
 from cordia.model.gear import Gear
+from cordia.model.player_stats import PlayerStats
 from cordia.model.spells import SpellType
 from cordia.util.stat_mapping import get_stat_emoji, get_stat_modifier
 
@@ -74,17 +74,17 @@ class GearInstance:
 
         # Base stats from the gear data
         base_stats = {
-            "damage": gd.damage,
-            "strength": gd.strength,
-            "persistence": gd.persistence,
-            "intelligence": gd.intelligence,
-            "efficiency": gd.efficiency,
-            "luck": gd.luck,
-            "spell_damage": 0,
+            "damage": gd.stats.damage,
+            "strength": gd.stats.strength,
+            "persistence": gd.stats.persistence,
+            "intelligence": gd.stats.intelligence,
+            "efficiency": gd.stats.efficiency,
+            "luck": gd.stats.luck,
+            "spell_damage": gd.stats.spell_damage,
         }
 
         if gd.spell:
-            base_stats["spell_damage"] = gd.spell.damage
+            base_stats["spell_damage"] += gd.spell.damage
 
         upgraded_stats = base_stats.copy()
 
@@ -125,6 +125,7 @@ class GearInstance:
         upgraded_stats = self.get_upgraded_stats()
         main_stats = [
             "damage",
+            "spell_damage",
             "strength",
             "persistence",
             "intelligence",
@@ -134,8 +135,16 @@ class GearInstance:
         max_stat_length_extra = max(len(stat) for stat in main_stats)
         main_stats_string = ""
 
+        # Get spell damage attributed to the weapon
+        spell_damage_ratio = gd.stats.spell_damage / (
+            gd.stats.spell_damage + gd.spell.damage
+        )
+        upgraded_stats["spell_damage"] = int(
+            upgraded_stats["spell_damage"] * spell_damage_ratio
+        )
+
         for s in main_stats:
-            base_value = gd.__dict__[s]
+            base_value = gd.stats.__dict__[s]
             if base_value:
                 upgrade_value = upgraded_stats[s] - base_value
                 main_stats_string += (
@@ -158,8 +167,8 @@ class GearInstance:
         max_stat_length_extra = max(len(stat) for stat in secondary_stats)
         secondary_stats_string = ""
         for s in secondary_stats:
-            if gd.__dict__[s]:
-                secondary_stats_string += f"\n{get_stat_emoji(s)}{s.replace('_', ' ').capitalize().ljust(max_stat_length_extra)} {gd.__dict__[s]}{get_stat_modifier(s)}"
+            if gd.stats.__dict__[s]:
+                secondary_stats_string += f"\n{get_stat_emoji(s)}{s.replace('_', ' ').capitalize().ljust(max_stat_length_extra)} {gd.stats.__dict__[s]}{get_stat_modifier(s)}"
 
         return f"```{secondary_stats_string}```" if secondary_stats_string else ""
 
@@ -168,17 +177,22 @@ class GearInstance:
         if wd.spell.spell_type == SpellType.BUFF and wd.spell.buff:
             return wd.spell.get_spell_stats_string()
         bonus_stats = self.get_bonus_stats()
-        total_stats = self.get_upgraded_stats()["spell_damage"]
+
+        # Get spell damage attributed to the spell
+        spell_damage_ratio = wd.spell.damage / (wd.stats.spell_damage + wd.spell.damage)
+        total_stats = int(
+            self.get_upgraded_stats()["spell_damage"] * spell_damage_ratio
+        )
+
         if not split_spell_damage:
             total_stats += bonus_stats["+"]["spell_damage"]
         # Bonus stats is excludeed from split text because split text is shown in gear menu, and bonus stats isnt
         # included in in split text there. (Since bonus text shown sep)
-        split_text = f" ({wd.spell.damage} + {self.get_upgraded_stats()['spell_damage'] - wd.spell.damage})"
+        split_text = f" ({wd.spell.damage} + {total_stats - wd.spell.damage})"
         spell_stats = {
             "spell_damage": f"{total_stats}",
-            "magic_penetration": wd.spell.magic_penetration,
             "spell_strike_radius": wd.spell.strike_radius,
-            "spell_cooldown": wd.spell.spell_cooldown,
+            "spell_cooldown": wd.spell.cooldown,
             "scaling_multiplier": wd.spell.scaling_multiplier,
             "scaling_stat": wd.spell.scaling_stat.title(),
         }

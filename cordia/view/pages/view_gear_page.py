@@ -5,7 +5,6 @@ from cordia.util.decorators import only_command_invoker
 from cordia.util.exp_util import exp_to_level
 from cordia.util.text_format_util import display_gold, get_stars_string
 from cordia.view.pages.page import Page
-from cordia.data.gear import gear_data
 from cordia.data.items import item_data
 import discord
 from discord.ui import Button, View, Select

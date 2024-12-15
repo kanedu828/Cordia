@@ -1,10 +1,8 @@
-import datetime
 from typing import List
 from cordia.dao.gear_dao import GearDao
 from cordia.dao.player_gear_dao import PlayerGearDao
 from cordia.model.gear import GearType
 from cordia.model.gear_instance import GearInstance
-from cordia.data.gear import gear_data
 
 
 class GearService:

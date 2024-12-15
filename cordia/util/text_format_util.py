@@ -82,6 +82,7 @@ def get_player_stats_string(player: Player, player_stats: PlayerStats) -> tuple:
     # Initialize separate stats for the second group (boss_damage, crit_chance, penetration)
     extra_stats = {
         "damage": player_stats.damage,
+        "spell_damage": player_stats.spell_damage,
         "boss_damage": player_stats.boss_damage,
         "crit_chance": player_stats.crit_chance,
         "penetration": player_stats.penetration,

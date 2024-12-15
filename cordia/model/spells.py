@@ -21,12 +21,11 @@ class Spell:
     spell_type: SpellType
     name: str
     description: str
-    spell_cooldown: int
+    cooldown: int
     cast_text: str
     damage: int = 0
     scaling_stat: str = "intelligence"
     strike_radius: int = 1
-    magic_penetration: int = 0
     buff: Buff = None
     scaling_multiplier: float = 1
 
@@ -35,7 +34,6 @@ class Spell:
             "damage",
             "spell_cooldown",
             "strike_radius",
-            "magic_penetration",
             "scaling_multiplier",
         ]
         max_stat_length_extra = max(len(stat) for stat in spell_stats)

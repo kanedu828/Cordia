@@ -10,7 +10,6 @@ from cordia.util.text_format_util import display_exp, display_gold, exp_bar
 from cordia.view.embeds.level_up_embed import get_level_up_embed
 from cordia.view.pages.page import Page
 from cordia.data.locations import location_data
-from cordia.data.gear import gear_data
 from discord.ui import View, Button, Select
 import discord
 

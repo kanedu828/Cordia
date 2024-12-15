@@ -29,6 +29,7 @@ def get_player_stats(
         "strike_radius": 0,
         "attack_cooldown": 0,
         "spell_damage": 0,
+        "spell_penetration": 0,
     }
 
     stats = base_stats.copy()
@@ -55,12 +56,13 @@ def get_player_stats(
         stats["efficiency"] += upgrade_stats["efficiency"]
         stats["luck"] += upgrade_stats["luck"]
         stats["damage"] += upgrade_stats["damage"]
-        stats["crit_chance"] += gd.crit_chance
-        stats["boss_damage"] += gd.boss_damage
-        stats["penetration"] += gd.penetration
-        stats["combo_chance"] += gd.combo_chance
-        stats["strike_radius"] += gd.strike_radius
-        stats["attack_cooldown"] += gd.attack_cooldown
+        stats["crit_chance"] += gd.stats.crit_chance
+        stats["boss_damage"] += gd.stats.boss_damage
+        stats["penetration"] += gd.stats.penetration
+        stats["combo_chance"] += gd.stats.combo_chance
+        stats["strike_radius"] += gd.stats.strike_radius
+        stats["attack_cooldown"] += gd.stats.attack_cooldown
+        stats["spell_penetration"] += gd.stats.spell_penetration
         stats["spell_damage"] += upgrade_stats["spell_damage"]
 
     gear_set_stats = get_total_gear_set_stats(player_gear)

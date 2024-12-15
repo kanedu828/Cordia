@@ -4,6 +4,7 @@ import math
 import random
 from typing import Literal
 
+from cordia.model.player_stats import PlayerStats
 from cordia.model.spells import Spell, SpellType
 
 
@@ -26,19 +27,7 @@ class Gear:
     level: int
     gold_value: int
     # Stats
-    strength: int = 0
-    persistence: int = 0
-    intelligence: int = 0
-    efficiency: int = 0
-    luck: int = 0
-    crit_chance: int = 0
-    boss_damage: int = 0
-    # For Weapons
-    attack_cooldown: int = 0
-    damage: int = 0
-    penetration: int = 0
-    combo_chance: int = 0
-    strike_radius: int = 0
+    stats: PlayerStats
     spell: Spell = None
     # Gear Set
     gear_set: str = ""

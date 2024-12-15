@@ -10,7 +10,6 @@ from cordia.util.stats_util import (
     level_difference_multiplier,
     random_within_range,
 )
-from cordia.data.gear import gear_data
 
 
 def get_random_battle_text(kills: int, monster: str) -> str:
@@ -67,10 +66,11 @@ def calculate_attack_damage(
     spell = weapon.get_gear_data().spell
 
     if action == "cast_spell" and spell:
+        spell_daamge = player_stats.spell_damage + spell.damage
         scaled_stat = get_diminished_stat(
-            player_stats.spell_damage, player_stats.__dict__[spell.scaling_stat]
+            spell_daamge, player_stats.__dict__[spell.scaling_stat]
         )
-        damage = player_stats.spell_damage + (scaled_stat * spell.scaling_multiplier)
+        damage = spell_daamge + (scaled_stat * spell.scaling_multiplier)
     else:
         scaled_strength = get_diminished_stat(
             player_stats.damage, player_stats.strength
@@ -93,7 +93,7 @@ def calculate_attack_damage(
     if action == "cast_spell" and spell and spell.scaling_stat == "intelligence":
         monster_resistance_percentage = monster.resistance / 100
         monster_resistance_percentage -= monster_resistance_percentage * (
-            min(spell.magic_penetration, 100) / 100
+            min(player_stats.spell_penetration, 100) / 100
         )
         damage -= damage * monster_resistance_percentage
     else:

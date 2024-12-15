@@ -10,7 +10,6 @@ from cordia.view.confirmation_modal import ConfirmationModal
 from cordia.view.embeds.level_up_embed import get_level_up_embed
 from cordia.view.pages.page import Page
 from cordia.data.bosses import boss_data
-from cordia.data.gear import gear_data
 from discord.ui import View, Button, Select
 import discord
 
