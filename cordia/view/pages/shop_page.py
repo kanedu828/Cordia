@@ -111,10 +111,6 @@ class ShopPage(Page):
                 )
                 await interaction.response.send_message(embed=embed, ephemeral=True)
                 return
-            # Deduct the item cost
-            await self.cordia_service.insert_item(
-                self.discord_id, si.item_cost[0], -si.item_cost[1]
-            )
 
         # Check if player has enough gold
         if player.gold < si.gold_cost:
@@ -126,6 +122,11 @@ class ShopPage(Page):
 
         # Deduct gold
         await self.cordia_service.increment_gold(self.discord_id, -si.gold_cost)
+
+        # Deduct the item cost
+        await self.cordia_service.insert_item(
+            self.discord_id, si.item_cost[0], -si.item_cost[1]
+        )
 
         # Insert item or gear based on the shop item type
         if si.type == ShopItemType.GEAR:
