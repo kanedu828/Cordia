@@ -25,6 +25,7 @@ class WebServer:
             return web.Response(status=500, text="Internal server error")
 
     async def handle_topgg_vote(self, request):
+        self.cordia_client.logger.info("Handling vote")
         # Validate Authorization
         auth = request.headers.get("Authorization")
         if auth != self.topgg_auth_token:
