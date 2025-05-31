@@ -8,3 +8,6 @@ class NotEnoughGoldError(Exception):
 
 class NotEnoughItemsError(Exception):
     pass
+
+class InvalidInputError(Exception):
+    pass

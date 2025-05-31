@@ -44,6 +44,8 @@ class MarketService:
         self, discord_id: int, item_name: str, price: int, count: int
     ) -> MarketItem:
         """Add a new item to the market."""
+        if count < 1:
+            raise InvalidItemError("Input cannot be less than 1.")
         item = await self.item_service.get_item(discord_id, item_name)
         if not item:
             raise NotEnoughItemsError("Item is not found in player inventory")

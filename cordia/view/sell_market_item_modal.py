@@ -1,5 +1,5 @@
 from cordia.service.cordia_service import CordiaService
-from cordia.util.errors import InvalidItemError, NotEnoughItemsError
+from cordia.util.errors import InvalidItemError, NotEnoughItemsError, InvalidInputError
 from cordia.util.text_format_util import display_gold, get_stat_emoji
 from discord.ui import Modal, TextInput
 import discord
@@ -60,6 +60,14 @@ class SellMarketItemModal(Modal):
             fail_embed = discord.Embed(
                 title="Error",
                 description=f"❌You do not have {item_count} {item_name.title()}(s).",
+                color=discord.Color.red(),
+            )
+            await interaction.response.send_message(embed=fail_embed, ephemeral=True)
+            return
+        except InvalidInputError as e:
+            fail_embed = discord.Embed(
+                title="Error",
+                description=f"Count must be greater than 0.",
                 color=discord.Color.red(),
             )
             await interaction.response.send_message(embed=fail_embed, ephemeral=True)
