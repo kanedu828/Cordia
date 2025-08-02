@@ -64,14 +64,6 @@ class SellMarketItemModal(Modal):
             )
             await interaction.response.send_message(embed=fail_embed, ephemeral=True)
             return
-        except InvalidInputError as e:
-            fail_embed = discord.Embed(
-                title="Error",
-                description=f"Count must be greater than 0.",
-                color=discord.Color.red(),
-            )
-            await interaction.response.send_message(embed=fail_embed, ephemeral=True)
-            return
         except Exception as e:
             print(e)
             fail_embed = discord.Embed(
