@@ -3,7 +3,7 @@ from cordia.dao.market_item_dao import MarketItemDao
 from cordia.model.market_item import MarketItem
 from cordia.service.item_service import ItemService
 from cordia.service.player_service import PlayerService
-from cordia.util.errors import InvalidItemError, NotEnoughItemsError
+from cordia.util.errors import InvalidItemError, NotEnoughItemsError, InvalidInputError
 
 
 class MarketService:
@@ -49,6 +49,8 @@ class MarketService:
         item = await self.item_service.get_item(discord_id, item_name)
         if not item:
             raise NotEnoughItemsError("Item is not found in player inventory")
+        if price < 0:
+            raise InvalidInputError("Price can not be lower than 0")
         await self.item_service.insert_item(
             discord_id, item_name, -count
         )  # Remove item from seller inventory
