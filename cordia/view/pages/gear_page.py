@@ -1,7 +1,7 @@
 from typing import List
 from cordia.model.gear import GearType
 from cordia.model.gear_instance import GearInstance
-from cordia.service.cordia_service import CordiaManager
+from cordia.service.cordia_service import CordiaService
 from cordia.util.decorators import only_command_invoker
 from cordia.util.gear_util import display_gear_set_stats_for_set, get_gear_set_count
 from cordia.util.text_format_util import snake_case_to_capital
@@ -12,7 +12,7 @@ from discord.ui import Button, View, Select
 
 class GearPage(Page):
 
-    def __init__(self, cordia_service: CordiaManager, discord_id: int):
+    def __init__(self, cordia_service: CordiaService, discord_id: int):
         super().__init__(cordia_service, discord_id)
         self.armory_pages: List[discord.Embed] = []
         self.armory_page: int = -1  # -1 means we are on equipped gear page
@@ -21,7 +21,7 @@ class GearPage(Page):
     @classmethod
     async def create(
         cls,
-        cordia_service: CordiaManager,
+        cordia_service: CordiaService,
         discord_id: int,
         type: GearType = None,
     ):

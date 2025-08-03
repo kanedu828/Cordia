@@ -1,5 +1,5 @@
 import math
-from cordia.service.cordia_service import CordiaManager
+from cordia.service.cordia_service import CordiaService
 from cordia.util.errors import InvalidItemError, NotEnoughGoldError
 from cordia.util.text_format_util import display_gold
 from discord.ui import Modal, TextInput
@@ -8,7 +8,7 @@ from cordia.data.items import item_data
 
 
 class BuyMarketItemModal(Modal):
-    def __init__(self, cordia_service: CordiaManager, discord_id: int):
+    def __init__(self, cordia_service: CordiaService, discord_id: int):
         super().__init__(title="Buy Item")
 
         # Create a text input for the item to buy
