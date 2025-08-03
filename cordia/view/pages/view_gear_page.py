@@ -1,6 +1,6 @@
 import random
 from cordia.model.item import Item
-from cordia.service.cordia_service import CordiaManager
+from cordia.service.cordia_service import CordiaService
 from cordia.util.decorators import only_command_invoker
 from cordia.util.exp_util import exp_to_level
 from cordia.util.text_format_util import display_gold, get_stars_string
@@ -13,7 +13,7 @@ from discord.ui import Button, View, Select
 class ViewGearPage(Page):
     def __init__(
         self,
-        cordia_service: CordiaManager,
+        cordia_service: CordiaService,
         discord_id: int,
         gear_id: int,
         is_all: bool,

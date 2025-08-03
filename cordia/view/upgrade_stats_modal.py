@@ -1,11 +1,11 @@
-from cordia.service.cordia_service import CordiaManager
+from cordia.service.cordia_service import CordiaService
 from cordia.util.text_format_util import get_stat_emoji
 from discord.ui import Modal, TextInput
 import discord
 
 
 class UpgradeStatsModal(Modal):
-    def __init__(self, cordia_service: CordiaManager, discord_id: int, stat: str):
+    def __init__(self, cordia_service: CordiaService, discord_id: int, stat: str):
         super().__init__(title="Upgrade Stats")
 
         # Create a text input for the value to update
