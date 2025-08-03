@@ -35,7 +35,7 @@ class AchievementPage(Page):
 
         achievements_on_page: list[str] = self.achievements[self.page_number]
 
-        player_achievements = await self.cordia_service.get_achievements_by_discord_id(
+        player_achievements = await self.cordia_service.achievement_service.get_achievements_by_discord_id(
             self.discord_id
         )
 
