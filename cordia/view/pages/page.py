@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 import discord
 
-from cordia.service.cordia_service import CordiaService
+from cordia.service.cordia_service import CordiaManager
 
 
 class Page(ABC):
-    def __init__(self, cordia_service: CordiaService, discord_id: int):
+    def __init__(self, cordia_service: CordiaManager, discord_id: int):
         self.cordia_service = cordia_service
         self.discord_id = discord_id
 
