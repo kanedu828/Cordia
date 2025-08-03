@@ -53,7 +53,7 @@ class Spell:
             spell_stats_string += f"\n{get_stat_emoji('duration')}{'Duration'.ljust(max_stat_length_extra)} {self.buff.duration}{get_stat_modifier(self.buff.duration)}"
 
         for s in spell_stats:
-            if self.__dict__[s]:
+            if self.__dict__.get(s):
                 spell_stats_string += f"\n{get_stat_emoji(s)}{s.replace('_', ' ').capitalize().ljust(max_stat_length_extra)} {self.__dict__[s]}{get_stat_modifier(s)}"
         spell_stats_string = (
             f"\n🔍{'Type'.ljust(max_stat_length_extra)} {self.spell_type.value.title()}"
