@@ -1,9 +1,10 @@
 import datetime
 from cordia.dao.player_dao import PlayerDao
 from cordia.model.player import Player
-from cordia.util.errors import NotEnoughGoldError
+from cordia.util.errors import NotEnoughGoldError, GoldLimitReachedError
 from cordia.util.stats_util import get_upgrade_points
 from cordia.data.locations import location_data
+from cordia.util.constants import MAX_GOLD
 
 
 class PlayerService:
@@ -45,6 +46,8 @@ class PlayerService:
         new_gold = player.gold + increment_by
         if new_gold < 0:
             raise NotEnoughGoldError("Gold cannot be less than 0")
+        if new_gold > MAX_GOLD:
+           return
         await self.player_dao.update_gold(discord_id, new_gold)
 
     async def increment_rebirth_points(self, discord_id: int, increment_by: int):

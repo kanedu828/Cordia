@@ -94,4 +94,9 @@ location_data = {
     "the_void": Location(
         name="The Void", level_unlock=175, monsters=[("void_entity", 1.00)]
     ),
+    # "olympus": Location(
+    #     name="Olympus",
+    #     level_unlock=250,
+    #     monsters=[("olymian_solider", 0.9), ("olympian_general", 0.1)],
+    # ),
 }

@@ -5,6 +5,8 @@ class InvalidItemError(Exception):
 class NotEnoughGoldError(Exception):
     pass
 
+class GoldLimitReachedError(Exception):
+    pass
 
 class NotEnoughItemsError(Exception):
     pass
