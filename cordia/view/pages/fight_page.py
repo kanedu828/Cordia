@@ -16,7 +16,7 @@ import discord
 
 class FightPage(Page):
     async def render(self, interaction: discord.Interaction):
-        player = await self.cordia_service.player_service.get_player_by_discord_id(self.discord_id)
+        player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
 
         location: Location = location_data[player.location]
         embed = discord.Embed(
@@ -26,7 +26,7 @@ class FightPage(Page):
         exp_bar_text = f"{exp_bar(player.exp)}\n\n"
         embed.add_field(name="", value=exp_bar_text, inline=False)
         embed.set_image(url=location.get_image_path())
-        location_player_count = await self.cordia_service.player_service.count_players_in_location(
+        location_player_count = await self.cordia_service.count_players_in_location(
             location.get_key_name()
         )
         embed.set_footer(
@@ -38,7 +38,7 @@ class FightPage(Page):
 
     @only_command_invoker()
     async def idle_fight(self, interaction: discord.Interaction):
-        idle_results = await self.cordia_service.battle_service.idle_fight(self.discord_id)
+        idle_results = await self.cordia_service.idle_fight(self.discord_id)
         location: Location = idle_results["location"]
         embed = discord.Embed(
             title=f"Idle Fighting Monsters in {location.name}",
@@ -71,7 +71,7 @@ class FightPage(Page):
 
         rewards_text = f"{display_exp(idle_results['exp_gained'])}\n{display_gold(idle_results['gold_gained'])}"
         embed.add_field(name="💰Rewards💰", value=rewards_text, inline=False)
-        location_player_count = await self.cordia_service.player_service.count_players_in_location(
+        location_player_count = await self.cordia_service.count_players_in_location(
             location.get_key_name()
         )
 
@@ -113,12 +113,12 @@ class FightPage(Page):
 
     @only_command_invoker()
     async def cast_spell(self, interaction: discord.Interaction):
-        attack_results = await self.cordia_service.battle_service.attack(self.discord_id, "cast_spell")
+        attack_results = await self.cordia_service.attack(self.discord_id, "cast_spell")
         await self.fight_monster(interaction, attack_results, "cast_spell")
 
     @only_command_invoker()
     async def attack(self, interaction: discord.Interaction):
-        attack_results = await self.cordia_service.battle_service.attack(self.discord_id)
+        attack_results = await self.cordia_service.attack(self.discord_id)
         await self.fight_monster(interaction, attack_results, "attack")
 
     async def fight_monster(
@@ -142,7 +142,7 @@ class FightPage(Page):
         embed.set_image(url=location.get_image_path())
 
         # Get the player count at this location
-        location_player_count = await self.cordia_service.player_service.count_players_in_location(
+        location_player_count = await self.cordia_service.count_players_in_location(
             location.get_key_name()
         )
         embed.set_footer(
@@ -253,7 +253,7 @@ class FightPage(Page):
             label="Cast Spell", style=discord.ButtonStyle.blurple, row=1
         )
         cast_spell_button.callback = self.cast_spell
-        player_gear = await self.cordia_service.gear_service.get_player_gear(self.discord_id)
+        player_gear = await self.cordia_service.get_player_gear(self.discord_id)
         weapon = get_weapon_from_player_gear(player_gear)
         spell = weapon.get_gear_data().spell
         if not spell:
@@ -267,7 +267,7 @@ class FightPage(Page):
         back_button = Button(label="Back", style=discord.ButtonStyle.grey, row=2)
         back_button.callback = self.back_button_callback
 
-        player = await self.cordia_service.player_service.get_player_by_discord_id(self.discord_id)
+        player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
         current_level = exp_to_level(player.exp)
 
         locations = [
@@ -305,7 +305,7 @@ class FightPage(Page):
 
     @only_command_invoker()
     async def location_select_callback(self, interaction: discord.Interaction):
-        await self.cordia_service.player_service.update_location(
+        await self.cordia_service.update_location(
             interaction.user.id, interaction.data["values"][0]
         )
 

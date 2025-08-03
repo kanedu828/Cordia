@@ -19,8 +19,8 @@ class FightBossPage(Page):
     BOSS_COOLDOWN_HOURS = 6
 
     async def render(self, interaction: discord.Interaction):
-        bi = await self.cordia_service.boss_service.get_boss_by_discord_id(self.discord_id)
-        player = await self.cordia_service.player_service.get_player_by_discord_id(self.discord_id)
+        bi = await self.cordia_service.get_boss_by_discord_id(self.discord_id)
+        player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
         current_time = datetime.now(timezone.utc)
         boss_cd_expiration = player.last_boss_killed + timedelta(
             hours=FightBossPage.BOSS_COOLDOWN_HOURS
@@ -62,7 +62,7 @@ class FightBossPage(Page):
 
             embed.set_image(url=bd.get_image_path())
 
-            expiration_time = self.cordia_service.boss_service.get_boss_time_remaining(
+            expiration_time = self.cordia_service.get_boss_time_remaining(
                 self.discord_id
             )
             if expiration_time:
@@ -117,14 +117,14 @@ class FightBossPage(Page):
 
     @only_command_invoker()
     async def cast_spell(self, interaction: discord.Interaction):
-        attack_results = await self.cordia_service.battle_service.boss_fight(
+        attack_results = await self.cordia_service.boss_fight(
             self.discord_id, "cast_spell"
         )
         await self.fight_boss(interaction, attack_results, "cast_spell")
 
     @only_command_invoker()
     async def attack(self, interaction: discord.Interaction):
-        boss_fight_results = await self.cordia_service.battle_service.boss_fight(self.discord_id)
+        boss_fight_results = await self.cordia_service.boss_fight(self.discord_id)
         await self.fight_boss(interaction, boss_fight_results, "attack")
 
     async def render_victory_screen(
@@ -271,7 +271,7 @@ class FightBossPage(Page):
 
     async def _create_boss_select_view(self):
         view = View(timeout=None)
-        player = await self.cordia_service.player_service.get_player_by_discord_id(self.discord_id)
+        player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
         current_level = exp_to_level(player.exp)
 
         bosses = [
@@ -319,7 +319,7 @@ class FightBossPage(Page):
             label="Cast Spell", style=discord.ButtonStyle.blurple, row=1
         )
         cast_spell_button.callback = self.cast_spell
-        player_gear = await self.cordia_service.gear_service.get_player_gear(self.discord_id)
+        player_gear = await self.cordia_service.get_player_gear(self.discord_id)
         weapon = get_weapon_from_player_gear(player_gear)
         spell = weapon.get_gear_data().spell
         if not spell:
@@ -348,7 +348,7 @@ class FightBossPage(Page):
 
     @only_command_invoker()
     async def boss_select_callback(self, interaction: discord.Interaction):
-        await self.cordia_service.boss_service.insert_boss(
+        await self.cordia_service.insert_boss(
             self.discord_id, interaction.data["values"][0]
         )
         await self.render(interaction)
@@ -356,7 +356,7 @@ class FightBossPage(Page):
     @only_command_invoker()
     async def forfeit_boss_fight_callback(self, interaction: discord.Interaction):
         async def confirmation_callback():
-            await self.cordia_service.boss_service.delete_boss(self.discord_id)
+            await self.cordia_service.delete_boss(self.discord_id)
             await self.render(interaction)
 
         modal = ConfirmationModal(

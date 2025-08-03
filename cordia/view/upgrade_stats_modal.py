@@ -21,7 +21,7 @@ class UpgradeStatsModal(Modal):
 
         try:
             stat_value_int = int(stat_value)
-            await self.cordia_service.player_service.increment_stat(
+            await self.cordia_service.increment_stat(
                 self.discord_id, self.stat, stat_value_int
             )
             succeed_embed = discord.Embed(
