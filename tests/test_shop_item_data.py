@@ -18,7 +18,8 @@ class TestShopItemData(unittest.TestCase):
                 if shop_item.type == ShopItemType.GEAR:
                     self.assertIn(shop_item_key, gear_data)
                 else:
-                    self.assertIn(shop_item_key, item_data)
+                    # For bundle items, check the item_name instead of the key
+                    self.assertIn(shop_item.item_name, item_data)
 
     def test_item_cost_is_valid(self):
         """Test that item cost item is valid."""
@@ -30,7 +31,13 @@ class TestShopItemData(unittest.TestCase):
         """Test key matches item name"""
         for shop_item_key, shop_item in shop_item_data.items():
             with self.subTest(monster=shop_item_key):
-                self.assertEqual(shop_item.item_name, shop_item_key)
+                # For bundle items, the key and item_name may differ
+                if shop_item_key.endswith('_x10'):
+                    # Bundle items should have item_name as the base item
+                    base_item = shop_item_key.replace('_x10', '')
+                    self.assertEqual(shop_item.item_name, base_item)
+                else:
+                    self.assertEqual(shop_item.item_name, shop_item_key)
 
 
 if __name__ == "__main__":

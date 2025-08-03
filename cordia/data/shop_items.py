@@ -5,8 +5,20 @@ shop_item_data: dict[str, ShopItem] = {
     "quality_core": ShopItem(
         item_name="quality_core", type=ShopItemType.ITEM, item_cost=("basic_core", 5)
     ),
+    "quality_core_x10": ShopItem(
+        item_name="quality_core",
+        type=ShopItemType.ITEM,
+        item_cost=("basic_core", 50),
+        item_quantity=10,
+    ),
     "supreme_core": ShopItem(
         item_name="supreme_core", type=ShopItemType.ITEM, item_cost=("quality_core", 5)
+    ),
+    "supreme_core_x10": ShopItem(
+        item_name="supreme_core",
+        type=ShopItemType.ITEM,
+        item_cost=("quality_core", 50),
+        item_quantity=10,
     ),
     "shadow_master_dagger": ShopItem(
         item_name="shadow_master_dagger",

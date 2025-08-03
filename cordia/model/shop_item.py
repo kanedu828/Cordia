@@ -17,6 +17,7 @@ class ShopItem:
     type: ShopItemType
     item_cost: tuple[str, int]
     gold_cost: int = 0
+    item_quantity: int = 1
 
     def get_item_data(self) -> Gear | Item:
         if self.type == ShopItemType.GEAR:
