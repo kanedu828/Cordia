@@ -38,7 +38,7 @@ class GearPage(Page):
         embed = discord.Embed(title=f"Equipped Gear", color=discord.Color.blue())
 
         # Fetch the player's gear
-        player_gear: List[GearInstance] = await self.cordia_service.gear_service.get_player_gear(
+        player_gear: List[GearInstance] = await self.cordia_service.get_player_gear(
             self.discord_id
         )
 
@@ -76,7 +76,7 @@ class GearPage(Page):
         await interaction.response.edit_message(embed=embed, view=view)
 
     async def paginate_gear(self, type: GearType | None) -> List[List[GearInstance]]:
-        gear: List[GearInstance] = await self.cordia_service.gear_service.get_armory(self.discord_id)
+        gear: List[GearInstance] = await self.cordia_service.get_armory(self.discord_id)
         filtered_gear = [g for g in gear if not type or g.get_gear_data().type == type]
         filtered_gear.sort(key=lambda g: g.get_gear_data().level, reverse=True)
         page_size = 10
@@ -137,7 +137,7 @@ class GearPage(Page):
         embed = discord.Embed(title=f"Gear Set Bonuses", color=discord.Color.blue())
 
         # Fetch the player's gear
-        player_gear: List[GearInstance] = await self.cordia_service.gear_service.get_player_gear(
+        player_gear: List[GearInstance] = await self.cordia_service.get_player_gear(
             self.discord_id
         )
 
@@ -336,7 +336,7 @@ class GearPage(Page):
     async def equip_highest_level_gear_button_callback(
         self, interaction: discord.Interaction
     ):
-        equipped_gear = await self.cordia_service.gear_service.equip_highest_level_gear(
+        equipped_gear = await self.cordia_service.equip_highest_level_gear(
             self.discord_id
         )
         await self.render(interaction)

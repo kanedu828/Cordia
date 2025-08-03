@@ -47,8 +47,8 @@ class HomePage(Page):
         )
         image_path = "https://kanedu828.github.io/cordia-assets/assets/home_page.png"
         embed.set_image(url=image_path)
-        await self.cordia_service.player_service.get_or_insert_player(self.discord_id)
-        player_gear = await self.cordia_service.gear_service.get_player_gear(self.discord_id)
+        await self.cordia_service.get_or_insert_player(self.discord_id)
+        player_gear = await self.cordia_service.get_player_gear(self.discord_id)
         weapon = get_weapon_from_player_gear(player_gear)
         if not weapon:
             welcome_text = "**Sword (Recommended)**: An all arounder weapon!"
@@ -75,10 +75,10 @@ class HomePage(Page):
 
         def gen_weapon_callback(weapon):
             async def equip_weapon(interaction: discord.Interaction):
-                gear_instance: GearInstance = await self.cordia_service.gear_service.insert_gear(
+                gear_instance: GearInstance = await self.cordia_service.insert_gear(
                     self.discord_id, weapon
                 )
-                await self.cordia_service.gear_service.equip_gear(
+                await self.cordia_service.equip_gear(
                     self.discord_id, gear_instance.id, GearType.WEAPON.value
                 )
                 await self.render(interaction)
@@ -172,7 +172,7 @@ class HomePage(Page):
     async def fight_button_callback(self, interaction: discord.Interaction):
         from cordia.view.pages.fight_page import FightPage
 
-        bi = await self.cordia_service.boss_service.get_boss_by_discord_id(self.discord_id)
+        bi = await self.cordia_service.get_boss_by_discord_id(self.discord_id)
         if bi:
             in_boss_embed = discord.Embed(
                 title=f"You cannot fight right now",
