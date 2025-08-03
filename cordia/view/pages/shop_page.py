@@ -48,7 +48,10 @@ class ShopPage(Page):
                 cost_arr.append(f"{si.display_item_cost()}")
             cost_text += ", ".join(cost_arr)
             embed.add_field(
-                name=si.get_item_data().display_item(), value=cost_text, inline=False
+                name=si.get_item_data().display_item()
+                + f" (x{si.item_quantity})",
+                value=cost_text,
+                inline=False,
             )
 
         embed.set_footer(text=f"Page: {self.page_number + 1}/{len(self.items)}")
