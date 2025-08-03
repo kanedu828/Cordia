@@ -398,4 +398,28 @@ monster_data = {
             ("void_ring", 0.001),
         ],
     ),
+    # "olympian_solider": Monster(
+    #     name="Olympian Solider",
+    #     level=250,
+    #     hp=20000,
+    #     gold=800,
+    #     exp=18000,
+    #     defense=50,
+    #     resistance=50,
+    #     gear_loot=[],
+    #     item_loot=[],
+    # ),
+    # "olympian_general": Monster(
+    #     name="Olympian General",
+    #     level=250,
+    #     hp=30000,
+    #     gold=1000,
+    #     exp=27000,
+    #     defense=50,
+    #     resistance=50,
+    #     gear_loot=[],
+    #     item_loot=[
+    #         ("supreme_core", 0.005),
+    #     ],
+    # ),
 }
