@@ -50,7 +50,7 @@ class MarketService:
             market_item.discord_id, tax_adjusted_price
         )
 
-        await self.market_item_dao.delete_market_item(market_item_id)
+        await self.market_item_dao.mark_market_item_as_sold(market_item_id)
         logger.info(f"Completed market purchase: user {discord_id} bought {market_item.item_name} x{market_item.count} for {market_item.price} gold, seller received {tax_adjusted_price} gold")
         return market_item
 
@@ -83,14 +83,17 @@ class MarketService:
         return market_item
 
     async def unlist_market_item(self, market_item_id: int) -> None:
-        """Add a new item to the market."""
+        """Unlist an item from the market by returning it to the seller."""
         logger.info(f"Unlisting market item {market_item_id}")
         market_item = await self.market_item_dao.get_market_item_by_id(market_item_id)
-        await self.item_service.insert_item(
-            market_item.discord_id, market_item.item_name, market_item.count
-        )
-        await self.market_item_dao.delete_market_item(market_item_id)
-        logger.info(f"Unlisted market item {market_item_id}: returned {market_item.item_name} x{market_item.count} to user {market_item.discord_id}")
+        if market_item and not market_item.sold:
+            await self.item_service.insert_item(
+                market_item.discord_id, market_item.item_name, market_item.count
+            )
+            await self.market_item_dao.mark_market_item_as_sold(market_item_id)
+            logger.info(f"Unlisted market item {market_item_id}: returned {market_item.item_name} x{market_item.count} to user {market_item.discord_id}")
+        else:
+            logger.warning(f"Market item {market_item_id} not found or already sold")
 
     async def find_items_by_name(self, item_name: str) -> list[MarketItem]:
         """Search for items in the market by their name."""
