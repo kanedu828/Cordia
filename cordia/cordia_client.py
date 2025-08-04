@@ -90,7 +90,7 @@ class CordiaClient(commands.Bot):
 
         # SERVICES
         player_service = PlayerService(player_dao)
-        gear_service = GearService(gear_dao, player_gear_dao)
+        gear_service = GearService(gear_dao, player_gear_dao, player_service)
         boss_service = BossService(boss_instance_dao)
         cooldown_service = CooldownService()
         item_service = ItemService(item_dao)
