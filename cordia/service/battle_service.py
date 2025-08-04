@@ -65,7 +65,7 @@ class BattleService:
             return None
         else:
             buff = self.active_buffs[discord_id][0]
-            logger.debug(f"Active buff for user {discord_id}: {buff.name}")
+            logger.debug(f"Active buff for user {discord_id}")
             return buff
 
     async def boss_fight(
