@@ -1,5 +1,9 @@
 import datetime
+import logging
 from typing import Literal, Dict
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 
 class CooldownService:
@@ -9,6 +13,7 @@ class CooldownService:
             "attack": {},
             "cast_spell": {},
         }
+        logger.info("CooldownService initialized")
 
     def set_cooldown(
         self,
@@ -24,6 +29,7 @@ class CooldownService:
         :param duration: The cooldown duration in seconds.
         """
         self.cooldowns[action][discord_id] = expiration_time
+        logger.info(f"Set cooldown for user {discord_id}, action {action}, expires at {expiration_time}")
 
     def is_on_cooldown(
         self, discord_id: int, action: Literal["attack", "cast_spell"]
@@ -39,7 +45,9 @@ class CooldownService:
         if discord_id in self.cooldowns[action]:
             cooldown_end = self.cooldowns[action][discord_id]
             if current_time < cooldown_end:
+                logger.debug(f"User {discord_id} is on cooldown for {action}, expires at {cooldown_end}")
                 return True
+        logger.debug(f"User {discord_id} is not on cooldown for {action}")
         return False
 
     def get_cooldown_expiration(
@@ -53,7 +61,10 @@ class CooldownService:
         :return: The expiration datetime if on cooldown, or None if not on cooldown.
         """
         if discord_id in self.cooldowns[action]:
-            return self.cooldowns[action][discord_id]
+            expiration = self.cooldowns[action][discord_id]
+            logger.debug(f"Retrieved cooldown expiration for user {discord_id}, action {action}: {expiration}")
+            return expiration
+        logger.debug(f"No cooldown found for user {discord_id}, action {action}")
         return None
 
     def clear_cooldown(self, discord_id: int, action: Literal["attack", "cast_spell"]):
@@ -65,3 +76,16 @@ class CooldownService:
         """
         if discord_id in self.cooldowns[action]:
             del self.cooldowns[action][discord_id]
+            logger.info(f"Cleared cooldown for user {discord_id}, action {action}")
+        else:
+            logger.debug(f"No cooldown to clear for user {discord_id}, action {action}")
+
+    def get_cooldown_stats(self) -> Dict[str, int]:
+        """Get statistics about current cooldowns for monitoring."""
+        stats = {
+            "attack_cooldowns": len(self.cooldowns["attack"]),
+            "cast_spell_cooldowns": len(self.cooldowns["cast_spell"]),
+            "total_cooldowns": sum(len(cooldowns) for cooldowns in self.cooldowns.values())
+        }
+        logger.debug(f"Cooldown stats: {stats}")
+        return stats
