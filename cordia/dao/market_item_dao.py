@@ -9,12 +9,22 @@ class MarketItemDao:
 
     async def get_all_market_items(self) -> list[MarketItem]:
         query = """
-        SELECT id, discord_id, item_name, price, count, created_at, updated_at
+        SELECT id, discord_id, item_name, price, count, sold, created_at, updated_at
         FROM market_item
+        WHERE sold = false
         """
         async with self.pool.acquire() as connection:
             rows = await connection.fetch(query)
             return [MarketItem(**row) for row in rows]
+
+    async def mark_market_item_as_sold(self, market_item_id: int) -> None:
+        query = """
+        UPDATE market_item
+        SET sold = true, updated_at = NOW()
+        WHERE id = $1
+        """
+        async with self.pool.acquire() as connection:
+            await connection.execute(query, market_item_id)
 
     async def delete_market_item(self, market_item_id: int) -> None:
         query = """
@@ -28,9 +38,9 @@ class MarketItemDao:
         self, discord_id: int, item_name: str, price: int, count: int
     ) -> MarketItem:
         query = """
-        INSERT INTO market_item (discord_id, item_name, price, count, created_at, updated_at)
-        VALUES ($1, $2, $3, $4, NOW(), NOW())
-        RETURNING id, discord_id, item_name, price, count, created_at, updated_at
+        INSERT INTO market_item (discord_id, item_name, price, count, sold, created_at, updated_at)
+        VALUES ($1, $2, $3, $4, false, NOW(), NOW())
+        RETURNING id, discord_id, item_name, price, count, sold, created_at, updated_at
         """
         async with self.pool.acquire() as connection:
             row = await connection.fetchrow(query, discord_id, item_name, price, count)
@@ -38,10 +48,10 @@ class MarketItemDao:
 
     async def get_market_items_by_name(self, item_name: str) -> list[MarketItem]:
         query = """
-        SELECT m.id, m.discord_id, m.item_name, m.price, m.count, m.created_at, m.updated_at
+        SELECT m.id, m.discord_id, m.item_name, m.price, m.count, m.sold, m.created_at, m.updated_at
         FROM market_item m
         INNER JOIN item i ON m.item_name = i.id
-        WHERE i.item_name = $1
+        WHERE i.item_name = $1 AND m.sold = false
         """
         async with self.pool.acquire() as connection:
             rows = await connection.fetch(query, item_name)
@@ -49,7 +59,7 @@ class MarketItemDao:
 
     async def get_market_item_by_id(self, market_item_id: int) -> Optional[MarketItem]:
         query = """
-        SELECT id, discord_id, item_name, price, count, created_at, updated_at
+        SELECT id, discord_id, item_name, price, count, sold, created_at, updated_at
         FROM market_item
         WHERE id = $1
         """
@@ -58,3 +68,15 @@ class MarketItemDao:
             if row:
                 return MarketItem(**row)
             return None
+
+    async def get_sold_market_items(self) -> list[MarketItem]:
+        """Get all sold market items for transaction history."""
+        query = """
+        SELECT id, discord_id, item_name, price, count, sold, created_at, updated_at
+        FROM market_item
+        WHERE sold = true
+        ORDER BY updated_at DESC
+        """
+        async with self.pool.acquire() as connection:
+            rows = await connection.fetch(query)
+            return [MarketItem(**row) for row in rows]

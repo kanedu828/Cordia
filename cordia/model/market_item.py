@@ -10,6 +10,7 @@ class MarketItem:
     item_name: str
     price: int
     count: int
+    sold: bool
     created_at: datetime
     updated_at: datetime
 
