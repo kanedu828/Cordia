@@ -26,8 +26,8 @@ import discord
 
 class StatsPage(Page):
     async def render(self, interaction: discord.Interaction):
-        player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
-        player_gear = await self.cordia_service.get_player_gear(self.discord_id)
+        player = await self.cordia_service.player_service.get_player_by_discord_id(self.discord_id)
+        player_gear = await self.cordia_service.gear_service.get_player_gear(self.discord_id)
 
         view = self._create_view()
 
@@ -61,7 +61,7 @@ class StatsPage(Page):
                 upgrade_stat_button.callback = create_callback(s)
 
         achievement_stat_bonuses = (
-            await self.cordia_service.get_achievement_stat_bonuses(self.discord_id)
+            await self.cordia_service.achievement_service.get_achievement_stat_bonuses(self.discord_id)
         )
 
         stats_embed = self._create_embed(player, player_gear, achievement_stat_bonuses)
@@ -136,14 +136,14 @@ class StatsPage(Page):
     @only_command_invoker()
     async def rebirth_button_callback(self, interaction: discord.Interaction):
         async def confirmation_callback():
-            player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
+            player = await self.cordia_service.player_service.get_player_by_discord_id(self.discord_id)
             rebirth_points = get_rebirth_points(exp_to_level(player.exp))
-            await self.cordia_service.increment_rebirth_points(
+            await self.cordia_service.player_service.increment_rebirth_points(
                 self.discord_id, rebirth_points
             )
-            await self.cordia_service.rebirth_player(self.discord_id)
-            await self.cordia_service.remove_all_gear(self.discord_id)
-            armory = await self.cordia_service.get_armory(self.discord_id)
+            await self.cordia_service.player_service.rebirth_player(self.discord_id)
+            await self.cordia_service.gear_service.remove_all_gear(self.discord_id)
+            armory = await self.cordia_service.gear_service.get_armory(self.discord_id)
             level_one_weapon = next(
                 (
                     x
@@ -152,7 +152,7 @@ class StatsPage(Page):
                     and x.get_gear_data().type == GearType.WEAPON
                 )
             )
-            await self.cordia_service.equip_gear(
+            await self.cordia_service.gear_service.equip_gear(
                 self.discord_id, level_one_weapon.id, "weapon"
             )
             # Render the stats page after the followup

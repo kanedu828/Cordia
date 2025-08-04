@@ -20,7 +20,7 @@ import logging
 import logging.handlers
 
 from cordia.dao.player_dao import PlayerDao
-from cordia.service.cordia_service import CordiaService
+from cordia.service.cordia_service import CordiaManager
 from cordia.dao.gear_dao import GearDao
 from cordia.dao.player_gear_dao import PlayerGearDao
 from cordia.service.vote_service import VoteService
@@ -111,7 +111,7 @@ class CordiaClient(commands.Bot):
         market_service = MarketService(market_item_dao, item_service, player_service)
         vote_service = VoteService(item_service)
 
-        self.cordia_service = CordiaService(
+        self.cordia_service = CordiaManager(
             self,
             player_service,
             gear_service,

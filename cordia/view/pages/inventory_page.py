@@ -14,7 +14,7 @@ class InventoryPage(Page):
         self.items = []
 
     async def render(self, interaction: discord.Interaction):
-        self.items = await self.cordia_service.get_inventory(self.discord_id)
+        self.items = await self.cordia_service.item_service.get_inventory(self.discord_id)
         embed = await self._create_inventory_embed()
         view = self._create_view()
 
@@ -29,7 +29,7 @@ class InventoryPage(Page):
         end_index = min(start_index + self.items_per_page, len(self.items))
         items_on_page = self.items[start_index:end_index]
 
-        player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
+        player = await self.cordia_service.player_service.get_player_by_discord_id(self.discord_id)
 
         embed.add_field(name=display_gold(player.gold), value="", inline=False)
 

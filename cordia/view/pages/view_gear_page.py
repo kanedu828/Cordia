@@ -1,6 +1,6 @@
 import random
 from cordia.model.item import Item
-from cordia.service.cordia_service import CordiaService
+from cordia.service.cordia_service import CordiaManager
 from cordia.util.decorators import only_command_invoker
 from cordia.util.exp_util import exp_to_level
 from cordia.util.text_format_util import display_gold, get_stars_string
@@ -13,7 +13,7 @@ from discord.ui import Button, View, Select
 class ViewGearPage(Page):
     def __init__(
         self,
-        cordia_service: CordiaService,
+        cordia_service: CordiaManager,
         discord_id: int,
         gear_id: int,
         is_all: bool,
@@ -25,13 +25,13 @@ class ViewGearPage(Page):
         self.is_all = is_all  # Used to return to all armory if that is origin
 
     async def render(self, interaction: discord.Interaction):
-        gi = await self.cordia_service.get_gear_by_id(self.gear_id)
-        pg = await self.cordia_service.get_player_gear_by_gear_id(gi.id)
-        player = await self.cordia_service.get_player_by_discord_id(gi.discord_id)
+        gi = await self.cordia_service.gear_service.get_gear_by_id(self.gear_id)
+        pg = await self.cordia_service.gear_service.get_player_gear_by_gear_id(gi.id)
+        player = await self.cordia_service.player_service.get_player_by_discord_id(gi.discord_id)
         gd = gi.get_gear_data()
         equipped_tag = "[Equipped] " if pg else ""
 
-        cores = await self.cordia_service.get_cores_for_user(self.discord_id)
+        cores = await self.cordia_service.item_service.get_cores_for_user(self.discord_id)
 
         embed = discord.Embed(
             title=f"{equipped_tag}lv.{gd.level} {gd.name}", color=discord.Color.blue()
@@ -67,7 +67,7 @@ class ViewGearPage(Page):
         upgrade_item: Item = item_data[upgrade_cost["item"][0]]
         upgrade_cost_text = f"{display_gold(upgrade_cost['gold'])}"
 
-        player_upgrade_item = await self.cordia_service.get_item(
+        player_upgrade_item = await self.cordia_service.item_service.get_item(
             self.discord_id, upgrade_cost["item"][0]
         )
 
@@ -122,7 +122,7 @@ class ViewGearPage(Page):
             has_upgrade_cost,
         )
 
-        cores = await self.cordia_service.get_cores_for_user(self.discord_id)
+        cores = await self.cordia_service.item_service.get_cores_for_user(self.discord_id)
         if cores:
             options = [
                 discord.SelectOption(
@@ -174,17 +174,17 @@ class ViewGearPage(Page):
     @only_command_invoker()
     async def equip_button_callback(self, interaction: discord.Interaction):
         # Maybe worth reducing a db call by storing type and class var
-        gi = await self.cordia_service.get_gear_by_id(self.gear_id)
-        await self.cordia_service.equip_gear(
+        gi = await self.cordia_service.gear_service.get_gear_by_id(self.gear_id)
+        await self.cordia_service.gear_service.equip_gear(
             self.discord_id, self.gear_id, gi.get_gear_data().type.value
         )
         await self.render(interaction)
 
     @only_command_invoker()
     async def core_select_callback(self, interaction: discord.Interaction):
-        player = await self.cordia_service.get_player_by_discord_id(interaction.user.id)
+        player = await self.cordia_service.player_service.get_player_by_discord_id(interaction.user.id)
         core_value = interaction.data["values"][0]
-        gear = await self.cordia_service.get_gear_by_id(self.gear_id)
+        gear = await self.cordia_service.gear_service.get_gear_by_id(self.gear_id)
         use_core_cost = gear.get_gear_data().get_use_core_cost()
         embed = discord.Embed(
             title=f"Use Core",
@@ -200,23 +200,23 @@ class ViewGearPage(Page):
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
         bonus_str = gear.get_gear_data().get_bonus_string(core_value)
-        await self.cordia_service.update_gear_bonus(self.gear_id, bonus_str)
-        await self.cordia_service.insert_item(interaction.user.id, core_value, -1)
-        await self.cordia_service.increment_gold(interaction.user.id, -use_core_cost)
+        await self.cordia_service.gear_service.update_gear_bonus(self.gear_id, bonus_str)
+        await self.cordia_service.item_service.insert_item(interaction.user.id, core_value, -1)
+        await self.cordia_service.player_service.increment_gold(interaction.user.id, -use_core_cost)
         await self.render(interaction)
 
     @only_command_invoker()
     async def upgrade_button_callback(self, interaction: discord.Interaction):
-        gi = await self.cordia_service.get_gear_by_id(self.gear_id)
+        gi = await self.cordia_service.gear_service.get_gear_by_id(self.gear_id)
         upgrade_cost = gi.get_upgrade_cost()["gold"]
         upgrade_item_cost = gi.get_upgrade_cost()["item"]
         embed = discord.Embed(title=f"Upgrade Gear", color=discord.Color.green())
 
         # Deduct costs
-        await self.cordia_service.insert_item(
+        await self.cordia_service.item_service.insert_item(
             self.discord_id, upgrade_item_cost[0], -upgrade_item_cost[1]
         )
-        await self.cordia_service.increment_gold(interaction.user.id, -upgrade_cost)
+        await self.cordia_service.player_service.increment_gold(interaction.user.id, -upgrade_cost)
 
         upgrade_field_name = "You successfully upgraded your gear!"
         upgrade_field_value = f"You have upgraded your **{gi.get_gear_data().name}** to **{gi.stars + 1} stars**!"
@@ -224,18 +224,18 @@ class ViewGearPage(Page):
         if gi.stars >= gi.get_gear_data().get_max_stars():
             chaos_star_succeed = random.random() < 0.3
             if chaos_star_succeed:
-                await self.cordia_service.increment_gear_stars(self.gear_id, 1)
+                await self.cordia_service.gear_service.increment_gear_stars(self.gear_id, 1)
             else:
                 embed.color = discord.Color.red()
                 if gi.stars > gi.get_gear_data().get_max_stars():
-                    await self.cordia_service.increment_gear_stars(self.gear_id, -1)
+                    await self.cordia_service.gear_service.increment_gear_stars(self.gear_id, -1)
                     upgrade_field_name = "Your chaos star shattered..."
                     upgrade_field_value = f"Your **{gi.get_gear_data().name}** degraded to **{gi.stars - 1} stars**"
                 else:
                     upgrade_field_name = "Your chaos upgrade failed..."
                     upgrade_field_value = f"Your **{gi.get_gear_data().name}** remains at **{gi.stars} stars**"
         else:
-            await self.cordia_service.increment_gear_stars(self.gear_id, 1)
+            await self.cordia_service.gear_service.increment_gear_stars(self.gear_id, 1)
 
         embed.add_field(
             name=upgrade_field_name,
@@ -249,7 +249,7 @@ class ViewGearPage(Page):
     async def back_button_callback(self, interaction: discord.Interaction):
         from cordia.view.pages.gear_page import GearPage
 
-        gear = await self.cordia_service.get_gear_by_id(self.gear_id)
+        gear = await self.cordia_service.gear_service.get_gear_by_id(self.gear_id)
         gear_page = await GearPage.create(
             self.cordia_service,
             self.discord_id,
