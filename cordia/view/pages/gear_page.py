@@ -3,6 +3,7 @@ from cordia.model.gear import GearType
 from cordia.model.gear_instance import GearInstance
 from cordia.service.cordia_service import CordiaManager
 from cordia.util.decorators import only_command_invoker
+from cordia.util.constants import VIEW_TIMEOUT
 from cordia.util.gear_util import display_gear_set_stats_for_set, get_gear_set_count
 from cordia.util.text_format_util import snake_case_to_capital
 from cordia.view.pages.page import Page
@@ -152,7 +153,7 @@ class GearPage(Page):
         await interaction.response.edit_message(embed=embed, view=view)
 
     def _create_view(self):
-        view = View(timeout=None)
+        view = View(timeout=VIEW_TIMEOUT)  # 5 minute timeout instead of None
 
         equipped_gear_button = Button(
             label="Equipped Gear", style=discord.ButtonStyle.blurple, row=2
@@ -186,7 +187,7 @@ class GearPage(Page):
         return view
 
     def _create_gear_sets_view(self):
-        view = View(timeout=None)
+        view = View(timeout=VIEW_TIMEOUT)  # 5 minute timeout instead of None
 
         equipped_gear_button = Button(
             label="Equipped Gear", style=discord.ButtonStyle.blurple, row=2
@@ -221,7 +222,7 @@ class GearPage(Page):
         return view
 
     def _create_armory_view(self):
-        view = View(timeout=None)
+        view = View(timeout=VIEW_TIMEOUT)  # 5 minute timeout instead of None
 
         gear_type_options = [discord.SelectOption(label="All", value="all")]
         gear_type_options += [

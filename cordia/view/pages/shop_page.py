@@ -1,5 +1,6 @@
 from cordia.model.shop_item import ShopItem, ShopItemType
 from cordia.util.decorators import only_command_invoker
+from cordia.util.constants import VIEW_TIMEOUT
 from cordia.util.text_format_util import display_gold
 from cordia.view.pages.page import Page
 from cordia.data.shop_items import shop_item_data
@@ -59,7 +60,7 @@ class ShopPage(Page):
         return embed
 
     def _create_view(self):
-        view = View(timeout=None)
+        view = View(timeout=VIEW_TIMEOUT)  # 5 minute timeout instead of None
 
         select_options = [
             discord.SelectOption(label=shop_item_data[i].get_item_data().name, value=i)

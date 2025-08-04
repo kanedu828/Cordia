@@ -1,7 +1,9 @@
 from cordia.model.gear import GearType
 from cordia.model.gear_instance import GearInstance
 from cordia.util.decorators import only_command_invoker
+from cordia.util.constants import VIEW_TIMEOUT
 from cordia.util.gear_util import get_weapon_from_player_gear
+from cordia.util.constants import VIEW_TIMEOUT
 from cordia.view.pages.page import Page
 import discord
 from discord.ui import Button, View
@@ -71,7 +73,7 @@ class HomePage(Page):
             )
 
     def _create_new_player_view(self, interaction: discord.Interaction):
-        view = View(timeout=None)
+        view = View(timeout=VIEW_TIMEOUT)
 
         def gen_weapon_callback(weapon):
             async def equip_weapon(interaction: discord.Interaction):
@@ -105,7 +107,7 @@ class HomePage(Page):
         return view
 
     def _create_view(self):
-        view = View(timeout=None)
+        view = View(timeout=VIEW_TIMEOUT)
 
         # Fight button with callback attached
         fight_button = Button(label="Fight", style=discord.ButtonStyle.blurple)

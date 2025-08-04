@@ -1,4 +1,5 @@
 from cordia.util.decorators import only_command_invoker
+from cordia.util.constants import VIEW_TIMEOUT
 from cordia.view.pages.page import Page
 import discord
 from discord.ui import View, Button
@@ -161,7 +162,7 @@ class GuidePage(Page):
         await interaction.response.edit_message(embed=embed, view=self._create_view())
 
     def _create_view(self):
-        view = View(timeout=None)
+        view = View(timeout=VIEW_TIMEOUT)  # 5 minute timeout instead of None
 
         stats_button = Button(label="Stats", style=discord.ButtonStyle.blurple)
         stats_button.callback = self.stats_button_callback

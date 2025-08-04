@@ -4,6 +4,7 @@ from cordia.model.attack_result import AttackResult
 from cordia.model.location import Location
 from cordia.util.battle_util import get_random_battle_text
 from cordia.util.decorators import only_command_invoker
+from cordia.util.constants import VIEW_TIMEOUT
 from cordia.util.exp_util import exp_to_level
 from cordia.util.gear_util import get_weapon_from_player_gear
 from cordia.util.text_format_util import display_exp, display_gold, exp_bar
@@ -243,8 +244,8 @@ class FightPage(Page):
                 ephemeral=True,
             )
 
-    async def _create_view(self):
-        view = View(timeout=None)
+    async     def _create_view(self):
+        view = View(timeout=VIEW_TIMEOUT)  # 5 minute timeout instead of None
 
         attack_button = Button(label="Attack", style=discord.ButtonStyle.blurple, row=1)
         attack_button.callback = self.attack
