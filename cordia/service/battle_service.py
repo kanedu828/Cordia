@@ -1,4 +1,5 @@
 import datetime
+import logging
 import random
 from typing import Literal
 from cordia.model.attack_result import AttackResult
@@ -28,6 +29,9 @@ from cordia.data.bosses import boss_data
 from cordia.data.monsters import monster_data
 from cordia.data.locations import location_data
 
+# Set up logger for this module
+logger = logging.getLogger(__name__)
+
 
 class BattleService:
     def __init__(
@@ -49,6 +53,7 @@ class BattleService:
         self.achievement_service = achievement_service
 
         self.active_buffs: dict[int, tuple[Buff, datetime.datetime]] = {}
+        logger.info("BattleService initialized")
 
     def get_active_buff(self, discord_id: int) -> Buff:
         current_time = datetime.datetime.now(datetime.timezone.utc)
@@ -56,15 +61,20 @@ class BattleService:
             discord_id not in self.active_buffs
             or self.active_buffs[discord_id][1] < current_time
         ):
+            logger.debug(f"No active buff for user {discord_id}")
             return None
         else:
-            return self.active_buffs[discord_id][0]
+            buff = self.active_buffs[discord_id][0]
+            logger.debug(f"Active buff for user {discord_id}: {buff.name}")
+            return buff
 
     async def boss_fight(
         self, discord_id: int, action: Literal["attack", "cast_spell"] = "attack"
     ) -> BossFightResult:
+        logger.info(f"Boss fight initiated for user {discord_id} with action {action}")
         boss_instance = await self.boss_service.get_boss_by_discord_id(discord_id)
         if self.cooldown_service.is_on_cooldown(discord_id, action):
+            logger.debug(f"User {discord_id} is on cooldown for {action}")
             return BossFightResult(
                 on_cooldown=True,
                 cooldown_expiration=self.cooldown_service.get_cooldown_expiration(
@@ -76,6 +86,7 @@ class BattleService:
         current_time = datetime.datetime.now(datetime.timezone.utc)
 
         if current_time > boss_instance.expiration_time:
+            logger.info(f"Boss expired for user {discord_id}")
             await self.boss_service.delete_boss(discord_id)
             return BossFightResult(
                 is_expired=True,
@@ -93,6 +104,7 @@ class BattleService:
         player_stats = get_player_stats(player, player_gear, achievement_stats)
         if active_buff:
             player_stats += active_buff.stat_bonus
+            logger.debug(f"Applied buff {active_buff.name} for user {discord_id}")
         weapon = get_weapon_from_player_gear(player_gear)
         weapon_data = weapon.get_gear_data()
         boss = boss_data[boss_instance.name]
@@ -278,6 +290,7 @@ class BattleService:
         player_stats = get_player_stats(player, player_gear, achievement_stats)
         if active_buff:
             player_stats += active_buff.stat_bonus
+            logger.debug(f"Applied buff {active_buff.name} for user {discord_id}")
         location = location_data[player.location]
         if self.cooldown_service.is_on_cooldown(discord_id, action):
             return AttackResult(

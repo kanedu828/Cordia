@@ -1,4 +1,5 @@
 import datetime
+import logging
 from typing import List, Literal, Optional
 
 from cordia.model.achievement_instance import AchievementInstance
@@ -21,6 +22,9 @@ from cordia.service.market_service import MarketService
 from cordia.service.player_service import PlayerService
 from cordia.service.vote_service import VoteService
 from cordia.util.exp_util import exp_to_level
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 
 class CordiaManager:
@@ -47,3 +51,23 @@ class CordiaManager:
         self.achievement_service = achievement_service
         self.market_service = market_service
         self.vote_service = vote_service
+        logger.info("CordiaManager initialized with all services")
+
+    def get_manager_stats(self) -> dict:
+        """Get statistics about all services for monitoring."""
+        stats = {
+            "service_name": "CordiaManager",
+            "services": [
+                "player_service",
+                "gear_service", 
+                "boss_service",
+                "battle_service",
+                "item_service",
+                "leaderboard_service",
+                "achievement_service",
+                "market_service",
+                "vote_service"
+            ]
+        }
+        logger.debug(f"CordiaManager stats: {stats}")
+        return stats
