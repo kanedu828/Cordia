@@ -26,7 +26,8 @@ class GearService:
         logger.debug(f"Getting gear by ID: {id}")
         gear = await self.gear_dao.get_gear_by_id(id)
         if gear:
-            logger.debug(f"Found gear {id}: {gear.name} (level {gear.level})")
+            gear_data = gear.get_gear_data()
+            logger.debug(f"Found gear {id}: {gear.name} (level {gear_data.level})")
         else:
             logger.debug(f"No gear found for ID: {id}")
         return gear
