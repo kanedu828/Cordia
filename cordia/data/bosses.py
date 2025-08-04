@@ -210,6 +210,7 @@ boss_data = {
             ("olympian_soul", 1.0),
             ("olympian_soul", 0.3),
             ("olympian_soul", 0.3),
+            ("chaos_shard", 0.2),
         ],
         type=MonsterType.BOSS,
     ),
@@ -228,6 +229,7 @@ boss_data = {
             ("olympian_soul", 1.0),
             ("olympian_soul", 0.3),
             ("olympian_soul", 0.3),
+            ("chaos_shard", 0.2),
         ],
         type=MonsterType.BOSS,
     )
