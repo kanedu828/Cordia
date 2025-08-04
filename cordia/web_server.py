@@ -56,6 +56,10 @@ class WebServer:
                     discord_id
                 )
             )
+
+            # Reset boss cooldown
+            await self.cordia_client.cordia_service.player_service.update_last_boss_killed(discord_id, 24)
+            
             item_instance = ItemInstance(0, reward_item, reward_count, None, None)
             self.cordia_client.logger.info(f"Vote received for user: {discord_id}")
 

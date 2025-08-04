@@ -104,10 +104,10 @@ class PlayerService:
         logger.debug(f"Found {count} players in location {location}")
         return count
 
-    async def update_last_boss_killed(self, discord_id: int):
-        current_time = datetime.datetime.now(datetime.timezone.utc)
-        logger.info(f"Updating last boss killed for user {discord_id} to {current_time}")
-        await self.player_dao.update_last_boss_killed(discord_id, current_time)
+    async def update_last_boss_killed(self, discord_id: int, hours_passed: int = 0):
+        last_killed_time = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=hours_passed)
+        logger.info(f"Updating last boss killed for user {discord_id} to {last_killed_time}")
+        await self.player_dao.update_last_boss_killed(discord_id, last_killed_time)
 
     async def rebirth_player(self, discord_id: int):
         logger.info(f"Rebirthing player: {discord_id}")
