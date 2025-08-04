@@ -1,5 +1,5 @@
 import math
-from cordia.service.cordia_service import CordiaService
+from cordia.service.cordia_service import CordiaManager
 from cordia.util.decorators import only_command_invoker
 from cordia.util.text_format_util import display_gold
 from cordia.view.buy_market_item_modal import BuyMarketItemModal
@@ -11,7 +11,7 @@ from discord.ui import View, Button
 
 class MarketPage(Page):
 
-    def __init__(self, cordia_service: CordiaService, discord_id: int, page_number=0):
+    def __init__(self, cordia_service: CordiaManager, discord_id: int, page_number=0):
         super().__init__(cordia_service, discord_id)
         self.page_number = page_number
         self.items_per_page = 10
@@ -33,7 +33,7 @@ class MarketPage(Page):
         end_index = min(start_index + self.items_per_page, len(self.items))
         items_on_page = self.items[start_index:end_index]
 
-        player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
+        player = await self.cordia_service.player_service.get_player_by_discord_id(self.discord_id)
 
         embed.add_field(name=display_gold(player.gold), value="", inline=False)
 

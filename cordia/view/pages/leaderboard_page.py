@@ -17,11 +17,11 @@ class LeaderboardPage(Page):
 
     async def render_leaderboard(self, interaction: discord.Interaction):
         if self.daily:
-            player_rank = await self.cordia_service.get_player_daily_rank_by_column(
+            player_rank = await self.cordia_service.leaderboard_service.get_player_daily_rank_by_column(
                 self.discord_id, self.type
             )
         else:
-            player_rank = await self.cordia_service.get_player_rank_by_column(
+            player_rank = await self.cordia_service.leaderboard_service.get_player_rank_by_column(
                 self.discord_id, self.type
             )
         # Create embed to show players on the current page
@@ -34,7 +34,7 @@ class LeaderboardPage(Page):
 
     async def render(self, interaction: discord.Interaction):
         # Fetch top 100 players and player rank
-        self.top_100_players = await self.cordia_service.get_top_100_players_by_column(
+        self.top_100_players = await self.cordia_service.leaderboard_service.get_top_100_players_by_column(
             self.type
         )
         self.daily = False
@@ -43,7 +43,7 @@ class LeaderboardPage(Page):
     async def render_daily_leaderboard(self, interaction: discord.Interaction):
         # Fetch top 100 players and player rank
         self.top_100_players = (
-            await self.cordia_service.get_top_100_daily_players_by_column(self.type)
+            await self.cordia_service.leaderboard_service.get_top_100_daily_players_by_column(self.type)
         )
         self.daily = True
         await self.render_leaderboard(interaction)
@@ -126,7 +126,7 @@ class LeaderboardPage(Page):
 
         # Add each player to the embed, with special emojis for the top 3
         for idx, player in enumerate(players_on_page, start=start_index + 1):
-            user = await self.cordia_service.get_leaderboard_user(player.discord_id)
+            user = await self.cordia_service.leaderboard_service.get_leaderboard_user(player.discord_id)
 
             # Determine the rank to display
             if idx == 1:

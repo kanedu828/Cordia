@@ -15,7 +15,7 @@ class ShopPage(Page):
         self.items = []
 
     async def render(self, interaction: discord.Interaction):
-        armory = await self.cordia_service.get_armory(self.discord_id)
+        armory = await self.cordia_service.gear_service.get_armory(self.discord_id)
         armory = {a.name for a in armory}
         shop_items = shop_item_data.copy()
         shop_items = {k: v for k, v in shop_items.items() if k not in armory}
@@ -34,7 +34,7 @@ class ShopPage(Page):
 
         items_on_page: list[str] = self.items[self.page_number]
 
-        player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
+        player = await self.cordia_service.player_service.get_player_by_discord_id(self.discord_id)
 
         embed.add_field(name=display_gold(player.gold), value="", inline=False)
 
@@ -100,11 +100,11 @@ class ShopPage(Page):
     async def buy_item_select_callback(self, interaction: discord.Interaction):
         si = shop_item_data[interaction.data["values"][0]]
         embed = discord.Embed(title="Purchase Item", color=discord.Color.red())
-        player = await self.cordia_service.get_player_by_discord_id(self.discord_id)
+        player = await self.cordia_service.player_service.get_player_by_discord_id(self.discord_id)
 
         # Check item cost if applicable
         if si.item_cost:
-            player_item = await self.cordia_service.get_item(
+            player_item = await self.cordia_service.item_service.get_item(
                 self.discord_id, si.item_cost[0]
             )
             if not player_item or player_item.count < si.item_cost[1]:
@@ -124,18 +124,18 @@ class ShopPage(Page):
             return
 
         # Deduct gold
-        await self.cordia_service.increment_gold(self.discord_id, -si.gold_cost)
+        await self.cordia_service.player_service.increment_gold(self.discord_id, -si.gold_cost)
 
         # Deduct the item cost
-        await self.cordia_service.insert_item(
+        await self.cordia_service.item_service.insert_item(
             self.discord_id, si.item_cost[0], -si.item_cost[1]
         )
 
         # Insert item or gear based on the shop item type
         if si.type == ShopItemType.GEAR:
-            await self.cordia_service.insert_gear(self.discord_id, si.item_name)
+            await self.cordia_service.gear_service.insert_gear(self.discord_id, si.item_name)
         elif si.type == ShopItemType.ITEM:
-            await self.cordia_service.insert_item(
+            await self.cordia_service.item_service.insert_item(
                 self.discord_id, si.item_name, si.item_quantity
             )
 
