@@ -20,6 +20,11 @@ shop_item_data: dict[str, ShopItem] = {
         item_cost=("quality_core", 50),
         item_quantity=10,
     ),
+    "chaos_shard": ShopItem(
+        item_name="chaos_shard",
+        type=ShopItemType.ITEM,
+        item_cost=("shard", 100),
+    ),
     "shadow_master_dagger": ShopItem(
         item_name="shadow_master_dagger",
         type=ShopItemType.GEAR,
@@ -231,5 +236,29 @@ shop_item_data: dict[str, ShopItem] = {
         type=ShopItemType.GEAR,
         item_cost=("ancient_ocean_guardian_soul", 5),
         gold_cost=100000,
+    ),
+    "olympian_sword": ShopItem(
+        item_name="olympian_sword",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=100000,
+    ),
+    "olympian_bow": ShopItem(
+        item_name="olympian_bow",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_spellbook": ShopItem(
+        item_name="olympian_spellbook",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_dagger": ShopItem(
+        item_name="olympian_dagger",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
     ),
 }

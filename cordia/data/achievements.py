@@ -147,4 +147,28 @@ achievement_data = {
         stat_bonus=PlayerStats(boss_damage=3),
         stat_modifier="+",
     ),
+    "olympian_general": Achievement(
+        monster="Olympian General",
+        monster_killed_increment=5,
+        stat_bonus=PlayerStats(damage=10),
+        stat_modifier="+",
+    ),
+    "olympian_titan": Achievement(
+        monster="Olympian Titan",
+        monster_killed_increment=5,
+        stat_bonus=PlayerStats(damage=3),
+        stat_modifier="%",
+    ),
+    "hermes": Achievement(
+        monster="Hermes",
+        monster_killed_increment=5,
+        stat_bonus=PlayerStats(efficiency=5),
+        stat_modifier="%",
+    ),
+    "hercules": Achievement(
+        monster="Hercules",
+        monster_killed_increment=5,
+        stat_bonus=PlayerStats(strength=5),
+        stat_modifier="%",
+    ),
 }

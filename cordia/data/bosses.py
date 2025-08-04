@@ -195,4 +195,40 @@ boss_data = {
         ],
         type=MonsterType.BOSS,
     ),
+    "hercules": Monster(
+        name="Hercules",
+        level=275,
+        hp=5_000_000,
+        gold=10000,
+        exp=50000,
+        resistance=35,
+        defense=80,
+        gear_loot=[
+            ("hercules_top", 0.02),
+        ],
+        item_loot=[
+            ("olympian_soul", 1.0),
+            ("olympian_soul", 0.3),
+            ("olympian_soul", 0.3),
+        ],
+        type=MonsterType.BOSS,
+    ),
+    "hermes": Monster(
+        name="Hermes",
+        level=300,
+        hp=15_000_000,
+        gold=20_000,
+        exp=75_000,
+        resistance=50,
+        defense=80,
+        gear_loot=[
+            ("hermes_shoes", 0.02),
+        ],
+        item_loot=[
+            ("olympian_soul", 1.0),
+            ("olympian_soul", 0.3),
+            ("olympian_soul", 0.3),
+        ],
+        type=MonsterType.BOSS,
+    )
 }

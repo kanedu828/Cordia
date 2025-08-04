@@ -23,6 +23,7 @@ item_data = {
         emoji="<:cordia_chaos_core:1284035789138952284>",
     ),
     "shard": Item(name="Shard", description="Used to upgrade gear"),
+    "chaos_shard": Item(name="Chaos Shard", description="Used to upgrade gear"),
     "ice_queen_soul": Item(
         name="Ice Queen Soul", description="Used to purchase and upgrade certain gear"
     ),
@@ -48,6 +49,10 @@ item_data = {
     ),
     "ancient_ocean_guardian_soul": Item(
         name="Ancient Ocean Guardian Soul",
+        description="Used to purchase and upgrade certain gear",
+    ),
+    "olympian_soul": Item(
+        name="Olympian Soul",
         description="Used to purchase and upgrade certain gear",
     ),
 }

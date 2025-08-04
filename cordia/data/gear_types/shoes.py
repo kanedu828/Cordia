@@ -81,4 +81,13 @@ shoes_data = {
         upgrade_item="ancient_ocean_guardian_soul",
         gear_set="ancient_ocean_guardian",
     ),
+    "hermes_shoes": Gear(
+        name="Hermes Shoes",
+        type=GearType.SHOES,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(efficiency=200, damage=10),
+        upgrade_item="chaos_shard",
+        gear_set="olympian_god",
+    ),
 }

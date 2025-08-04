@@ -102,4 +102,13 @@ hat_data = {
         upgrade_item="ancient_ocean_guardian_soul",
         gear_set="ancient_ocean_guardian",
     ),
+    "olympian_general_helmet": Gear(
+        name="Olympian General Helmet",
+        type=GearType.HAT,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(strength=150),
+        upgrade_item="chaos_shard",
+        gear_set="olympian",
+    ),
 }

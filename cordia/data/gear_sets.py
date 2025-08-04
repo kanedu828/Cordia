@@ -50,4 +50,16 @@ gear_set_data = {
             combo_chance=5,
         ),
     },
+    "olympian": {
+        1: PlayerStats(),
+        2: PlayerStats(strength=75, efficiency=75, persistence=75, intelligence=75, luck=75),
+        3: PlayerStats(damage=25),
+        4: PlayerStats(boss_damage=40),
+        5: PlayerStats(penetration=10, spell_penetration=10),
+    },
+    "olympian_god": {
+        1: PlayerStats(damage=50),
+        2: PlayerStats(penetration=10, spell_penetration=10),
+        3: PlayerStats(boss_damage=40),
+    },
 }
