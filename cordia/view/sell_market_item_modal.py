@@ -1,9 +1,12 @@
+import logging
 from cordia.service.cordia_service import CordiaManager
 from cordia.util.errors import InvalidItemError, NotEnoughItemsError, InvalidInputError
 from cordia.util.text_format_util import display_gold, get_stat_emoji
 from discord.ui import Modal, TextInput
 import discord
 from cordia.data.items import item_data
+
+logger = logging.getLogger(__name__)
 
 
 class SellMarketItemModal(Modal):
@@ -65,7 +68,7 @@ class SellMarketItemModal(Modal):
             await interaction.response.send_message(embed=fail_embed, ephemeral=True)
             return
         except Exception as e:
-            print(e)
+            logger.debug(f"Error in sell market item modal: {e}")
             fail_embed = discord.Embed(
                 title="Error",
                 description=f"❌Please enter a valid price or count.",

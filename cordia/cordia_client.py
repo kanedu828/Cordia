@@ -126,3 +126,8 @@ class CordiaClient(commands.Bot):
 
     async def on_ready(self):
         self.logger.info(f"Logged in as {self.user.name} (ID: {self.user.id})")
+
+    async def on_error(self, event_method: str, *args, **kwargs):
+        """Global error handler for unhandled exceptions."""
+        import traceback
+        self.logger.error(f"Unhandled exception in {event_method}: {traceback.format_exc()}")

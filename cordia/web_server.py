@@ -21,7 +21,9 @@ class WebServer:
             response = await handler(request)
             return response
         except Exception as e:
-            self.cordia_client.logger.error(f"Unhandled exception: {e}")
+            import traceback
+            self.cordia_client.logger.error(f"Unhandled exception in web server: {e}")
+            self.cordia_client.logger.debug(f"Traceback: {traceback.format_exc()}")
             return web.Response(status=500, text="Internal server error")
 
     async def handle_topgg_vote(self, request):

@@ -1,10 +1,13 @@
 import math
+import logging
 from cordia.service.cordia_service import CordiaManager
 from cordia.util.errors import InvalidItemError, NotEnoughGoldError
 from cordia.util.text_format_util import display_gold
 from discord.ui import Modal, TextInput
 import discord
 from cordia.data.items import item_data
+
+logger = logging.getLogger(__name__)
 
 
 class BuyMarketItemModal(Modal):
@@ -55,7 +58,7 @@ class BuyMarketItemModal(Modal):
                 pass
             except Exception as e:
                 # Other errors - log but don't fail the transaction
-                print(f"Failed to notify seller {market_item.discord_id}: {e}")
+                logger.debug(f"Failed to notify seller {market_item.discord_id}: {e}")
         except NotEnoughGoldError as e:
             fail_embed = discord.Embed(
                 title="Error",
