@@ -4,15 +4,17 @@ from cordia.dao.gear_dao import GearDao
 from cordia.dao.player_gear_dao import PlayerGearDao
 from cordia.model.gear import GearType
 from cordia.model.gear_instance import GearInstance
-
+from cordia.service.player_service import PlayerService
+from cordia.util.exp_util import exp_to_level
 # Set up logger for this module
 logger = logging.getLogger(__name__)
 
 
 class GearService:
-    def __init__(self, gear_dao: GearDao, player_gear_dao: PlayerGearDao):
+    def __init__(self, gear_dao: GearDao, player_gear_dao: PlayerGearDao, player_service: PlayerService):
         self.gear_dao = gear_dao
         self.player_gear_dao = player_gear_dao
+        self.player_service = player_service
         logger.info("GearService initialized")
 
     # Gear
@@ -50,7 +52,9 @@ class GearService:
         await self.gear_dao.update_bonus(gear_id, bonus)
         logger.debug(f"Updated gear {gear_id} bonus: {bonus}")
 
-    async def equip_highest_level_gear(self, discord_id: int, level: int) -> list[str]:
+    async def equip_highest_level_gear(self, discord_id: int) -> list[str]:
+        player = await self.player_service.get_player_by_discord_id(discord_id=discord_id)
+        level = exp_to_level(player.exp)
         logger.info(f"Equipping highest level gear for user {discord_id} at level {level}")
         armory = await self.get_armory(discord_id)
         armory = [a for a in armory if a.get_gear_data().level <= level]
