@@ -15,41 +15,6 @@ class Util(commands.Cog):
         message: str = "Pong! {0}".format(round(self.bot.latency * 1000, 1))
         await interaction.response.send_message(message, ephemeral=True)
 
-    @app_commands.command(name="memory")
-    @app_commands.description("Get memory usage statistics")
-    async def memory(self, interaction: discord.Interaction) -> None:
-        """Get memory usage statistics for monitoring"""
-        try:
-            embed = discord.Embed(
-                title="Memory Usage Statistics",
-                color=discord.Color.blue()
-            )
-            
-            # Garbage collection info
-            gc_stats = gc.get_stats()
-            total_collections = sum(stat['collections'] for stat in gc_stats)
-            embed.add_field(
-                name="Garbage Collection",
-                value=f"Collections: {total_collections}",
-                inline=False
-            )
-            
-            # Memory leak prevention info
-            embed.add_field(
-                name="Memory Leak Prevention",
-                value="✅ View timeouts set to 1 hour\n"
-                      "✅ Views will expire automatically",
-                inline=False
-            )
-            
-            await interaction.response.send_message(embed=embed, ephemeral=True)
-            
-        except Exception as e:
-            await interaction.response.send_message(
-                f"Error getting memory stats: {str(e)}", 
-                ephemeral=True
-            )
-
     @commands.command(name="sync")
     @commands.guild_only()
     @commands.is_owner()
