@@ -7,7 +7,6 @@ from cordia.data.bosses import boss_data
 class BossService:
     def __init__(self, boss_instance_dao: BossInstanceDao):
         self.boss_instance_dao = boss_instance_dao
-
         self.boss_time_remaining = {}
 
     async def get_boss_by_discord_id(self, discord_id: int) -> BossInstance:

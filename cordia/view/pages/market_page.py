@@ -1,6 +1,7 @@
 import math
 from cordia.service.cordia_service import CordiaManager
 from cordia.util.decorators import only_command_invoker
+from cordia.util.constants import VIEW_TIMEOUT
 from cordia.util.text_format_util import display_gold
 from cordia.view.buy_market_item_modal import BuyMarketItemModal
 from cordia.view.sell_market_item_modal import SellMarketItemModal
@@ -51,7 +52,7 @@ class MarketPage(Page):
         return embed
 
     def _create_view(self):
-        view = View(timeout=None)
+        view = View(timeout=VIEW_TIMEOUT)  # 5 minute timeout instead of None
 
         # Add Back button to go back to the home page
         back_button = Button(label="Back", style=discord.ButtonStyle.grey, row=3)

@@ -3,6 +3,7 @@ from cordia.model.gear_instance import GearInstance
 from cordia.model.player import Player
 from cordia.model.player_stats import PlayerStats
 from cordia.util.decorators import only_command_invoker
+from cordia.util.constants import VIEW_TIMEOUT
 from cordia.util.exp_util import exp_to_level
 from cordia.util.gear_util import get_weapon_from_player_gear
 from cordia.util.interaction_util import edit_message_with_done
@@ -69,7 +70,7 @@ class StatsPage(Page):
         await edit_message_with_done(interaction, stats_embed, view)
 
     def _create_view(self):
-        view = View(timeout=None)
+        view = View(timeout=VIEW_TIMEOUT)  # 5 minute timeout instead of None
 
         rebirth_button = Button(
             label="Rebirth", style=discord.ButtonStyle.blurple, row=2

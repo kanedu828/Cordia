@@ -2,8 +2,10 @@ from datetime import datetime, timedelta, timezone
 from typing import Literal
 from cordia.model.boos_fight_result import BossFightResult
 from cordia.util.decorators import only_command_invoker
+from cordia.util.constants import VIEW_TIMEOUT
 from cordia.util.exp_util import exp_to_level
 from cordia.util.gear_util import get_weapon_from_player_gear
+from cordia.util.constants import VIEW_TIMEOUT
 from cordia.util.interaction_util import edit_message_with_done
 from cordia.util.text_format_util import display_exp, display_gold, hp_bar
 from cordia.view.confirmation_modal import ConfirmationModal
@@ -270,7 +272,7 @@ class FightBossPage(Page):
         )
 
     async def _create_boss_select_view(self):
-        view = View(timeout=None)
+        view = View(timeout=VIEW_TIMEOUT)
         player = await self.cordia_service.player_service.get_player_by_discord_id(self.discord_id)
         current_level = exp_to_level(player.exp)
 
@@ -303,14 +305,14 @@ class FightBossPage(Page):
         return view
 
     async def _create_loot_room_view(self):
-        view = View(timeout=None)
+        view = View(timeout=VIEW_TIMEOUT)
         back_button = Button(label="Back", style=discord.ButtonStyle.grey, row=2)
         back_button.callback = self.back_button_callback
         view.add_item(back_button)
         return view
 
     async def _create_view(self):
-        view = View(timeout=None)
+        view = View(timeout=VIEW_TIMEOUT)
 
         attack_button = Button(label="Attack", style=discord.ButtonStyle.blurple, row=1)
         attack_button.callback = self.attack
