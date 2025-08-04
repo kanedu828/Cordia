@@ -59,7 +59,7 @@ class WebServer:
 
             # Reset boss cooldown
             await self.cordia_client.cordia_service.player_service.update_last_boss_killed(discord_id, 24)
-            
+
             item_instance = ItemInstance(0, reward_item, reward_count, None, None)
             self.cordia_client.logger.info(f"Vote received for user: {discord_id}")
 
@@ -71,7 +71,7 @@ class WebServer:
                     try:
                         embed = Embed(
                             title="🎉 Thank You for Voting!",
-                            description=f"You've been rewarded for supporting Cordia!",
+                            description=f"You've been rewarded for supporting Cordia! Additionally, your boss cooldown has been reset.",
                             color=discord.Color.green(),  # Green color
                         )
                         embed.add_field(

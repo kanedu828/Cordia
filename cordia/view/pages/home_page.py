@@ -21,7 +21,7 @@ class HomePage(Page):
         embed.set_image(url=image_path)
         embed.add_field(
             name="🗳️ Vote for Cordia!",
-            value="Vote for Cordia for daily rewards! https://top.gg/bot/708417621334163537",
+            value="Vote for Cordia for daily rewards and to reset your boss cooldown! https://top.gg/bot/708417621334163537",
             inline=False,
         )
         navigation_text = (
