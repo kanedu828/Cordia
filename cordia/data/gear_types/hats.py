@@ -107,7 +107,7 @@ hat_data = {
         type=GearType.HAT,
         level=250,
         gold_value=1000,
-        stats=PlayerStats(strength=150),
+        stats=PlayerStats(strength=200),
         upgrade_item="chaos_shard",
         gear_set="olympian",
     ),
