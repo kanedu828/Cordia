@@ -6,6 +6,7 @@ from cordia.util.errors import NotEnoughGoldError, GoldLimitReachedError
 from cordia.util.stats_util import get_upgrade_points
 from cordia.data.locations import location_data
 from cordia.util.constants import MAX_GOLD
+from cordia.util.exp_util import exp_to_level
 
 # Set up logger for this module
 logger = logging.getLogger(__name__)
@@ -23,7 +24,8 @@ class PlayerService:
         logger.debug(f"Getting player by Discord ID: {discord_id}")
         player = await self.player_dao.get_by_discord_id(discord_id)
         if player:
-            logger.debug(f"Found player {discord_id}: level {player.level}, exp {player.exp}, gold {player.gold}")
+            level = exp_to_level(player.exp)
+            logger.debug(f"Found player {discord_id}: level {level}, exp {player.exp}, gold {player.gold}")
         else:
             logger.debug(f"No player found for Discord ID: {discord_id}")
         return player
@@ -31,7 +33,8 @@ class PlayerService:
     async def insert_player(self, discord_id: int) -> Player:
         logger.info(f"Inserting new player: {discord_id}")
         player = await self.player_dao.insert_player(discord_id)
-        logger.info(f"Created new player {discord_id}: level {player.level}, exp {player.exp}, gold {player.gold}")
+        level = exp_to_level(player.exp)
+        logger.info(f"Created new player {discord_id}: level {level}, exp {player.exp}, gold {player.gold}")
         return player
 
     async def get_or_insert_player(self, discord_id: int) -> Player:
