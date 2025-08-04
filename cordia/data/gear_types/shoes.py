@@ -90,4 +90,32 @@ shoes_data = {
         upgrade_item="chaos_shard",
         gear_set="olympian_god",
     ),
+    "olympian_persistence_shoes": Gear(
+        name="Olympian Persistence Shoes",
+        type=GearType.SHOES,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(persistence=50),
+    ),
+    "olympian_luck_shoes": Gear(
+        name="Olympian Luck Shoes",
+        type=GearType.SHOES,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(luck=50),
+    ),
+    "olympian_strength_shoes": Gear(
+        name="Olympian Strength Shoes",
+        type=GearType.SHOES,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(strength=50),
+    ),
+    "olympian_intelligence_shoes": Gear(
+        name="Olympian Intelligence Shoes",
+        type=GearType.SHOES,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(intelligence=50),
+    ),
 }

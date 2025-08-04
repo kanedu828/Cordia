@@ -111,4 +111,32 @@ hat_data = {
         upgrade_item="chaos_shard",
         gear_set="olympian",
     ),
+    "olympian_persistence_hat": Gear(
+        name="Olympian Persistence Hat",
+        type=GearType.HAT,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(persistence=150),
+    ),
+    "olympian_luck_hat": Gear(
+        name="Olympian Luck Hat",
+        type=GearType.HAT,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(luck=150),
+    ),
+    "olympian_strength_hat": Gear(
+        name="Olympian Strength Hat",
+        type=GearType.HAT,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(strength=150),
+    ),
+    "olympian_intelligence_hat": Gear(
+        name="Olympian Intelligence Hat",
+        type=GearType.HAT,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(intelligence=150),
+    ),
 }

@@ -107,4 +107,32 @@ top_data = {
         upgrade_item="chaos_shard",
         gear_set="olympian_god",
     ),
+    "olympian_persistence_top": Gear(
+        name="Olympian Persistence Top",
+        type=GearType.TOP,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(persistence=150),
+    ),
+    "olympian_luck_top": Gear(
+        name="Olympian Luck Top",
+        type=GearType.TOP,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(luck=150),
+    ),
+    "olympian_strength_top": Gear(
+        name="Olympian Strength Top",
+        type=GearType.TOP,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(strength=150),
+    ),
+    "olympian_intelligence_top": Gear(
+        name="Olympian Intelligence Top",
+        type=GearType.TOP,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(intelligence=150),
+    ),
 }

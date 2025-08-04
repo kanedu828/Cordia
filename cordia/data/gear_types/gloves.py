@@ -57,4 +57,32 @@ glove_data = {
         ),
         gear_set="void",
     ),
+    "olympian_persistence_gloves": Gear(
+        name="Olympian Persistence Gloves",
+        type=GearType.GLOVES,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(persistence=50),
+    ),
+    "olympian_luck_gloves": Gear(
+        name="Olympian Luck Gloves",
+        type=GearType.GLOVES,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(luck=50),
+    ),
+    "olympian_strength_gloves": Gear(
+        name="Olympian Strength Gloves",
+        type=GearType.GLOVES,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(strength=50),
+    ),
+    "olympian_intelligence_gloves": Gear(
+        name="Olympian Intelligence Gloves",
+        type=GearType.GLOVES,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(intelligence=50),
+    ),
 }

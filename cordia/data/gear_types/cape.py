@@ -64,4 +64,32 @@ cape_data = {
         ),
         gear_set="void",
     ),
+    "olympian_persistence_cape": Gear(
+        name="Olympian Persistence Cape",
+        type=GearType.CAPE,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(persistence=50),
+    ),
+    "olympian_luck_cape": Gear(
+        name="Olympian Luck Cape",
+        type=GearType.CAPE,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(luck=50),
+    ),
+    "olympian_strength_cape": Gear(
+        name="Olympian Strength Cape",
+        type=GearType.CAPE,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(strength=50),
+    ),
+    "olympian_intelligence_cape": Gear(
+        name="Olympian Intelligence Cape",
+        type=GearType.CAPE,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(intelligence=50),
+    ),
 }

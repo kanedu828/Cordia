@@ -107,4 +107,32 @@ pants_data = {
         upgrade_item="chaos_shard",
         gear_set="olympian",
     ),
+    "olympian_persistence_pants": Gear(
+        name="Olympian Persistence Pants",
+        type=GearType.PANTS,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(persistence=50),
+    ),
+    "olympian_luck_pants": Gear(
+        name="Olympian Luck Pants",
+        type=GearType.PANTS,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(luck=50),
+    ),
+    "olympian_strength_pants": Gear(
+        name="Olympian Strength Pants",
+        type=GearType.PANTS,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(strength=50),
+    ),
+    "olympian_intelligence_pants": Gear(
+        name="Olympian Intelligence Pants",
+        type=GearType.PANTS,
+        level=250,
+        gold_value=1000,
+        stats=PlayerStats(intelligence=50),
+    ),
 }

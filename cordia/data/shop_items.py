@@ -261,4 +261,155 @@ shop_item_data: dict[str, ShopItem] = {
         item_cost=("olympian_soul", 5),
         gold_cost=1_000_000,
     ),
+    # Olympian Capes
+    "olympian_persistence_cape": ShopItem(
+        item_name="olympian_persistence_cape",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_luck_cape": ShopItem(
+        item_name="olympian_luck_cape",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_strength_cape": ShopItem(
+        item_name="olympian_strength_cape",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_intelligence_cape": ShopItem(
+        item_name="olympian_intelligence_cape",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    # Olympian Gloves
+    "olympian_persistence_gloves": ShopItem(
+        item_name="olympian_persistence_gloves",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_luck_gloves": ShopItem(
+        item_name="olympian_luck_gloves",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_strength_gloves": ShopItem(
+        item_name="olympian_strength_gloves",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_intelligence_gloves": ShopItem(
+        item_name="olympian_intelligence_gloves",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    # Olympian Hats
+    "olympian_persistence_hat": ShopItem(
+        item_name="olympian_persistence_hat",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_luck_hat": ShopItem(
+        item_name="olympian_luck_hat",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_strength_hat": ShopItem(
+        item_name="olympian_strength_hat",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_intelligence_hat": ShopItem(
+        item_name="olympian_intelligence_hat",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    # Olympian Tops
+    "olympian_persistence_top": ShopItem(
+        item_name="olympian_persistence_top",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_luck_top": ShopItem(
+        item_name="olympian_luck_top",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_strength_top": ShopItem(
+        item_name="olympian_strength_top",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_intelligence_top": ShopItem(
+        item_name="olympian_intelligence_top",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    # Olympian Pants
+    "olympian_persistence_pants": ShopItem(
+        item_name="olympian_persistence_pants",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_luck_pants": ShopItem(
+        item_name="olympian_luck_pants",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_strength_pants": ShopItem(
+        item_name="olympian_strength_pants",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_intelligence_pants": ShopItem(
+        item_name="olympian_intelligence_pants",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    # Olympian Shoes
+    "olympian_persistence_shoes": ShopItem(
+        item_name="olympian_persistence_shoes",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_luck_shoes": ShopItem(
+        item_name="olympian_luck_shoes",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_strength_shoes": ShopItem(
+        item_name="olympian_strength_shoes",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    "olympian_intelligence_shoes": ShopItem(
+        item_name="olympian_intelligence_shoes",
+        type=ShopItemType.GEAR,
+        item_cost=("olympian_soul", 5),
+        gold_cost=1_000_000,
+    ),
+    
 }
