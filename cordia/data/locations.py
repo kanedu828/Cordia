@@ -97,6 +97,6 @@ location_data = {
     "olympus": Location(
         name="Olympus",
         level_unlock=250,
-        monsters=[("olympian_solider", 0.9), ("olympian_general", 0.1)],
+        monsters=[("olympian_solider", 0.9), ("olympian_general", 0.09), ("olympian_titan", 0.01)],
     ),
 }
