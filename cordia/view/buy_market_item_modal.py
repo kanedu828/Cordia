@@ -44,10 +44,18 @@ class BuyMarketItemModal(Modal):
                 description=f"Sale Price: {display_gold(market_item.price)}\n Tax: -{display_gold(market_item.price * TAX_RATE)}\n Your Gain: {display_gold(math.ceil(market_item.price - market_item.price * TAX_RATE))}",
                 color=discord.Color.green(),
             )
-            seller = await self.cordia_service.bot.fetch_user(market_item.discord_id)
-            # Need to find a better way to get the seller user. This calls discord API
-            # which has rate limits
-            await seller.send(embed=succeed_sell_embed)
+            try:
+                seller = await self.cordia_service.bot.fetch_user(market_item.discord_id)
+                await seller.send(embed=succeed_sell_embed)
+            except discord.NotFound:
+                # Seller account no longer exists or bot can't access it
+                pass
+            except discord.Forbidden:
+                # Seller has DMs disabled
+                pass
+            except Exception as e:
+                # Other errors - log but don't fail the transaction
+                print(f"Failed to notify seller {market_item.discord_id}: {e}")
         except NotEnoughGoldError as e:
             fail_embed = discord.Embed(
                 title="Error",

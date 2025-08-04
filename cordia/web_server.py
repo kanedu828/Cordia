@@ -66,13 +66,22 @@ class WebServer:
                             text="Your support helps make Cordia even better!"
                         )
                         await user.send(embed=embed)
+                    except discord.Forbidden:
+                        # User has DMs disabled
+                        self.cordia_client.logger.debug(f"User {discord_id} has DMs disabled")
                     except Exception as e:
                         self.cordia_client.logger.warning(
                             f"Failed to DM user {discord_id}: {e}"
                         )
-            except:
-                # Prevent spam in logs for no user
-                pass
+            except discord.NotFound:
+                # User no longer exists
+                self.cordia_client.logger.debug(f"User {discord_id} not found in Discord")
+            except discord.Forbidden:
+                # Bot can't access user
+                self.cordia_client.logger.debug(f"Cannot access user {discord_id} (forbidden)")
+            except Exception as e:
+                # Other errors - log but don't fail the webhook
+                self.cordia_client.logger.debug(f"Failed to fetch user {discord_id}: {e}")
 
             return web.Response(status=200, text="Vote processed successfully")
 

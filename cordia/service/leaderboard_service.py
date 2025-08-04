@@ -6,6 +6,7 @@ from cordia.model.daily_leaderboard import DailyLeaderboard
 from cordia.model.player import Player
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from discord.ext import commands
+import discord
 
 # Set up logger for this module
 logger = logging.getLogger(__name__)
@@ -57,8 +58,14 @@ class LeaderboardService:
                 self.leaderboard_user_cache[discord_id] = user_name
                 logger.debug(f"Cached username for user {discord_id}: {user_name}")
                 return user_name
+            except discord.NotFound:
+                logger.debug(f"User {discord_id} not found in Discord")
+                return f"User_{discord_id}"
+            except discord.Forbidden:
+                logger.debug(f"Cannot access user {discord_id} (forbidden)")
+                return f"User_{discord_id}"
             except Exception as e:
-                logger.error(f"Failed to fetch user {discord_id}: {e}")
+                logger.debug(f"Failed to fetch user {discord_id}: {e}")
                 return f"User_{discord_id}"
 
     async def upsert_daily_leaderboard(
