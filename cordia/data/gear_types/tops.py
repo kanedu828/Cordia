@@ -112,7 +112,7 @@ top_data = {
         type=GearType.TOP,
         level=250,
         gold_value=1000,
-        stats=PlayerStats(persistence=250),
+        stats=PlayerStats(persistence=250, damage=10),
         gear_set="olympian",
     ),
     "olympian_luck_top": Gear(
@@ -120,7 +120,7 @@ top_data = {
         type=GearType.TOP,
         level=250,
         gold_value=1000,
-        stats=PlayerStats(luck=250),
+        stats=PlayerStats(luck=250, damage=10),
         gear_set="olympian",
     ),
     "olympian_strength_top": Gear(
@@ -128,7 +128,7 @@ top_data = {
         type=GearType.TOP,
         level=250,
         gold_value=1000,
-        stats=PlayerStats(strength=250),
+        stats=PlayerStats(strength=250, damage=10),
         gear_set="olympian",
     ),
     "olympian_intelligence_top": Gear(
@@ -136,7 +136,7 @@ top_data = {
         type=GearType.TOP,
         level=250,
         gold_value=1000,
-        stats=PlayerStats(intelligence=250),
+        stats=PlayerStats(intelligence=250, spell_damage=10),
         gear_set="olympian",
     ),
 }

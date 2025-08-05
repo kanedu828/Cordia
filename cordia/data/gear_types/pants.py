@@ -112,7 +112,7 @@ pants_data = {
         type=GearType.PANTS,
         level=250,
         gold_value=1000,
-        stats=PlayerStats(persistence=150),
+        stats=PlayerStats(persistence=150, damage=10),
         gear_set="olympian",
     ),
     "olympian_luck_pants": Gear(
@@ -120,7 +120,7 @@ pants_data = {
         type=GearType.PANTS,
         level=250,
         gold_value=1000,
-        stats=PlayerStats(luck=150),
+        stats=PlayerStats(luck=150, damage=10),
         gear_set="olympian",
     ),
     "olympian_strength_pants": Gear(
@@ -128,7 +128,7 @@ pants_data = {
         type=GearType.PANTS,
         level=250,
         gold_value=1000,
-        stats=PlayerStats(strength=150),
+        stats=PlayerStats(strength=150, damage=10),
         gear_set="olympian",
     ),
     "olympian_intelligence_pants": Gear(
@@ -136,7 +136,7 @@ pants_data = {
         type=GearType.PANTS,
         level=250,
         gold_value=1000,
-        stats=PlayerStats(intelligence=150),
+        stats=PlayerStats(intelligence=150, spell_damage=10),
         gear_set="olympian",
     ),
 }
