@@ -63,6 +63,7 @@ glove_data = {
         level=250,
         gold_value=1000,
         stats=PlayerStats(persistence=50),
+        gear_set="olympian",
     ),
     "olympian_luck_gloves": Gear(
         name="Olympian Luck Gloves",
@@ -70,6 +71,7 @@ glove_data = {
         level=250,
         gold_value=1000,
         stats=PlayerStats(luck=50),
+        gear_set="olympian",
     ),
     "olympian_strength_gloves": Gear(
         name="Olympian Strength Gloves",
@@ -77,6 +79,7 @@ glove_data = {
         level=250,
         gold_value=1000,
         stats=PlayerStats(strength=50),
+        gear_set="olympian",
     ),
     "olympian_intelligence_gloves": Gear(
         name="Olympian Intelligence Gloves",
@@ -84,5 +87,6 @@ glove_data = {
         level=250,
         gold_value=1000,
         stats=PlayerStats(intelligence=50),
+        gear_set="olympian",
     ),
 }

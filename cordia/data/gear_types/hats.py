@@ -117,6 +117,7 @@ hat_data = {
         level=250,
         gold_value=1000,
         stats=PlayerStats(persistence=150),
+        gear_set="olympian",
     ),
     "olympian_luck_hat": Gear(
         name="Olympian Luck Hat",
@@ -124,6 +125,7 @@ hat_data = {
         level=250,
         gold_value=1000,
         stats=PlayerStats(luck=150),
+        gear_set="olympian",
     ),
     "olympian_strength_hat": Gear(
         name="Olympian Strength Hat",
@@ -131,6 +133,7 @@ hat_data = {
         level=250,
         gold_value=1000,
         stats=PlayerStats(strength=150),
+        gear_set="olympian",
     ),
     "olympian_intelligence_hat": Gear(
         name="Olympian Intelligence Hat",
@@ -138,5 +141,6 @@ hat_data = {
         level=250,
         gold_value=1000,
         stats=PlayerStats(intelligence=150),
+        gear_set="olympian",
     ),
 }

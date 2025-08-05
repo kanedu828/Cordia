@@ -96,6 +96,7 @@ shoes_data = {
         level=250,
         gold_value=1000,
         stats=PlayerStats(persistence=150),
+        gear_set="olympian",
     ),
     "olympian_luck_shoes": Gear(
         name="Olympian Luck Shoes",
@@ -103,6 +104,7 @@ shoes_data = {
         level=250,
         gold_value=1000,
         stats=PlayerStats(luck=150),
+        gear_set="olympian",
     ),
     "olympian_strength_shoes": Gear(
         name="Olympian Strength Shoes",
@@ -110,6 +112,7 @@ shoes_data = {
         level=250,
         gold_value=1000,
         stats=PlayerStats(strength=150),
+        gear_set="olympian",
     ),
     "olympian_intelligence_shoes": Gear(
         name="Olympian Intelligence Shoes",
@@ -117,5 +120,6 @@ shoes_data = {
         level=250,
         gold_value=1000,
         stats=PlayerStats(intelligence=150),
+        gear_set="olympian",
     ),
 }

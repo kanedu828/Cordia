@@ -70,6 +70,7 @@ cape_data = {
         level=250,
         gold_value=1000,
         stats=PlayerStats(persistence=50),
+        gear_set="olympian",
     ),
     "olympian_luck_cape": Gear(
         name="Olympian Luck Cape",
@@ -77,6 +78,7 @@ cape_data = {
         level=250,
         gold_value=1000,
         stats=PlayerStats(luck=50),
+        gear_set="olympian",
     ),
     "olympian_strength_cape": Gear(
         name="Olympian Strength Cape",
@@ -84,6 +86,7 @@ cape_data = {
         level=250,
         gold_value=1000,
         stats=PlayerStats(strength=50),
+        gear_set="olympian",
     ),
     "olympian_intelligence_cape": Gear(
         name="Olympian Intelligence Cape",
@@ -91,5 +94,6 @@ cape_data = {
         level=250,
         gold_value=1000,
         stats=PlayerStats(intelligence=50),
+        gear_set="olympian",
     ),
 }
